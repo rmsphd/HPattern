@@ -1,0 +1,38 @@
+<%@ Template Language="C#" TargetLanguage="GX" Description="Selectiond and Grid Tab Conditions" %>
+<%@ Include Name="Constants.cs" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Property Name="Object" Type="Artech.Architecture.Common.Objects.KBObject" %>
+<%@ Property Name="Part" Type="Artech.Architecture.Common.Objects.KBObjectPart" %>
+<%@ Property Name="Instance" Type="Heurys.Patterns.HPattern.HPatternInstance" %>
+<%@ Property Name="GridObject" Type="Heurys.Patterns.HPattern.IGridObject" %>
+<%@ SubTemplate Name="FilterCondition" File="FilterCondition.dkt" MergeProperties="True"%>
+<%
+	bool geraBC = false;
+	HPatternSettings settings = Instance.Settings;
+	if (GridObject is TabElement) {	
+		
+		geraBC = Instance.Transaction.WebBC;
+		/*
+		geraBC = settings.Template.DataEntryWebPanelBC;
+		if (Instance.Transaction.DataEntryWebPanelBC.ToLower() == "true")
+			geraBC = true;
+		if (Instance.Transaction.DataEntryWebPanelBC.ToLower() == "false")
+			geraBC = false;
+		*/
+	}			
+%>
+
+<Part type="<%= PartType.Conditions %>">
+	<Source><![CDATA[
+<%	
+	if (GridObject.GridType == SettingsGridElement.GridTypeValue.Standard && !geraBC) 
+	{
+%>
+<%@ CallSubTemplate FilterCondition Object='Object' Part='Part' Instance='Instance' GridObject='GridObject' WhereForEach='false'%>
+<%
+	}
+%>
+]]>
+	</Source>
+</Part>

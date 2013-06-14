@@ -1,0 +1,951 @@
+<%@ Template Language="C#" TargetLanguage="C#" Description="Pattern Instance"%>
+<%@ Assembly Name="Artech.Common.Helpers"%>
+<%@ Assembly Name="Artech.Common.Properties"%>
+<%@ Assembly Name="Artech.Packages.Patterns"%>
+<%@ Import Namespace="System.Collections.Generic"%>
+<%@ Import Namespace="Artech.Common.Properties" %>
+<%@ Import Namespace="Artech.Common.Helpers.Language" %>
+<%@ Import Namespace="Artech.Packages.Patterns" %>
+<%@ Import Namespace="Artech.Packages.Patterns.CodeGen" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Definition" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Specification" %>
+<%@ Property Name="Definition" Type="Artech.Packages.Patterns.Definition.PatternDefinition" %>
+<%@ Property Name="Specification" Type="Artech.Packages.Patterns.Specification.SpecificationRoot" %>
+<%@ SubTemplate Name="CollectionMembers" File="PatternInstanceCollectionMembers.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="Serialization" File="PatternInstanceSerialization.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="Locate" File="PatternInstanceLocate.dkt" MergeProperties="True"%>
+<%
+	string generationType = "Instance";
+	if (Specification == Definition.SettingsSpecification)
+		generationType = "Settings";
+
+	// Put the root type in the first position (just for tidyness).
+	List<SpecificationType> allTypes = new List<SpecificationType>(Specification.Types);
+	SpecificationType rootType = Specification.GetRootType();
+	allTypes.Remove(rootType);
+	allTypes.Insert(0, rootType);
+
+	string rootTypeName = CodeGeneratorHelper.GetTypeName(rootType);
+	string instanceParentObject = CodeGeneratorHelper.GetInstanceParentObject(Specification);
+	string baseInterface = String.Format("I{0}Element", rootTypeName);
+
+%>
+// Pattern <%= generationType %> class for pattern <%= Definition.Name %> (<%= Definition.Publisher %>)
+// Generated on <%= DateTime.Now %> by PatternCodeGen
+
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using Artech.Common.Collections;
+using Artech.Common.Diagnostics;
+using Artech.Architecture.Common.Objects;
+using Artech.Packages.Patterns;
+using Artech.Packages.Patterns.Objects;
+
+namespace <%= Definition.Publisher %>.Patterns.<%= Definition.Name %>
+{
+<%
+	foreach (SpecificationType specType in Specification.Types)
+	{
+		if (specType == rootType)
+		{
+%>
+	#region <%= generationType %> class
+
+<%
+		}
+		else
+		{
+%>
+	#region Element: <%= specType.Name %>
+
+<%
+		}
+
+		string baseClass = String.Empty;
+
+		bool isSimpleCollection = false;
+		bool isMixedCollection = false;
+		IList<SpecificationChildElement> collectionChildren = null;
+
+		if (CodeGeneratorHelper.IsSimpleCollection(specType))
+		{
+			isSimpleCollection = true;
+			baseClass = CodeGeneratorHelper.GetCollectionTypeName(specType, true);
+		}
+		else if (CodeGeneratorHelper.IsMixedCollection(specType, out collectionChildren))
+		{
+			isMixedCollection = true;
+			baseClass = String.Format("IEnumerable<{0}>", baseInterface);
+		}
+		else if (specType.BaseType != null)
+		{
+			baseClass = CodeGeneratorHelper.GetTypeName(specType.BaseType);
+		}
+
+		if (!isSimpleCollection)
+			baseClass += (baseClass.Length > 0 ? ", " : "") + baseInterface;
+
+		IList<SpecificationChildElement> allCollections = CodeGeneratorHelper.GetCollectionChildren(specType);
+
+		if (baseClass != String.Empty)
+			baseClass = " : " + baseClass;
+
+		if (specType == rootType && (isSimpleCollection || isMixedCollection))
+			throw new PatternException("CodeGen incompatibility: root type cannot be a simple or mixed collection.");
+
+		string methodQualifier = CodeGeneratorHelper.MethodQualifier(specType);
+		if (methodQualifier.Length > 0)
+			methodQualifier = String.Format(" {0} ", methodQualifier);
+		else
+			methodQualifier = " ";
+
+		string modelSource = (specType == rootType ? "Model" : generationType + ".Model");
+
+%>
+	public partial class <%= CodeGeneratorHelper.GetTypeName(specType) %><%= baseClass %>
+	{
+<%
+		if (specType == rootType)
+		{
+%>
+		private readonly KBModel m_Model;
+<%
+			if (generationType == "Instance")
+			{
+%>
+		private int m_Id;
+		private string m_Name;
+<%
+			}
+		}
+
+		if (specType.BaseType == null)
+		{
+%>
+		protected string m_ElementName;
+<%
+		}
+
+		if (!isSimpleCollection)
+		{
+			bool hasEnums = false;
+			foreach (SpecificationAttribute specAtt in specType.Attributes)
+			{
+				string attName = CodeGeneratorHelper.GetAttributeName(specAtt);
+				if (specAtt.Status != InheritanceStatus.Inherited)
+				{
+					if (specAtt.IsEnumeratedType())
+						hasEnums = true;
+%>
+		private <%= CodeGeneratorHelper.GetAttributeType(specAtt) %> m_<%= attName %>;
+<%
+				if (specAtt.IsReferenceType())
+				{
+%>
+		private KBObjectReference m_<%= attName %>Reference;
+<%
+					if (specAtt.GetReferenceInfo().AllowMissing)
+					{
+%>
+		private string m_<%= attName %>Name;
+<%
+					}
+				}
+%>
+		private bool m_Is<%= attName %>Default;
+<%
+				}
+			}
+
+			foreach (SpecificationChildElement specChild in specType.ChildrenElements)
+			{
+				// Don't generate a specific collection if children will be "mixed".
+				if (isMixedCollection && collectionChildren.Contains(specChild))
+					continue;
+%>
+		private <%= CodeGeneratorHelper.GetChildType(specChild, true) %> m_<%= CodeGeneratorHelper.GetChildName(specChild) %>;
+<%
+			}
+
+			if (isMixedCollection)
+			{
+%>
+		private Artech.Common.Collections.BaseCollection<<%= baseInterface %>> m_Items;
+<%
+			}
+%>
+
+		#region Construction
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="<%= CodeGeneratorHelper.GetTypeName(specType) %>"/> class.
+		/// </summary>
+<%
+			if (specType == rootType)
+			{
+%>
+		public <%= CodeGeneratorHelper.GetTypeName(specType) %>(KBModel model)
+		{
+			m_Model = model;
+<%
+			}
+			else
+			{
+%>
+		public <%= CodeGeneratorHelper.GetTypeName(specType) %>()
+		{
+<%
+			}
+%>
+			Initialize();
+		}
+<%
+			if (specType == rootType)
+			{
+%>
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="<%= CodeGeneratorHelper.GetTypeName(specType) %>"/> class, loading its data from the specified <%= generationType %> object.
+		/// </summary>
+		public <%= CodeGeneratorHelper.GetTypeName(specType) %>(Pattern<%= generationType %> <%= generationType.ToLower() %>)
+			: this(<%= generationType.ToLower() %>.Model)
+		{
+			LoadFrom(<%= generationType.ToLower() %>);
+		}
+<%
+			} 
+			else if (specType.KeyAttribute != null)
+			{
+%>
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="<%= CodeGeneratorHelper.GetTypeName(specType) %>"/> class, setting its <see cref="<%= CodeGeneratorHelper.GetAttributeName(specType.KeyAttribute) %>"/> property to the specified value.
+		/// </summary>
+		public <%= CodeGeneratorHelper.GetTypeName(specType) %>(<%= CodeGeneratorHelper.GetAttributeType(specType.KeyAttribute)%> <%= CodeGeneratorHelper.GetAttributeVarName(specType.KeyAttribute) %>)
+		{
+			Initialize();
+			<%= CodeGeneratorHelper.GetAttributeName(specType.KeyAttribute) %> = <%= CodeGeneratorHelper.GetAttributeVarName(specType.KeyAttribute) %>;
+		}
+<%
+			}
+%>
+
+		/// <summary>
+		/// Initializes this instance of the <see cref="<%= CodeGeneratorHelper.GetTypeName(specType) %>"/> class, setting all its members to their default values.
+		/// </summary>
+		public<%= methodQualifier %>void Initialize()
+		{
+<%
+			if (specType.BaseType != null)
+			{
+%>
+			base.Initialize();
+<%
+			}
+			else
+			{
+%>
+			m_ElementName = "<Unknown>";
+<%
+			}
+
+			foreach (SpecificationAttribute specAtt in specType.Attributes)
+			{
+				if (specAtt.Status != InheritanceStatus.Inherited)
+				{
+					string attName = CodeGeneratorHelper.GetAttributeName(specAtt);
+%>
+			m_<%= attName %> = <%= CodeGeneratorHelper.GetAttributeDefaultValue(specAtt) %>;
+<%
+					if (specAtt.IsReferenceType())
+					{
+%>
+			m_<%= attName %>Reference = null;
+<%
+						if (specAtt.GetReferenceInfo().AllowMissing)
+						{
+%>
+			m_<%= attName %>Name = null;
+<%
+						}
+					}
+%>
+			m_Is<%= attName %>Default = true;
+<%
+				}
+			}
+
+			foreach (SpecificationChildElement specChild in specType.ChildrenElements)
+			{
+				// Don't generate a specific collection if children will be "mixed".
+				if (isMixedCollection && collectionChildren.Contains(specChild))
+					continue;
+
+				string memberName = "m_" + CodeGeneratorHelper.GetChildName(specChild);
+				bool isChildSimpleCollection = CodeGeneratorHelper.IsSimpleCollection(specChild.SpecificationType);
+
+				if (specChild.Multiple || !specChild.Optional || isChildSimpleCollection)
+				{
+%>
+			<%= memberName %> = new <%= CodeGeneratorHelper.GetChildType(specChild, true) %>();
+<%
+					if (specChild.Multiple)
+					{
+%>
+			<%= memberName %>.ItemAdded += new EventHandler<CollectionItemEventArgs<<%= CodeGeneratorHelper.GetTypeName(specChild.SpecificationType) %>>>(<%= CodeGeneratorHelper.GetChildName(specChild) %>_ItemAdded);
+<%
+					}
+					else
+					{
+%>
+			<%= memberName %>.Parent = this;
+<%
+					}
+
+					if (isChildSimpleCollection)
+					{
+%>
+			<%= memberName %>.ElementName = "<%= specChild.Name %>";
+<%
+					}
+				}
+				else
+				{
+%>
+			<%= memberName %> = null;
+<%
+				}
+			}
+
+			if (isMixedCollection)
+			{
+%>
+			m_Items = new Artech.Common.Collections.BaseCollection<<%= baseInterface %>>();
+			m_Items.ItemAdded += new EventHandler<CollectionItemEventArgs<<%= baseInterface %>>>(Items_ItemAdded);
+<%
+			}
+%>
+		}
+
+		#endregion
+
+		#region Properties
+
+<%
+			if (specType != rootType && specType.BaseType == null)
+			{
+				string parentTypeName = CodeGeneratorHelper.BestParentTypeName(specType);
+%>
+		private <%= parentTypeName %> m_Parent;
+
+		/// <summary>
+		/// <%= generationType %> to which this <see cref="<%= CodeGeneratorHelper.GetTypeName(specType) %>"/> belongs.
+		/// </summary>
+		public <%= rootTypeName %> <%= generationType %>
+		{
+			get { return ((<%= baseInterface %>)Parent).<%= generationType %>; }
+		}
+
+		/// <summary>
+		/// Parent Element.
+		/// </summary>
+		public <%= CodeGeneratorHelper.BestParentTypeName(specType) %> Parent
+		{
+			get { return m_Parent; }
+			internal set { m_Parent = value; }
+		}
+
+		<%= baseInterface %> <%= baseInterface %>.Parent
+		{
+			get { return this.Parent; }
+		}
+
+<%
+			}
+			else if (specType == rootType)
+			{
+%>
+		public KBModel Model
+		{
+			get { return m_Model; }
+		}
+
+<%
+				if (generationType == "Instance")
+				{
+%>
+		public int Id
+		{
+			get { return m_Id; }
+		}
+
+		public string Name
+		{
+			get { return m_Name; }
+		}
+
+<%
+				}
+
+				if (instanceParentObject != String.Empty)
+				{
+%>
+		private <%= instanceParentObject %> m_ParentObject;
+
+		public <%= instanceParentObject %> ParentObject
+		{
+			get { return m_ParentObject; }
+			private set { m_ParentObject = value; }
+		}
+
+<%
+				}
+%>
+		<%= rootTypeName %> <%= baseInterface %>.<%= generationType %>
+		{
+			get { return this; }
+		}
+
+		I<%= rootTypeName %>Element <%= baseInterface %>.Parent
+		{
+			get { return null; }
+		}
+
+<%
+			}
+
+			if (specType.BaseType == null)
+			{
+%>
+		/// <summary>
+		/// The element's name in the pattern instance.
+		/// </summary>
+		internal string ElementName
+		{
+			get { return m_ElementName; }
+		}
+
+<%
+			}
+
+			foreach (SpecificationAttribute specAtt in specType.Attributes)
+			{
+				if (specAtt.Status != InheritanceStatus.Inherited)
+				{
+					string attName = CodeGeneratorHelper.GetAttributeName(specAtt);
+					if (specAtt.Description != String.Empty)
+					{
+						string attDescription = specAtt.Description;
+						attDescription = attDescription.Replace("<", "&lt;");
+						attDescription = attDescription.Replace(">", "&gt;");
+						attDescription = attDescription.Replace(Environment.NewLine, Environment.NewLine + "\t\t/// ");
+%>
+		/// <summary>
+		/*
+		<%= attDescription %>
+		*/
+		/// </summary>
+<%
+					}
+%>
+		public <%= CodeGeneratorHelper.GetAttributeType(specAtt) %> <%= attName %>
+		{
+<%
+					if (specAtt.IsReferenceType())
+					{
+%>
+			get
+			{
+				if (m_<%= attName %> == null && m_<%= attName %>Reference != null)
+					m_<%= attName %> = (<%= CodeGeneratorHelper.GetAttributeType(specAtt) %>)m_<%= attName %>Reference.GetKBObject(<%= modelSource %>);
+
+				return m_<%= attName %>;
+			}
+
+<%
+					}
+					else
+					{
+%>
+			get { return m_<%= attName %>; }
+<%
+					}
+%>
+			set 
+			{
+				m_<%= attName %> = value;
+<%
+					if (specAtt.IsReferenceType())
+					{
+%>
+				m_<%= attName %>Reference = (value != null ? new KBObjectReference(value) : null);
+<%
+						if (specAtt.GetReferenceInfo().AllowMissing)
+						{
+%>
+				m_<%= attName %>Name = (value != null ? value.Name : null);
+<%
+						}
+					}
+%>
+				m_Is<%= attName %>Default = false;
+			}
+		}
+
+<%
+					if (specAtt.IsReferenceType())
+					{
+%>
+		/// <summary>
+		/// <%= CodeGeneratorHelper.GetAttributeName(specAtt) %> name.
+		/// </summary>
+		public string <%= attName %>Name
+		{
+<%
+						if (specAtt.GetReferenceInfo().AllowMissing)
+						{
+%>
+			get
+			{
+				if (m_<%= attName %>Name == null && m_<%= attName %>Reference != null)
+					m_<%= attName %>Name = m_<%= attName %>Reference.GetName(<%= modelSource %>);
+
+				return m_<%= attName %>Name;
+			}
+<%
+						}
+						else
+						{
+%>
+			get { return (<%= attName %> != null ? <%= attName %>.Name : null); }
+<%
+						}
+%>
+		}
+
+<%
+					}
+				}
+			}
+
+			foreach (SpecificationChildElement specChild in specType.ChildrenElements)
+			{
+%>
+		public <%= CodeGeneratorHelper.GetChildType(specChild) %> <%= CodeGeneratorHelper.GetChildName(specChild) %>
+		{
+<%
+				// Don't generate a specific collection if children will be "mixed". But allow selecting them.
+				if (isMixedCollection && collectionChildren.Contains(specChild))
+				{
+%>
+			get 
+			{
+				<%= CodeGeneratorHelper.GetChildType(specChild) %> tmp<%= CodeGeneratorHelper.GetChildName(specChild) %> = new <%= CodeGeneratorHelper.GetChildType(specChild, true) %>();
+				foreach (<%= baseInterface %> obj in m_Items)
+					if (obj is <%= CodeGeneratorHelper.GetCollectionItemTypeName(specChild) %>)
+						tmp<%= CodeGeneratorHelper.GetChildName(specChild) %>.Add((<%= CodeGeneratorHelper.GetCollectionItemTypeName(specChild) %>)obj);
+
+				return tmp<%= CodeGeneratorHelper.GetChildName(specChild) %>.AsReadOnly();
+			}
+<%
+				}
+				else
+				{
+%>
+			get { return m_<%= CodeGeneratorHelper.GetChildName(specChild) %>; }
+<%
+					if (!CodeGeneratorHelper.IsSimpleCollection(specChild.SpecificationType) && !specChild.Multiple)
+					{
+						// Only generate 'setters' for non-collections.
+%>
+			set
+			{
+<%
+						if (!specChild.Optional)
+						{
+%>
+				if (value == null)
+					throw new ArgumentNullException("value");
+
+<%
+						}
+%>
+				m_<%= CodeGeneratorHelper.GetChildName(specChild) %> = value;
+				m_<%= CodeGeneratorHelper.GetChildName(specChild) %>.Parent = this;
+			}
+<%
+					}
+				}
+%>
+		}
+
+<%
+			}
+
+			if (isMixedCollection)
+			{
+%>
+		public Artech.Common.Collections.IBaseCollection<<%= baseInterface %>> Items
+		{
+			get { return m_Items; }
+		}
+
+		public IEnumerator<<%= baseInterface %>> GetEnumerator()
+		{
+			return m_Items.GetEnumerator();
+		}
+
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		{
+			return ((System.Collections.IEnumerable)m_Items).GetEnumerator();
+		}
+
+<%
+			}
+%>
+		#endregion
+
+<%
+
+			if (allCollections.Count > 0)
+			{
+%>
+		#region Helper methods
+
+<%
+				if (isMixedCollection)
+				{
+%>
+		public void Add(<%= baseInterface %> item)
+		{
+			m_Items.Add(item);
+		}
+
+<%
+				}
+
+				List<string> collectionMemberNames = new List<string>();
+
+				foreach (SpecificationChildElement specChild in allCollections)
+				{
+					string itemName = CodeGeneratorHelper.GetCollectionItemVarName(specChild);
+					string itemType = CodeGeneratorHelper.GetCollectionItemTypeName(specChild);
+
+					string itemDeclaration = itemType + " " + itemName;
+					SpecificationAttribute collectionKeyAtt = CodeGeneratorHelper.GetCollectionKeyAttribute(specChild);
+
+					// Try to avoid name collisions.
+					string collectionMemberName = CodeGeneratorHelper.GetCollectionItemName(specChild);
+					if (collectionMemberNames.Contains(collectionMemberName))
+						collectionMemberName = Pluralizer.ToSingular(CodeGeneratorHelper.GetChildName(specChild));
+					if (collectionMemberNames.Contains(collectionMemberName))
+						collectionMemberName += CodeGeneratorHelper.GetCollectionItemName(specChild);
+
+					collectionMemberNames.Add(collectionMemberName);
+
+					string keyParameterName = String.Empty;
+					string keyParameterDeclaration = String.Empty;
+
+					for (int iPass = 0; iPass <= 1; iPass++)
+					{
+						// Generate a second Add method with parameters if there is a parameterized constructor for the child.
+						if (iPass == 1 && collectionKeyAtt == null)
+							continue;
+
+						if (iPass == 1)
+						{
+							keyParameterName = CodeGeneratorHelper.GetAttributeVarName(collectionKeyAtt);
+							keyParameterDeclaration = CodeGeneratorHelper.GetAttributeType(collectionKeyAtt) + " " + keyParameterName;
+						}
+%>
+		/// <summary>
+		/// Creates a new <see cref="<%= itemType %>"/> and adds it to the <see cref="<%= CodeGeneratorHelper.GetChildName(specChild) %>"/> collection.
+<%
+						if (iPass == 1)
+						{
+%>
+		/// The <%= itemType %> is initialized with the specified value.
+<%
+						}
+%>
+		/// </summary>
+		public <%= itemType %> Add<%= collectionMemberName %>(<%= keyParameterDeclaration %>)
+		{
+			<%= itemDeclaration %> = new <%= itemType %>(<%= keyParameterName %>);
+<%
+						string collectionMember = CodeGeneratorHelper.GetChildName(specChild);
+						if (isMixedCollection)
+							collectionMember = "Items";
+%>
+			m_<%= collectionMember %>.Add(<%= itemName %>);
+			return <%= itemName %>;
+		}
+
+<%
+					}
+
+					if (collectionKeyAtt != null)
+					{
+%>
+		/// <summary>
+		/// Finds the <see cref="<%= itemType %>"/> in the <see cref="<%= CodeGeneratorHelper.GetChildName(specChild) %>"/> collection that has the specified value in its <see cref="<%= CodeGeneratorHelper.GetAttributeName(collectionKeyAtt) %>"/> property.
+		/// If no <%= itemName %> is found, null is returned.
+		/// </summary>
+		public <%= itemType %> Find<%= collectionMemberName %>(<%= keyParameterDeclaration %>)
+		{
+			return <%= CodeGeneratorHelper.GetChildName(specChild) %>.Find(delegate (<%= itemDeclaration %>) { return <%= itemName %>.<%= CodeGeneratorHelper.GetAttributeName(collectionKeyAtt) %> == <%= keyParameterName %>; });
+		}
+
+<%
+					}
+
+					if (specChild.Multiple)
+					{
+%>
+		private void <%= CodeGeneratorHelper.GetChildName(specChild) %>_ItemAdded(object sender, CollectionItemEventArgs<<%= CodeGeneratorHelper.GetTypeName(specChild.SpecificationType) %>> e)
+		{
+			e.Data.Parent = this;
+		}
+
+<%
+					}
+
+				}
+
+				if (isMixedCollection)
+				{
+%>
+		private void Items_ItemAdded(object sender, CollectionItemEventArgs<<%= baseInterface %>> e)
+		{
+<%
+					for (int iChild = 0; iChild < collectionChildren.Count; iChild++)
+					{
+						SpecificationChildElement specChild = collectionChildren[iChild];
+%>
+			<%= (iChild > 0 ? "else " : "") %>if (e.Data is <%= CodeGeneratorHelper.GetCollectionItemTypeName(specChild) %>)
+				((<%= CodeGeneratorHelper.GetCollectionItemTypeName(specChild) %>)e.Data).Parent = this;
+<%
+					}
+%>
+			else
+				throw new PatternInstanceException(String.Format("An object of an unexpected type {0} was added as child of {1}.", e.Data.GetType(), this.GetType()));
+		}
+
+<%
+				}
+%>
+		#endregion
+
+<%
+			}
+%>
+		#region Serialization
+<%
+			if (specType == rootType)
+			{
+%>
+
+		private void LoadFrom(Pattern<%= generationType %> <%= generationType.ToLower() %>)
+		{
+			Initialize();
+<%
+	if (generationType == "Instance")
+	{
+%>
+			m_Id = <%= generationType.ToLower() %>.Id;
+			m_Name = <%= generationType.ToLower() %>.Name;
+<%
+	}
+%>
+			LoadFrom(<%= generationType.ToLower() %>.PatternPart.RootElement);
+<%
+				if (instanceParentObject != String.Empty)
+				{
+%>
+			ParentObject = (<%= instanceParentObject %>)<%= generationType.ToLower() %>.KBObject;
+<%
+				}
+%>
+		}
+
+		public void SaveTo(Pattern<%= generationType %> <%= generationType.ToLower() %>)
+		{
+			SaveTo(<%= generationType.ToLower() %>.PatternPart.RootElement);
+		}
+<%
+
+				if (generationType == "Settings" && false)
+				{
+					// Disabled (didn't like it).
+%>
+
+		public static <%= Definition.Name %><%= generationType %> Load(KnowledgeBase kb)
+		{
+			PatternSettings patternSettings = PatternSettings.Get(kb, new Guid("<%= Definition.Id %>"));
+			<%= Definition.Name %><%= generationType %> settings = new <%= Definition.Name %><%= generationType %>(patternSettings);
+			return settings;
+		}
+
+		public static void Save(KnowledgeBase kb, <%= Definition.Name %><%= generationType %> settings)
+		{
+			PatternSettings patternSettings = PatternSettings.Get(kb, new Guid("<%= Definition.Id %>"));
+			settings.SaveTo(patternSettings);
+			patternSettings.Save();
+		}
+<%
+
+				}
+			}
+%>
+
+		<%@ CallSubTemplate Serialization GenerationType='generationType' SpecType='specType' BaseInterface='baseInterface' MethodQualifier='methodQualifier' %>
+
+		#endregion
+
+		#region Find Element
+<%
+			if (specType == rootType)
+			{
+%>
+
+		/// <summary>
+		/// Gets the object in the hierarchy corresponding to the element.
+		/// </summary>
+		public TElement GetElement<TElement>(PatternInstanceElement element) where TElement : class
+		{
+			if (element == null)
+				throw new ArgumentNullException("element");
+
+			string elementPath = element.InternalPath;
+			List<string> path = new List<string>(elementPath.Split(new char[] {'/'}, StringSplitOptions.RemoveEmptyEntries));
+			if (path.Count < 1 || path[0] != "<%= Specification.RootElement %>")
+				throw new PatternInstanceException(String.Format("Element with path {0} not found in <%= generationType.ToLower() %>", element.Path));
+
+			path.RemoveAt(0);
+			object obj = this.GetElement(path);
+			if (obj != null && !(obj is TElement))
+				throw new PatternInstanceException(String.Format("Element with path {0} is not of type {1}", elementPath, typeof(TElement).FullName));
+
+			return (TElement)obj;
+		}
+
+		private static System.Text.RegularExpressions.Regex ms_Regex = new System.Text.RegularExpressions.Regex(@"(?<name>\w*)(\[(?<index>[0-9]+)\])?");
+
+		internal static void ParseChildPath(string childPath, out string childName, out int childIndex)
+		{
+			System.Text.RegularExpressions.Match expressionMatch = ms_Regex.Match(childPath);
+
+			childName = childPath;
+			if (expressionMatch.Groups["name"].Length > 0)
+				childName = expressionMatch.Groups["name"].Value;
+
+			childIndex = 0;
+			if (expressionMatch.Groups["index"].Length > 0)
+			{
+				if (Int32.TryParse(expressionMatch.Groups["index"].Value, out childIndex))
+					childIndex--; // XPath index is 1-based, collection index is 0-based.
+			}
+		}
+<%
+			}
+%>
+
+		<%@ CallSubTemplate Locate GenerationType='generationType' SpecType='specType' BaseInterface='baseInterface' MethodQualifier='methodQualifier' %>
+
+		#endregion
+<%
+			if (hasEnums)
+			{
+%>
+
+		#region Enumerations
+
+<%
+				foreach (SpecificationAttribute specAtt in specType.Attributes)
+				{
+					if (specAtt.IsEnumeratedType() && specAtt.Status != InheritanceStatus.Inherited)
+					{
+%>
+		/// <summary>
+		/// Possible values for the <see cref="<%= CodeGeneratorHelper.GetAttributeName(specAtt) %>"/> property.
+		/// </summary>
+		public static class <%= CodeGeneratorHelper.GetAttributeName(specAtt) %>Value
+		{
+<%
+						SpecificationEnumInfo enumInfo = specAtt.GetEnumInfo();
+						foreach (ValuesItem valueItem in enumInfo.Values)
+						{
+%>
+			public const string <%= CodeGeneratorHelper.MakeIdentifier(valueItem.Name) %> = "<%= valueItem.Value %>";
+<%
+						}
+%>
+		}
+
+<%
+					}
+				}
+%>
+		#endregion
+<%
+			}
+		}
+		else
+		{
+			// Simple collection
+%>
+
+		<%@ CallSubTemplate CollectionMembers GenerationType='generationType' SpecType='specType' %>
+<%
+		}
+%>
+
+		#region Basic methods
+
+		public override string ToString()
+		{
+<%
+		if (specType.CaptionFormat != String.Empty)
+		{
+			if (specType.CaptionParameters != String.Empty)
+			{
+%>
+			return String.Format(CultureInfo.CurrentCulture, "<%= specType.CaptionFormat %>", <%= String.Join(", ", CodeGeneratorHelper.GetCaptionParameters(specType)) %>);
+<%
+			}
+			else
+			{
+%>
+			return "<%= specType.CaptionFormat %>";
+<%
+			}
+		}
+		else
+		{
+%>
+			return ElementName;
+<%
+		}
+%>
+		}
+
+		#endregion
+	}
+
+	#endregion
+
+<%
+	}
+%>
+	/// <summary>
+	/// Base interface for all <%= rootTypeName %> elements.
+	/// </summary>
+	public interface <%= baseInterface %>
+	{
+		<%= rootTypeName %> <%= generationType %> { get; }
+		<%= baseInterface %> Parent { get; }
+		<%= baseInterface %> Clone();
+	}
+}

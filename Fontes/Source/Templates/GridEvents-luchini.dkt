@@ -1,0 +1,2456 @@
+<%@ Template Language="C#" TargetLanguage="GX" Description="Selection and Grid Tabs Events" %>
+<%@ Include Name="Constants.cs" %>
+<%@ Assembly Name="Heurys.Patterns.WWHeurys" %>
+<%@ Assembly Name="Artech.Architecture.Common" %>
+<%@ Assembly Name="Artech.Common" %>
+<%@ Assembly Name="Artech.Common.Helpers" %>
+<%@ Assembly Name="Artech.Common.Properties" %>
+<%@ Assembly Name="Artech.Genexus.Common" %>
+<%@ Assembly Name="Artech.Packages.Patterns" %>
+<%@ Assembly Name="Artech.Udm.Framework" %>
+<%@ Assembly Name="Artech.Template.Base" %>
+<%@ Assembly Name="System.Xml" %>
+<%@ Assembly Name="StringTemplate" %>
+<%@ Assembly Name="Artech.Architecture.UI.Framework" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="Heurys.Patterns.WWHeurys" %>
+<%@ Import Namespace="Artech.Common.Properties" %>
+<%@ Import Namespace="Artech.Architecture.Common.Collections" %>
+<%@ Import Namespace="Artech.Architecture.Common.Objects" %>
+<%@ Import Namespace="Artech.Udm.Framework" %>
+<%@ Import Namespace="Artech.Genexus.Common" %>
+<%@ Import Namespace="Artech.Genexus.Common.Helpers" %>
+<%@ Import Namespace="Artech.Genexus.Common.Objects" %>
+<%@ Import Namespace="Artech.Genexus.Common.Parts" %>
+<%@ Import Namespace="Artech.Packages.Patterns" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Objects" %>
+<%@ Import Namespace="System" %>
+<%@ Import Namespace="System.Collections.Generic" %>
+<%@ Import Namespace="System.Text" %>
+<%@ Import Namespace="System.Xml" %>
+<%@ Import Namespace="Antlr.StringTemplate" %>
+<%@ Import Namespace="Artech.Genexus.Common.Wiki" %>
+<%@ Property Name="Object" Type="Artech.Architecture.Common.Objects.KBObject" %>
+<%@ Property Name="Part" Type="Artech.Architecture.Common.Objects.KBObjectPart" %>
+<%@ Property Name="Instance" Type="Heurys.Patterns.WWHeurys.WWHeurysInstance" %>
+<%@ Property Name="GridObject" Type="Heurys.Patterns.WWHeurys.IGridObject" %>
+<%@ SubTemplate Name="SubLoadContext" File="SubLoadContext.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="SubCheckSecurity" File="SubCheckSecurity.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="SubPrepareTransaction" File="SubPrepareTransaction.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="SubLinkAttributes" File="SubLinkAttributes.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="SecurityTabs" File="SecurityTabs.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="BCValidationAttribute" File="BCValidationAttribute.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="LimpaSessaoBC" File="LimpaSessaoBC.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="FilterCondition" File="FilterCondition.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="EventIsValid" File="EventIsValid.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="WebBCSave" File="WebBCSave.dkt" MergeProperties="True"%>
+<Part type="<%= PartType.Events %>">
+	<Source><![CDATA[<%
+/*
+> 11/01/2011 SM 387
+- Correção de Bug ao restaurar os filtros do Grid, esta com o númerador errado impedindo que os filtros sejam restaurados,
+
+*/
+
+
+	string objtype = TabElement.ObjTypeValue.All;
+	string sand = "";
+	
+	WWHeurysSettings settings = Instance.Settings;
+	Transaction trn = Instance.Transaction.Transaction;
+	FormElement form = null;
+	TransactionElement trnE = Instance.Transaction;
+	string ObjectName = String.IsNullOrEmpty(Instance.Transaction.ObjectName) ? trn.Name : Instance.Transaction.ObjectName;
+	
+	string SearchEventCode = "";
+	
+	string SubCode = "";
+	
+	SelectionElement selection = null;
+	if (GridObject is SelectionElement)
+	{
+		selection = (SelectionElement)GridObject;
+	} 
+	else
+	{
+		if (Instance.Levels.Count > 0) 
+		{
+			LevelElement level = Instance.Levels[0];
+			if (level.Selection != null)
+			{
+				selection = level.Selection;
+			}
+		}		
+	}
+	
+	bool geraBC = false;
+	
+	bool disabledTabs = false;
+	
+	string codeTab = "";
+	Transaction transaction = null;
+	Artech.Common.Collections.IBaseCollection<RowElement> rows = null;	
+	string tab = "";
+	TabElement tabe = null;
+	
+	if (GridObject is TabElement) {			
+		
+		tabe = (TabElement)GridObject;
+		objtype = tabe.ObjType;
+		
+		tab = tabe.Name;
+		SubCode = tabe.SubCode;
+		codeTab = tabe.Code;
+		transaction = tabe.Transaction.Transaction;
+		trnE = tabe.Transaction;
+		form = tabe.Transaction.Form;
+	
+		geraBC = Instance.Transaction.WebBC;
+			
+		if (geraBC) disabledTabs = tabe.Parent.DisabledTabs;		
+		
+		if (geraBC)
+		{
+			rows = tabe.Transaction.GetRows(""); //.Form.Rows;	
+		}		
+	}
+	
+	bool hascond = false;
+	int idAba = 0;
+	if (geraBC)
+		hascond = Instance.HasConditionalTabs();
+		
+	//System.Windows.Forms.MessageBox.Show("TRN "+trn.Name+" aba "+codeTab);		
+		
+	bool canHideSearch = false;
+	bool needCurrentPage = false;
+	bool actionsModes = false;
+	
+	
+	bool collapse = GridObject.GetFilterCollapse;  // false;	
+	bool collapsedefault = GridObject.GetFilterCollapseDefault;  //false;
+	bool loadOnStart = GridObject.GetLoadOnStart; //true;
+	bool requiredFilter = GridObject.GetRequiredFilter; // false;
+	bool setFocus = GridObject.GetSetFocus; // false;	
+	string setFocusAttribute = null;		
+		
+	string requiredFilterMessage = settings.Grid.RequiredFilterMessage;
+	
+	
+	if (GridObject is PromptElement)
+	{
+		PromptElement pe = (PromptElement)GridObject;
+		SubCode = pe.SubCode;
+		SearchEventCode = pe.SearchEventCode;
+		
+		setFocusAttribute = pe.SetFocusAttribute;
+
+		try {
+			if (pe.RequiredFilterMessage.ToLower() != "<default>")
+				requiredFilterMessage = pe.RequiredFilterMessage;			
+			
+		} catch(System.Exception e) {}
+		
+	}		
+	if (GridObject is SelectionElement)
+	{
+		SelectionElement pe = (SelectionElement)GridObject;
+		SearchEventCode = pe.SearchEventCode;
+		SubCode = pe.SubCode;
+	
+		setFocusAttribute = pe.SetFocusAttribute;
+		
+		try {
+			if (pe.RequiredFilterMessage.ToLower() != "<default>")
+				requiredFilterMessage = pe.RequiredFilterMessage;			
+			
+		} catch(System.Exception e) {}
+		
+	}	
+	
+	if (setFocus && String.IsNullOrEmpty(setFocusAttribute)) {
+	
+		if (GridObject.Filter != null)
+		{
+			foreach (FilterAttributeElement filterVar in GridObject.Filter.FilterAttributes)
+			{
+				setFocusAttribute = filterVar.Name;
+				break;
+			}
+		}		
+	}
+	
+	bool geraDF = false;
+	int ch = settings.DynamicFilters.MaxChoices;
+	int tot = 0;
+	
+	try {
+		if (settings.DynamicFilters.GenerateDynaicFilters) {
+			if (GridObject.Filter != null) {
+				if (GridObject.Filter.Dynamicfilters != null) {
+					tot = ch;
+					geraDF = (GridObject.Filter.Dynamicfilters.Count > 0 && ch > 0) ? true : false;
+				}
+			}
+		}
+	} catch (System.Exception e) { }	
+	
+	if (collapse && !((GridObject.Filter != null && (GridObject.Filter.FilterAttributes.Count > 0 || geraDF)) || GridObject.Orders.NeedsChoice)) {
+		collapse = false;
+	}	
+	
+	string CollapseImage = "";
+	string ExpandImage = "";
+			
+	if (collapse) {
+		CollapseImage = settings.Template.FilterCollapseImageName;
+		ExpandImage = settings.Template.FilterExpandImageName;
+	}	
+	
+	if (!(GridObject is PromptElement)) {
+		actionsModes = true;
+	}
+	if (!settings.Grid.PagingButtons(GridObject)) {
+		needCurrentPage = true;
+	}
+	bool needGridState = (settings.Grid.SaveGridState && (GridObject is SelectionElement));
+
+	
+	List<ActionElement> standaloneActionsWithSecurityCheck = new List<ActionElement>();
+	if (actionsModes) {
+		foreach (ActionElement action in GridObject.Actions.StandaloneActions)
+		{
+			if (action.Condition != String.Empty)
+				standaloneActionsWithSecurityCheck.Add(action);
+		}
+		if (GridObject.GridType == SettingsGridElement.GridTypeValue.Gxui || geraBC)
+		{
+			foreach (ActionElement action in GridObject.Actions.GridActions)
+			{
+				if (action.Condition != String.Empty)
+					standaloneActionsWithSecurityCheck.Add(action);
+			}
+		}		
+	}
+	
+%>
+// WWHeurys Version [<%= Messages.VersionWWHeurys() %>]
+
+Event Start
+<%
+int tipoc = 0;
+if (GridObject is PromptElement)
+{
+	tipoc = 1;
+}
+if (settings.Security.SecurityInEvent == SettingsSecurityElement.SecurityInEventValue.Start)
+{	
+	
+%>
+<%@ CallSubTemplate SubLoadContext Settings='settings' IndentLevel='1' IndentLevelChar='"\t"' tipo='tipoc' %>
+<%	if ((settings.Security.ComponentCheckSecurity || !(GridObject is TabElement)) && (settings.Security.PromptCheckSecurity || !(GridObject is PromptElement))) 
+	{
+%>
+<%@ CallSubTemplate SubCheckSecurity Settings='settings' Instance='Instance' IndentLevel='1' IndentLevelChar='"\t"' IsTransaction='geraBC' %>
+<%	
+	}
+	
+	if ((GridObject is PromptElement) && !String.IsNullOrEmpty(settings.Security.PromptSecurityCode)) 
+	{
+		string pgmname = "";
+		if (Instance.SecurityId != String.Empty && Instance.SecurityId.ToLower() != "default") {
+			pgmname = "'"+Instance.SecurityId+"'";
+		}
+		else
+		{
+			if (settings.Security.SecurityIdTransaction) {
+				pgmname = "'"+Instance.Transaction.TransactionName+"'";
+			} else {
+				pgmname = "&Pgmname";
+			}
+		}	
+%>
+<%= String.Format(settings.Security.PromptSecurityCode,pgmname) %>
+<%
+	}
+%>
+<%
+	if (geraBC &&settings.Security.EventStart != String.Empty) {
+%>
+<%=settings.Security.EventStart%>
+<%
+	}
+}	
+%>
+<%
+if (objtype == TabElement.ObjTypeValue.Trn)
+{
+%>
+&ModeI = TrnMode.Convert(&Mode)
+<%
+}
+%>
+<%	if (settings.Grid.GetEnableDisablePaging(GridObject)) {
+%>
+	&PageCount = -1
+<%	}
+%>
+
+<%	if (needCurrentPage && !settings.Grid.PagingButtons(GridObject)) { 
+%>
+	&CurrentPage.Visible = <%=settings.Grid.CurrentPageVisible ? "True" : "False" %>
+<%	}
+	
+	if (canHideSearch)
+	{
+%>
+	&HidingSearch = False
+	&HidingSearch.Visible = False
+
+<%
+	}
+
+if (objtype != TabElement.ObjTypeValue.Trn) {
+	if (GridObject.GridType == SettingsGridElement.GridTypeValue.Standard) {
+		if (settings.Grid.Page != String.Empty)
+		{
+%>
+	<%= Constants.GridName %>.Rows = <%= settings.Grid.Page %>
+<%
+		}
+		
+		if (actionsModes) {
+			if (GridObject.Actions.Insert != null && GridObject.Actions.Insert.InitializationCode() != String.Empty)
+			{		
+%>
+<%= Indentation.Indent(GridObject.Actions.Insert.InitializationCode(), 1) %>
+<%
+			}
+
+			foreach (ActionElement action in GridObject.Actions.GridActions)
+			{
+				if (action.InitializationCode() != String.Empty)
+				{
+%>
+<%= Indentation.Indent(action.InitializationCode(), 1) %>
+<%
+				}
+			}
+		}		
+		
+	}
+	else
+	{
+%>
+	&gxuiGridColumnModel = DPGridModel<%=trn.Name%>()
+<%	
+	}	
+}
+
+	if (GridObject.Filter != null)
+	{
+		foreach (FilterAttributeElement filterVar in GridObject.Filter.FilterAttributes)
+		{ 
+			if (filterVar.AllValue)
+			{
+				if (String.IsNullOrEmpty(filterVar.Default))
+				{
+					Artech.Genexus.Common.Objects.Domain enumeratedDomain = filterVar.EnumeratedDomain;
+					if (enumeratedDomain != null)
+					{
+%>
+	<%= filterVar.VariableName %> = <%= enumeratedDomain.Name %>.Convert(nullvalue(<%= filterVar.VariableName %>))
+<%
+					}
+					else
+					{
+%>
+	<%= filterVar.VariableName %> = nullvalue(<%= filterVar.VariableName %>)
+<%
+					}
+				}
+%>
+	<%= filterVar.VariableName %>.AddItem(nullvalue(<%= filterVar.VariableName %>), "<%= settings.Labels.AllInCombo %>")
+<%
+			}
+			
+			if (filterVar.Default != String.Empty)
+			{
+%>
+	<%= filterVar.VariableName %> = <%= filterVar.Default %>
+<%
+			}
+		}
+	}
+
+	if (GridObject is SelectionElement)
+	{
+		string formCaption = ((SelectionElement)GridObject).Caption;
+		if (formCaption == "")
+			formCaption = "'" + ((SelectionElement)GridObject).Description + "'";
+%>
+	Form.Caption = <%= formCaption %>
+<%
+	}
+
+	// "Hidden" attributes - sometimes necessary for GX to infer the correct navigation scheme.
+	if (!(GridObject is TabElement))
+	{
+		foreach (ParameterElement parameter in GridObject.Parameters)
+		{
+			if (parameter.IsAttribute && GridObject.Attributes.FindAttribute(parameter.Name) == null)
+			{
+%>
+	<%= parameter.Name %>.Visible = False
+<%
+			}
+		}
+	}
+	
+	if (settings.Template.UseTransactionContext && !(GridObject is PromptElement) && objtype != TabElement.ObjTypeValue.Trn)
+	{
+%>
+
+	Do 'PrepareTransaction'
+<%
+	}
+	
+	if (!loadOnStart) {
+%>
+	&loadStart.SetEmpty()	
+	&loadStart.Visible = false
+<%	}
+
+	if (needGridState) 
+	{
+%>
+	Do 'LoadGridState'
+<%
+	}
+
+try {
+	if (geraDF) {	
+%>
+	Do 'DynamicFilters'
+<%	} 
+} catch(System.Exception e) {		
+	System.Windows.Forms.MessageBox.Show("Erro event: " + e.Message + Environment.NewLine + e.StackTrace + Environment.NewLine + e.Data);                   
+}
+
+	if (collapse) {
+%>
+	&collapse = <%= (collapsedefault ? "0" : "1") %>
+	&collapse.Visible = false
+<%  }
+
+	string varpks = "";
+	string varpksT = "";
+	string varpksM = "";
+	
+	int contaVM = 0;	
+
+	if (geraBC)
+	{	
+	
+		varpks = Heurys.Patterns.WWHeurys.Helpers.Template.GetPKLink(trn.Structure.Root.PrimaryKey);	
+		varpksT = Heurys.Patterns.WWHeurys.Helpers.Template.GetPKVar(trn.Structure.Root.PrimaryKey);
+		varpksM = Heurys.Patterns.WWHeurys.Helpers.Template.GetPKSDT(trn.Structure.Root.PrimaryKey,trn.Name,settings.Template.BCPrimaryKeyDelimiter);
+
+%>
+<%
+if (objtype != TabElement.ObjTypeValue.Trn)
+{
+%>
+	// Carrega registro em sessao
+	if &HTTPRequest.Method = HttpMethod.Get and &load
+		Load<%= trn.Name %>.Call(&Mode<%= varpks %>)	
+	endif
+<%
+}
+%>
+	// Restaura registro da sessao
+	&referencia = "<%= trn.Name %>SDT"<%= varpksT %>
+	&<%= trn.Name %>SDT.FromXml(&Session.Get(&referencia))	
+
+<%	
+	
+		int idTab = 0;
+
+		LevelElement level2 = Instance.Levels[0];
+		foreach (TabElement tabit in  level2.View.Tabs)	
+		{		
+			idTab++;		
+			if (codeTab == tabit.Code) 
+			{
+				idTab--;
+				break;
+			}
+		}	
+		idAba = idTab + 1;		           
+%>	
+
+	if &Mode = TrnMode.Delete
+		<%=(objtype == TabElement.ObjTypeValue.Trn ? "btn_enter" : "Savar")%>.Caption = "GX_BtnDelete"			
+	endif	
+	
+	if &Mode = TrnMode.Display
+		<%=(objtype == TabElement.ObjTypeValue.Trn ? "btn_enter" : "Savar")%>.Enabled = false
+	endif
+	
+<%
+if (objtype == TabElement.ObjTypeValue.Trn)
+{
+%>	
+	if &Mode = TrnMode.Insert
+		&<%= transaction.Name %>BC = new()
+	else		
+		for &<%= codeTab %>SDT in &<%= trn.Name %>SDT.<%= codeTab %>
+		if <%
+	sand = "";		
+	foreach (TransactionAttribute tatt in transaction.Structure.Root.PrimaryKey)
+	{
+		bool ehchave = false;
+		foreach (TransactionAttribute atk in trn.Structure.Root.PrimaryKey)
+		{
+			if (atk.Name == tatt.Name) {
+				ehchave = true;
+				break;
+			}
+		}
+		if (!ehchave)	
+		{
+		
+			if (sand == "") {
+		%>
+<%= sand %>&<%= codeTab %>SDT.<%= tatt.Name %> = &<%= tatt.Name %>
+<%
+			}
+			else
+			{
+		%>
+			<%= sand %>&<%= codeTab %>SDT.<%= tatt.Name %> = &<%= tatt.Name %>
+<%
+			}
+
+			sand = "and ";
+		}
+	}	
+%>		
+
+				&<%= transaction.Name %>BC = &<%= codeTab %>SDT.Clone()
+				exit
+			endif			
+		endfor		
+	endif	
+<%
+}
+else
+{
+%>
+	if &Mode = TrnMode.Display or &Mode = TrnMode.Delete
+<%
+		foreach (ActionElement action in GridObject.Actions.GridActions)
+		{
+			if (action.Name != Heurys.Patterns.WWHeurys.Helpers.StandardAction.Display) 
+			{
+%>
+		<%=action.ControlName()%>.JSEvent('onclick',!'false')
+<%= Indentation.Indent(action.DisableCode(), 2) %>		
+<%			
+			}	
+		}
+		foreach (ActionElement action in GridObject.Actions.StandaloneActions)
+		{		
+%>
+<%= Indentation.Indent(action.DisableCode(), 2) %> 
+<%
+		}
+%>
+	endif
+
+	&MenuData = DPDSM<%= trn.Name %>()
+<%
+		if (hascond) {
+%>
+	do 'SecurityTabs'
+	&n = SetCookie('"Tabs'+Trim(str(&MenuData.Count,2,0))+'"',&cok.ToString().Trim(),"/")	
+<%
+		} else {
+%>	
+	&n = SetCookie('"Tabs'+Trim(str(&MenuData.Count,2,0))+'"',"<%= idTab %>","/")		
+<%
+		}
+%>	
+
+	
+<%
+}
+if (geraBC) {
+	if (objtype != TabElement.ObjTypeValue.Trn)
+	{
+		if (objtype != TabElement.ObjTypeValue.Grid)
+		{
+%>	
+	tabelaItem.Visible = false
+<%
+		}
+%>	
+	&editando = false
+	&editando.Visible = false	
+	&ModeI.Visible = false
+<%
+	}
+	
+	if (objtype != TabElement.ObjTypeValue.Grid)
+	{	
+%>	
+<%= Indentation.Indent(Heurys.Patterns.WWHeurys.Helpers.Template.HMaskEventStart(tabe.Transaction,tab),1)%>	
+<%
+	}
+}
+%>	
+<%		
+	}
+
+	if (setFocus && !String.IsNullOrEmpty(setFocusAttribute)) {
+%>
+	&<%= setFocusAttribute %>.SetFocus()
+<%
+	}
+%>
+
+<%
+	if (GridObject.GridType == SettingsGridElement.GridTypeValue.Gxui) 
+	{
+%>
+	&GridState = new()
+	
+<%
+		if (!loadOnStart) 
+		{	
+%>
+	&GridStateFilterValue = new()
+	&GridStateFilterValue.Value = &loadStart.ToString()
+	&GridState.FilterValues.Add(&GridStateFilterValue)				
+<%		}
+		foreach (ParameterElement parameter in GridObject.Parameters)
+		{
+			if (GridObject is SelectionElement) 
+			{
+			//	if (parameter.IsAttribute)
+			//	{
+			// parameter.ParameterConditionPrc
+%>
+	&GridStateFilterValue = new()
+	&GridStateFilterValue.Value = &<%= parameter.Name.Replace("&","") %>.ToString()
+	&GridState.FilterValues.Add(&GridStateFilterValue)
+<%
+			//	}
+			}
+		}
+%>
+	gxuiSDTGrid.FilterValues = &GridState.ToXml()
+<%		
+	}
+%>
+
+<%
+	if (objtype != TabElement.ObjTypeValue.Trn)
+	{
+
+		if (!String.IsNullOrEmpty(GridObject.EventStart))
+		{
+%>
+<%= Indentation.Indent(GridObject.EventStart,1)%>
+<%
+		}
+	}
+	if (objtype != TabElement.ObjTypeValue.Grid)
+	{	
+		if (tabe != null) 
+		{
+			if (tabe.Transaction != null) 
+			{
+				if (!String.IsNullOrEmpty(tabe.Transaction.EventStart))
+				{
+%>
+<%= Indentation.Indent(tabe.Transaction.EventStart,1)%>
+<%
+				}
+			}
+		}
+	}
+%>
+EndEvent // Start
+
+<%
+	if (geraBC && form != null) 
+	{
+%>
+<%=Heurys.Patterns.WWHeurys.Helpers.Template.PromptEvents(form, settings,String.Format("&{0}BC.",trn.Name))%>
+<%
+	}
+%>
+
+<%
+if (GridObject.CurrentCombo && GridObject.GridType == SettingsGridElement.GridTypeValue.Standard && !settings.Grid.PagingButtons(GridObject))
+{
+%>
+Event &CurrentPage.Click
+<%	if (needGridState) 
+	{
+%>	
+    Do 'SaveGridPage'
+<% }%>    
+	<%= Constants.GridName %>.GotoPage(&CurrentPage)
+EndEvent
+<%
+}
+%>
+
+<%
+	if (GridObject.Filter != null)
+	{
+		foreach (FilterAttributeElement filter in GridObject.Filter.FilterAttributes)
+		{
+			if (!String.IsNullOrEmpty(filter.IsValid))
+			{
+%>
+Event &<%= filter.Name %>.IsValid
+<%=Indentation.Indent(filter.IsValid,1)%>	
+EndEvent
+
+<%
+			}
+		}
+	}
+%>
+
+<%
+	if (geraBC) {	
+		if (objtype != TabElement.ObjTypeValue.Grid)
+		{	            
+%>	
+
+<%@ CallSubTemplate EventIsValid rows='rows'%>
+
+<%
+		}
+sand = "";
+if (objtype != TabElement.ObjTypeValue.Trn)
+{
+%>
+Event 'Fechar'
+<%@ CallSubTemplate LimpaSessaoBC varpksT='varpksT' trn='trn' level='Instance.Levels[0]' %>
+	<%= selection.ObjectName %>.Link(<%= selection.Parameters.ListSelection() %>)
+EndEvent
+
+Event Tabs.DolphinItemClicked 
+	//msg("Selected item Title : " + &MenuDataItem.MenuTitle)
+	
+	// Grava registro na sessao
+	&referencia = "<%= trn.Name %>SDT"<%= varpksT %>
+	&Session.Set(&referencia,&<%= trn.Name %>SDT.ToXml())	
+
+<%
+if (disabledTabs) {
+%>
+	tabelaItem.Visible = &editando
+	// se estamos editando, nao vamos abrir outras abas	
+	if not &editando
+<%
+}
+%>
+<%
+if (Instance.HasTabs)
+{
+%>
+	do case			
+<%	
+	int conta = 0;
+
+	LevelElement level = Instance.Levels[0];
+	string tabini = "";
+	if (level != null) {
+		if (level.View.Tabs != null) 
+		{
+			if (level.View.Tabs.Count > 0)
+			{
+				TabElement tabe2 = level.View.Tabs[0];
+				tabini = tabe2.Code;	
+				if (String.IsNullOrEmpty(tabe2.ObjName))
+				{
+					ObjectName += tabini+"BC";	
+				} else {
+					ObjectName = tabe2.ObjName;
+				}
+				
+			}		
+		}
+	}	
+	
+	foreach (TabElement tabit in  level.View.Tabs)	
+	{		
+		conta++;		
+		if (codeTab != tabit.Code) 
+		{
+			if (tabit.Type == "UserDefined") {
+%>
+		case &MenuDataItem.MenuId = <%= conta.ToString() %>						
+			<%= Instance.Transaction.GeraLink(trn.Name+tabit.Code+"BC",true,false,false) %>
+<%			} 
+			else
+			{
+%>
+		case &MenuDataItem.MenuId = <%= conta.ToString() %>		
+			<%= Instance.Transaction.GeraLink(tabit.Wcname,true,false,false) %>				
+<%			
+			}
+		}
+	}			
+%>	
+	endcase	
+<%
+}
+%>	
+<%	
+	if (disabledTabs) {		
+%>
+	endif
+<%
+	}
+%>
+EndEvent   
+
+Event 'DoDisplay'
+<%
+if (objtype == TabElement.ObjTypeValue.Grid)
+{
+%>
+	<%=tabe.TrnPopup("TrnMode.Display")%>
+<%
+}
+else
+{
+%>
+	for &<%= codeTab %>SDT in &<%= trn.Name %>SDT.<%= codeTab %>
+		if <%
+	sand = "";		
+	foreach (TransactionAttribute tatt in transaction.Structure.Root.PrimaryKey)
+	{
+		bool ehchave = false;
+		foreach (TransactionAttribute atk in trn.Structure.Root.PrimaryKey)
+		{
+			if (atk.Name == tatt.Name) {
+				ehchave = true;
+				break;
+			}
+		}
+		if (!ehchave)	
+		{
+			if (sand == "") {
+		%>
+<%= sand %>&<%= codeTab %>SDT.<%= tatt.Name %> = &<%= tatt.Name %>
+<%
+			}
+			else
+			{
+		%>
+			<%= sand %>&<%= codeTab %>SDT.<%= tatt.Name %> = &<%= tatt.Name %>
+<%
+			}
+			sand = "and ";
+		}
+	}	
+%>		
+			exit
+		endif			
+	endfor				
+	&<%= transaction.Name %>BC = &<%= codeTab %>SDT.Clone()
+	tabelaItem.Visible = true
+
+	&editando = true
+	&ModeI = TrnMode.Display
+	btn_enter.Enabled = false
+<%
+}
+%>	
+EndEvent
+
+Event 'Atualiza'
+<%
+if (objtype == TabElement.ObjTypeValue.Grid)
+{
+%>
+	<%=tabe.TrnPopup("TrnMode.Update")%>
+	refresh
+<%
+}
+else
+{
+%>
+	for &<%= codeTab %>SDT in &<%= trn.Name %>SDT.<%= codeTab %>
+		if <%
+	sand = "";		
+	foreach (TransactionAttribute tatt in transaction.Structure.Root.PrimaryKey)
+	{
+		bool ehchave = false;
+		foreach (TransactionAttribute atk in trn.Structure.Root.PrimaryKey)
+		{
+			if (atk.Name == tatt.Name) {
+				ehchave = true;
+				break;
+			}
+		}
+		if (!ehchave)	
+		{
+			if (sand == "") {
+		%>
+<%= sand %>&<%= codeTab %>SDT.<%= tatt.Name %> = &<%= tatt.Name %>
+<%
+			}
+			else
+			{
+		%>
+			<%= sand %>&<%= codeTab %>SDT.<%= tatt.Name %> = &<%= tatt.Name %>
+<%
+			}
+			sand = "and ";
+		}
+	}	
+%>		
+			exit
+		endif			
+	endfor				
+	&<%= transaction.Name %>BC = &<%= codeTab %>SDT.Clone()
+	tabelaItem.Visible = true
+	&editando = true
+	&ModeI = TrnMode.Update
+	btn_enter.Enabled = true
+<%
+}
+%>	
+EndEvent	
+
+Event 'Apaga'
+<%
+if (objtype == TabElement.ObjTypeValue.Grid)
+{
+%>
+	<%=tabe.TrnPopup("TrnMode.Delete")%>
+	refresh
+<%
+}
+else
+{
+%>	
+	for &<%= codeTab %>SDT in &<%= trn.Name %>SDT.<%= codeTab %>
+		if <%
+	sand = "";		
+	foreach (TransactionAttribute tatt in transaction.Structure.Root.PrimaryKey)
+	{
+		bool ehchave = false;
+		foreach (TransactionAttribute atk in trn.Structure.Root.PrimaryKey)
+		{
+			if (atk.Name == tatt.Name) {
+				ehchave = true;
+				break;
+			}
+		}
+		if (!ehchave)	
+		{
+			if (sand == "") {
+		%>
+<%= sand %>&<%= codeTab %>SDT.<%= tatt.Name %> = &<%= tatt.Name %>
+<%
+			}
+			else
+			{
+		%>
+			<%= sand %>&<%= codeTab %>SDT.<%= tatt.Name %> = &<%= tatt.Name %>
+<%
+			}
+			sand = "and ";
+		}
+	}	
+%>		
+			&<%= codeTab %>SDT.Apagar = true
+
+			// Grava registro na sessao
+			&referencia = "<%= trn.Name %>SDT"<%= varpksT %>
+			&Session.Set(&referencia,&<%= trn.Name %>SDT.ToXml())	
+			
+			exit
+		endif			
+	endfor	
+	
+	tabelaItem.Visible = false
+	&editando = false
+	refresh
+<%
+}
+%>	
+EndEvent	
+
+Event 'DoInsert'
+<%
+if (objtype == TabElement.ObjTypeValue.Grid)
+{
+%>
+	<%=tabe.TrnPopup("TrnMode.Insert")%>
+	refresh	
+<%
+}
+else
+{
+%>	
+	&<%= transaction.Name %>BC = new()
+	tabelaItem.Visible = true
+	&editando = true
+	&ModeI = TrnMode.Insert
+	btn_enter.Enabled = true
+<%
+}
+%>	
+EndEvent
+
+<%
+}
+%>
+
+<%
+if (objtype != TabElement.ObjTypeValue.Grid)
+{
+%>
+Event 'SalvarItem'
+
+&ErrorValidation = false
+
+<%@ CallSubTemplate BCValidationAttribute Instance='trnE' Settings='settings' BCName='"&"+transaction.Name+"BC"' TabName='""' Mode='"&ModeI"' ListaSDT='"&"+trn.Name+"SDT."+codeTab' %>	
+
+if &ErrorValidation = false
+	
+	for &<%= codeTab %>SDT in &<%= trn.Name %>SDT.<%= codeTab %>
+		if <%
+	sand = "";		
+	foreach (TransactionAttribute tatt in transaction.Structure.Root.PrimaryKey)
+	{
+		bool ehchave = false;
+		foreach (TransactionAttribute atk in trn.Structure.Root.PrimaryKey)
+		{
+			if (atk.Name == tatt.Name) {
+				ehchave = true;
+				break;
+			}
+		}
+		if (!ehchave)	
+		{
+		
+			if (sand == "") {
+		%>
+<%= sand %>&<%= codeTab %>SDT.<%= tatt.Name %> = &<%= transaction.Name %>BC.<%= tatt.Name %>
+<%
+			}
+			else
+			{
+		%>
+			<%= sand %>&<%= codeTab %>SDT.<%= tatt.Name %> = &<%= transaction.Name %>BC.<%= tatt.Name %>
+<%
+			}
+
+			sand = "and ";
+		}
+	}	
+%>		
+<%
+	if (objtype == TabElement.ObjTypeValue.Trn)
+	{
+%>
+			if &Mode = TrnMode.Delete
+				&<%= codeTab %>SDT.Apagar = true
+			else
+				&<%= trn.Name %>SDT.<%= codeTab %>.Remove(&<%= trn.Name %>SDT.<%= codeTab %>.IndexOf(&<%= codeTab %>SDT))
+			endif				
+<%
+	}
+	else
+	{
+%>
+			&<%= trn.Name %>SDT.<%= codeTab %>.Remove(&<%= trn.Name %>SDT.<%= codeTab %>.IndexOf(&<%= codeTab %>SDT))
+<%
+	}
+%>				
+			exit
+		endif			
+	endfor
+
+
+<%
+	if (objtype == TabElement.ObjTypeValue.Trn)
+	{
+%>
+	if &Mode = TrnMode.Insert or &Mode = TrnMode.Update
+	
+<%
+	}
+%>
+	&<%= transaction.Name %>BC.Atualizado = true
+	&<%= trn.Name %>SDT.<%= codeTab %>.Add(&<%= transaction.Name %>BC)
+<%
+	if (objtype == TabElement.ObjTypeValue.Trn)
+	{
+%>
+
+	endif
+<%
+	}
+%>
+	// Grava registro na sessao
+	&referencia = "<%= trn.Name %>SDT"<%= varpksT %>
+	&Session.Set(&referencia,&<%= trn.Name %>SDT.ToXml())	
+<%
+if (objtype == TabElement.ObjTypeValue.Trn)	
+{
+	if (tabe.AfterInsert == TabElement.AfterInsertValue.EnterInInsert)
+	{
+%>
+	if &ModeI = TrnMode.Insert
+		&<%= transaction.Name %>BC = new()
+	else
+		return
+	endif		
+<%	
+	}
+	else
+	{
+%>
+	return
+<%
+	}
+}
+else
+{
+	if (tabe.AfterInsert == TabElement.AfterInsertValue.EnterInInsert)
+	{
+%>
+	if &ModeI = TrnMode.Insert
+		&<%= transaction.Name %>BC = new()
+		tabelaItem.Visible = true
+		&editando = true
+		&ModeI = TrnMode.Insert
+		btn_enter.Enabled = true	
+	else
+		tabelaItem.Visible = false	
+		&editando = false
+		refresh		
+	endif			
+<%	
+	}
+	else
+	{
+%>
+	tabelaItem.Visible = false	
+	&editando = false
+	refresh
+<%
+	}
+}
+%>
+
+EndIf
+
+EndEvent // SalvarItem
+
+Event 'FecharItem'
+<%
+if (objtype == TabElement.ObjTypeValue.Trn)	
+{
+%>
+	return
+<%
+}
+else
+{
+%>	
+	tabelaItem.Visible = false
+	&editando = false
+<%
+}
+%>	
+EndEvent // FecharItem
+<%
+}
+%>
+
+
+<%
+if (objtype != TabElement.ObjTypeValue.Trn)
+{
+%>
+
+<%@ CallSubTemplate WebBCSave wwInstance='Instance' settings='settings' IsGrid='true' ObjectName='ObjectName' TabName='""' %>
+
+<%
+}
+%>
+<%	}
+%>
+
+<%if (collapse && objtype != TabElement.ObjTypeValue.Trn) {
+%>
+Event 'collapse'
+	&collapse = iif(&collapse = 1,0,1)
+EndEvent
+
+Sub 'CollapseExpand'
+	if &collapse = 1
+		ImgCollapse.FromImage(<%=ExpandImage%>)
+		TableSearch.Visible = false
+	else
+		ImgCollapse.FromImage(<%=CollapseImage%>)
+		TableSearch.Visible = true
+	endif
+EndSub		
+<%}
+%>
+
+<% if (settings.Grid.SearchButton && objtype != TabElement.ObjTypeValue.Trn && (settings.Template.PromptSearchEvent == SettingsTemplateElement.PromptSearchEventValue.Search || !(GridObject is PromptElement)) ) {%>
+
+Event 'Search'
+<%=SearchEventCode%>
+<%	if (!loadOnStart) {	
+%>
+	do 'FlagGrid'	
+<%	
+	}
+%>
+<% if (!settings.Grid.PagingButtons(GridObject)) {%>
+	&CurrentPage = 1
+<% }%>	
+<%		if (needGridState && 1==2) // Já tem no evento Refresh não precisa executar aqui novamente 
+		{
+%>
+	Do 'SaveGridState'
+<%
+		}
+%>
+<% if (!settings.Grid.PagingButtons(GridObject)) {%>
+	<%= Constants.GridName %>.FirstPage()
+<% }%>	
+<%
+	if (GridObject.GridType == SettingsGridElement.GridTypeValue.Gxui) {
+%>
+	&GridState = new()
+	
+<%
+		if (!loadOnStart) {	
+%>
+	&GridStateFilterValue = new()
+	&GridStateFilterValue.Value = &loadStart.ToString()
+	&GridState.FilterValues.Add(&GridStateFilterValue)				
+<%		}
+	foreach (ParameterElement parameter in GridObject.Parameters)
+	{
+		if (GridObject is SelectionElement) {
+			//if (parameter.IsAttribute)
+			//{
+			// parameter.ParameterConditionPrc
+%>
+	&GridStateFilterValue = new()
+	&GridStateFilterValue.Value = &<%= parameter.Name.Replace("&","") %>.ToString()
+	&GridState.FilterValues.Add(&GridStateFilterValue)
+<%
+			//}
+		}
+	}
+		
+		if (GridObject.Filter != null && (GridObject.Filter.FilterAttributes.Count > 0 || geraDF))
+		{
+%> 
+<%
+			foreach (FilterAttributeElement filterVar in GridObject.Filter.FilterAttributes) 
+			{ 
+%>
+	&GridStateFilterValue = new()
+	&GridStateFilterValue.Value = <%= filterVar.VariableName %>.ToString()
+	&GridState.FilterValues.Add(&GridStateFilterValue)
+<%
+			}
+			if (geraDF) {
+				for (int i = 1;i<=ch;i++) {
+%>			
+	&GridStateFilterValue = new()
+	&GridStateFilterValue.Value = &Campo<%=i.ToString().Trim()%>.ToString()
+	&GridState.FilterValues.Add(&GridStateFilterValue)
+	&GridStateFilterValue = new()
+	&GridStateFilterValue.Value = &CondD<%=i.ToString().Trim()%>.ToString()
+	&GridState.FilterValues.Add(&GridStateFilterValue)
+	&GridStateFilterValue = new()
+	&GridStateFilterValue.Value = &Carac<%=i.ToString().Trim()%>.ToString()
+	&GridState.FilterValues.Add(&GridStateFilterValue)
+	&GridStateFilterValue = new()
+	&GridStateFilterValue.Value = &Numer<%=i.ToString().Trim()%>.ToString()
+	&GridState.FilterValues.Add(&GridStateFilterValue)
+	&GridStateFilterValue = new()
+	&GridStateFilterValue.Value = &DataD<%=i.ToString().Trim()%>.ToString()
+	&GridState.FilterValues.Add(&GridStateFilterValue)
+<%
+				}
+			}			
+		}
+%>
+
+	gxuiSDTGrid.FilterValues = &GridState.ToXml()
+	gxuiSDTGrid.Refresh = gxuiBoolean.True
+<%
+	}
+%>	
+EndEvent	
+<% }%>
+<% if (settings.Grid.ClearButton && objtype != TabElement.ObjTypeValue.Trn) {%>
+
+Event 'ClearButton'
+<%	if (!loadOnStart) {
+		if (GridObject.GridType == SettingsGridElement.GridTypeValue.Standard) {		
+%>
+	&loadStart.SetEmpty()
+<%	
+		}
+	}
+%>	
+<% if (!settings.Grid.PagingButtons(GridObject)) {%>
+	&CurrentPage = 1
+<% }%>
+<%
+	if (GridObject.Filter != null)
+	{
+		foreach (FilterAttributeElement filterVar in GridObject.Filter.FilterAttributes)
+		{ 
+			if (String.IsNullOrEmpty(filterVar.Default))
+			{
+				Artech.Genexus.Common.Objects.Domain enumeratedDomain = filterVar.EnumeratedDomain;
+				if (enumeratedDomain != null)
+				{
+%>
+	<%= filterVar.VariableName %> = <%= enumeratedDomain.Name %>.Convert(nullvalue(<%= filterVar.VariableName %>))
+<%
+					if (filterVar.FilterType == FilterAttributeElement.FilterTypeValue.Interval)
+					{
+%>
+	<%= filterVar.VariableName %>2 = <%= enumeratedDomain.Name %>.Convert(nullvalue(<%= filterVar.VariableName %>2))
+<%
+					}
+
+				}
+				else
+				{
+%>
+	<%= filterVar.VariableName %> = nullvalue(<%= filterVar.VariableName %>)
+<%
+					if (filterVar.FilterType == FilterAttributeElement.FilterTypeValue.Interval)
+					{
+%>
+	<%= filterVar.VariableName %>2 = nullvalue(<%= filterVar.VariableName %>2)
+<%					
+					}
+				}
+			}
+
+		}
+	}
+	if (geraDF) {				
+		for (int i = 1;i<=ch;i++) {					
+%>			
+	&Campo<%=i.ToString().Trim()%> = nullvalue(&Campo<%=i.ToString().Trim()%>)
+	&CondD<%=i.ToString().Trim()%> = nullvalue(&CondD<%=i.ToString().Trim()%>)
+	&Carac<%=i.ToString().Trim()%> = nullvalue(&Carac<%=i.ToString().Trim()%>)
+	&Numer<%=i.ToString().Trim()%> = nullvalue(&Numer<%=i.ToString().Trim()%>)
+	&DataD<%=i.ToString().Trim()%> = nullvalue(&DataD<%=i.ToString().Trim()%>)
+<%
+		}
+	}	
+			%>
+<%	if (needGridState) 
+	{
+%>
+	Do 'SaveGridState'
+<%
+	}
+%>
+<% if (!settings.Grid.PagingButtons(GridObject)) {%>
+	<%= Constants.GridName %>.FirstPage()
+<% }%>	
+<%
+	if (GridObject.GridType == SettingsGridElement.GridTypeValue.Gxui) {
+%>
+	&GridState = new()
+<%	if (!loadOnStart) {
+%>
+	&loadStart = 1
+	&GridStateFilterValue = new()
+	&GridStateFilterValue.Value = &loadStart.ToString()
+	&GridState.FilterValues.Add(&GridStateFilterValue)	
+<%	}
+%>	
+<%
+	foreach (ParameterElement parameter in GridObject.Parameters)
+	{
+		if (GridObject is SelectionElement) {
+			if (parameter.IsAttribute)
+			{
+			// parameter.ParameterConditionPrc
+%>
+	&GridStateFilterValue = new()
+	&GridStateFilterValue.Value = &<%= parameter.Name %>.ToString()
+	&GridState.FilterValues.Add(&GridStateFilterValue)
+<%
+			}
+		}
+	}
+%>		
+	gxuiSDTGrid.FilterValues = &GridState.ToXml()
+	gxuiSDTGrid.Refresh = gxuiBoolean.True
+<%
+	}
+%>
+EndEvent	
+<% }%>
+
+<%// botão Enter do Prompt 
+	if (GridObject is PromptElement) {%>
+Event Enter
+<%
+foreach ( ParameterElement p in GridObject.Parameters) {
+	if (p.Null) {%>
+	&p<%=p.Name%> = <%=p.Name%>
+<%	}
+}
+%>
+	return
+EndEvent	
+<%	}%>
+
+<%
+	if (settings.Grid.GetEnableDisablePaging(GridObject) || geraBC || collapse || needGridState || canHideSearch || standaloneActionsWithSecurityCheck.Count > 0 || !loadOnStart || (settings.Security.SecurityInEvent != SettingsSecurityElement.SecurityInEventValue.Start))
+	{
+%>
+Event Refresh
+<%
+if (settings.Security.SecurityInEvent != SettingsSecurityElement.SecurityInEventValue.Start)
+{	
+%>
+<%@ CallSubTemplate SubLoadContext Settings='settings' IndentLevel='1' IndentLevelChar='"\t"' tipo='tipoc' %>
+<%	if ((settings.Security.ComponentCheckSecurity || !(GridObject is TabElement)) && (settings.Security.PromptCheckSecurity || !(GridObject is PromptElement))) 
+	{
+%>
+<%@ CallSubTemplate SubCheckSecurity Settings='settings' Instance='Instance' IndentLevel='1' IndentLevelChar='"\t"' IsTransaction='geraBC' %>
+<%	
+	}
+	
+	if ((GridObject is PromptElement) && !String.IsNullOrEmpty(settings.Security.PromptSecurityCode)) 
+	{
+		string pgmname = "";
+		if (Instance.SecurityId != String.Empty && Instance.SecurityId.ToLower() != "default") {
+			pgmname = "'"+Instance.SecurityId+"'";
+		}
+		else
+		{
+			if (settings.Security.SecurityIdTransaction) {
+				pgmname = "'"+Instance.Transaction.TransactionName+"'";
+			} else {
+				pgmname = "&Pgmname";
+			}
+		}	
+%>
+<%= String.Format(settings.Security.PromptSecurityCode,pgmname) %>
+<%
+	}
+%>
+<%
+	if (geraBC &&settings.Security.EventStart != String.Empty) {
+%>
+<%=settings.Security.EventStart%>
+<%
+	}
+}	
+%>
+<%	if (!loadOnStart && settings.Template.PromptSearchEvent == SettingsTemplateElement.PromptSearchEventValue.Enter && GridObject is PromptElement) {	
+%>
+	do 'FlagGrid'	
+<%	
+	}
+%>
+<%
+if (GridObject.Filter != null)
+{
+	if (GridObject.Filter.Conditions != null)
+	foreach (ConditionElement cond in GridObject.Filter.Conditions)
+	{
+		if (!String.IsNullOrEmpty(cond.FilterConditionRefresh))
+		{
+%>
+	<%=cond.FilterConditionRefresh %>		
+<%		
+		}
+	}
+}
+%>
+<%		if (settings.Grid.GetEnableDisablePaging(GridObject)) {
+%>
+    Do 'FixCurrentPage'
+    Do 'EnableDisablePagingButtons'
+<%		}
+
+		if (settings.Grid.GetMaxPage(GridObject)) {
+%>
+	&MaxPage = <%= (settings.Grid.GetEnableDisablePaging(GridObject) ? "&PageCount" : Constants.GridName+".PageCount") %>		
+<%		}
+
+		if (collapse) {
+%>
+	Do 'CollapseExpand'
+<%		}
+ 
+		if (canHideSearch)
+		{
+%>
+	Do 'ShowHideSearch'
+<%
+		}
+	
+		if (standaloneActionsWithSecurityCheck.Count > 0 && objtype != TabElement.ObjTypeValue.Trn)
+		{
+%>
+	Do 'CheckSecurityForActions'
+<%
+		}
+
+		if (needGridState) 
+		{
+%>
+	Do 'SaveGridState'
+<%
+		}
+
+%>
+<%
+if (geraBC) {
+	TabElement tobj = (TabElement)GridObject;
+	string hideEle = null;
+	if (settings.Template.HideElementIfEdit) {
+		hideEle = settings.Template.HideElementName;
+	}
+	
+	if (objtype == TabElement.ObjTypeValue.All) 
+	{	
+%>
+	if &editando
+		tabelaItem.Visible = true
+<%
+		if (!String.IsNullOrEmpty(hideEle))
+		{	
+%>	
+		<%=hideEle%>.Visible = false
+<%
+		}
+	}
+	
+	if (objtype != TabElement.ObjTypeValue.Grid)
+	{
+%>
+		
+		if &ModeI = TrnMode.Insert or &ModeI = TrnMode.Update
+<%=Heurys.Patterns.WWHeurys.Helpers.Template.EnableDisableEdit(tobj,"true") %>		
+		else
+<%=Heurys.Patterns.WWHeurys.Helpers.Template.EnableDisableEdit(tobj,"false") %>			
+		endif
+<%
+	}
+	
+	if (objtype == TabElement.ObjTypeValue.All) 
+	{
+%>			
+	else
+		tabelaItem.Visible = false
+<%
+	
+		if (!String.IsNullOrEmpty(hideEle))
+		{	
+%>	
+		<%=hideEle%>.Visible = true
+<%
+		}	
+%>			
+	endif		
+<%
+	}
+}
+%>
+EndEvent
+
+<%
+	}
+
+	if (settings.Grid.GetEnableDisablePaging(GridObject)) {
+%>
+
+Sub 'SingletonPageCount'
+<%
+if (GridObject.Filter != null)
+{
+	if (GridObject.Filter.Conditions != null)
+	foreach (ConditionElement cond in GridObject.Filter.Conditions)
+	{
+		if (!String.IsNullOrEmpty(cond.FilterConditionRefresh))
+		{
+%>
+	<%=cond.FilterConditionRefresh %>		
+<%		
+		}
+	}
+}
+%>
+    if &PageCount = -1
+<%
+		if (geraBC) {
+%>		
+		&PageCount = 0
+		for &<%= codeTab %>Item in &<%= trn.Name %>SDT.<%= codeTab %>	
+			if &<%= codeTab %>Item.Apagar = false
+<%@ CallSubTemplate FilterCondition Object='Object' Part='Part' Instance='Instance' GridObject='GridObject' WhereForEach='false' GridBC='true' %>					
+				&PageCount += 1	
+			endif
+		endfor	
+		if (&PageCount/Page.Rows) > int(&PageCount/Page.Rows)
+			&PageCount = int(&PageCount/Page.Rows)+1
+		else
+			&PageCount = int(&PageCount/Page.Rows)
+		endif
+<%
+		} else {
+%>
+        &PageCount = <%= Constants.GridName %>.PageCount        
+<%
+		}
+%>        
+    endif
+EndSub
+
+Sub 'FixCurrentPage'
+	do 'SingletonPageCount'
+<%
+	if (GridObject.CurrentCombo)
+	{
+%>
+	&CurrentPage.Clear()	
+<%
+	}
+%>		
+	If &PageCount = 0
+		&CurrentPage = 0
+<%
+	if (GridObject.CurrentCombo)
+	{
+%>
+		&CurrentPage.AddItem(0,"0")
+<%
+	}
+%>		
+	Else
+		If &CurrentPage > &PageCount
+			&CurrentPage = &PageCount
+<%
+		if (geraBC) {
+%>
+			Grid.GotoPage(&CurrentPage)
+<%
+		} 
+%>			
+		Else
+			If &CurrentPage < 1
+				&CurrentPage = 1
+			EndIf
+		EndIf	
+<%
+	if (GridObject.CurrentCombo)
+	{
+%>
+		for &pagec = 1 to &PageCount
+			&CurrentPage.AddItem(&pagec,&pagec.ToString())				
+		endfor
+<%
+	}
+%>			
+	EndIf
+EndSub
+
+Sub 'EnableDisablePagingButtons'
+	do 'SingletonPageCount'
+	// Only enable the paging buttons appropriate for the current page.
+
+	If &CurrentPage > 1
+        bFirst.Enabled = True
+        <% if (settings.Grid.ImageFirst != null) { %>
+        bFirst.FromImage(<%= settings.Grid.ImageFirst.Name %>)
+        <% } %>
+        bFirst.TooltipText = "<%= settings.Grid.TooltipFirst %>"
+    Else
+        bFirst.Enabled = False
+        <% if (settings.Grid.ImageFirstDisabled != null) { %>
+        bFirst.FromImage(<%= settings.Grid.ImageFirstDisabled.Name %>)        
+        <% } %>
+        bFirst.TooltipText = ""
+    EndIf
+
+	If &CurrentPage > 1
+        bPrevious.Enabled = True
+        <% if (settings.Grid.ImagePrevious != null) { %>
+        bPrevious.FromImage(<%= settings.Grid.ImagePrevious.Name %>)
+        <% } %>
+        bPrevious.TooltipText = "<%= settings.Grid.TooltipPrevious %>"
+    Else
+        bPrevious.Enabled = False
+        <% if (settings.Grid.ImagePreviousDisabled != null) { %>
+        bPrevious.FromImage(<%= settings.Grid.ImagePreviousDisabled.Name %>)
+        <% } %>
+        bPrevious.TooltipText = ""
+    EndIf
+
+	If &CurrentPage < &PageCount
+        bNext.Enabled = True
+        <% if (settings.Grid.ImageNext != null) { %>
+        bNext.FromImage(<%= settings.Grid.ImageNext.Name %>)
+        <% } %>
+        bNext.TooltipText = "<%= settings.Grid.TooltipNext %>"
+    Else
+        bNext.Enabled = False
+        <% if (settings.Grid.ImageNextDisabled != null) { %>
+        bNext.FromImage(<%= settings.Grid.ImageNextDisabled.Name %>)
+        <% } %>
+        bNext.TooltipText = ""
+    EndIf
+
+	If &CurrentPage < &PageCount
+        bLast.Enabled = True
+        <% if (settings.Grid.ImageLast != null) { %>
+        bLast.FromImage(<%= settings.Grid.ImageLast.Name %>)
+        <% } %>
+        bLast.TooltipText = "<%= settings.Grid.TooltipLast %>"
+    Else
+        bLast.Enabled = False
+        <% if (settings.Grid.ImageLastDisabled != null) { %>
+        bLast.FromImage(<%= settings.Grid.ImageLastDisabled.Name %>)
+        <% } %>
+        bLast.TooltipText = ""
+    EndIf
+EndSub
+
+<%
+	}
+	
+	if (canHideSearch)
+	{
+%>
+Sub 'ShowHideSearch'
+	If &HidingSearch = True
+		<%= Constants.SearchTableName %>.Visible = False
+		TextShowHideSearch.Caption = "Show Search Parameters"
+	Else
+		<%= Constants.SearchTableName %>.Visible = True
+		TextShowHideSearch.Caption = "Hide Search Parameters"
+	Endif
+EndSub
+
+<%
+	}
+	
+	if (standaloneActionsWithSecurityCheck.Count > 0 && objtype != TabElement.ObjTypeValue.Trn)
+	{
+%>
+Sub 'CheckSecurityForActions'
+<%
+		foreach (ActionElement action in standaloneActionsWithSecurityCheck)
+		{
+		
+			if (action.InGrid && GridObject.GridType == SettingsGridElement.GridTypeValue.Gxui) 
+			{		
+				if (String.IsNullOrEmpty(action.CodeEnable))
+				{				
+%>
+	if not (<%=action.Condition%>)
+<%
+				}
+				else
+				{
+%>	
+	if (<%=action.Condition%>)
+		for &gxuiCol in &gxuiGridColumnModel.Columns
+			if &gxuiCol.id = '<%=action.Mode()%>'
+<%= Indentation.Indent(String.Format(action.CodeEnable,"&gxuiCol"), 4) %>			
+				exit
+			endif	
+		endfor	
+	else
+<%
+				}
+%>
+		for &gxuiCol in &gxuiGridColumnModel.Columns
+			if &gxuiCol.id = '<%=action.Mode()%>'
+				&gxuiGridColumnModel.Columns.Remove(&gxuiGridColumnModel.Columns.IndexOf(&gxuiCol))
+				exit
+			endif	
+		endfor
+	endif
+<%			
+			}
+			else
+			{
+				if (action.InGrid) 
+				{
+					if (String.IsNullOrEmpty(action.CodeEnable))
+					{
+%>
+	if not (<%=action.Condition%>)
+<%
+					}
+					else
+					{
+%>
+	if (<%=action.Condition%>)
+<%= Indentation.Indent(String.Format(action.CodeEnable,action.ControlName()), 2) %>	
+	else
+<%
+					}
+%>
+		<%=action.ControlName()%>.JSEvent('onclick',!'false')
+<%= Indentation.Indent(action.DisableCode(), 2) %>		
+	endif
+<%				
+				}
+				else 
+				{		
+%>
+<%= Indentation.Indent(action.EnableDisableCode(), 1) %> 
+<%
+				}
+			}
+		}
+%>
+EndSub
+
+<%
+	}
+
+if (objtype != TabElement.ObjTypeValue.Trn) 
+{
+if (GridObject.GridType == SettingsGridElement.GridTypeValue.Standard) {		
+%>
+Event <%= Constants.GridName %>.Load
+<%
+	if (objtype != TabElement.ObjTypeValue.Trn) {
+		if (GridObject.GridType == SettingsGridElement.GridTypeValue.Standard) {		
+			if (actionsModes) {
+				foreach (ActionElement action in GridObject.Actions.GridActions)
+				{
+					if (action.InitializationCode() != String.Empty)
+					{
+%>
+<%= Indentation.Indent(action.InitializationCode(), 1) %>
+<%
+					}
+				}
+			}		
+		}
+	}
+	if (standaloneActionsWithSecurityCheck.Count > 0 && objtype != TabElement.ObjTypeValue.Trn)
+	{
+%>
+	Do 'CheckSecurityForActions'
+<%
+	}	
+	if (geraBC) 
+	{
+%>
+	for &<%= codeTab %>Item in &<%= trn.Name %>SDT.<%= codeTab %>
+	
+		if &<%= codeTab %>Item.Apagar = false
+<%@ CallSubTemplate FilterCondition Object='Object' Part='Part' Instance='Instance' GridObject='GridObject' WhereForEach='false' GridBC='true' %>		
+<%		
+		foreach (AttributeElement attv in GridObject.Attributes.Attributes)
+		{
+%>
+			&<%= attv.AttributeName %> = &<%= codeTab %>Item.<%= attv.AttributeName %>
+<%
+		}		
+
+	}
+	
+if (actionsModes) {
+	foreach (ActionElement action in GridObject.Actions.GridLinkActions)
+	{
+	
+		if (!geraBC || (settings.StandardActions.FindAction(action.Name) == null)) 
+		{	
+%>
+<%= Indentation.Indent(action.EnableDisableCode(), 1) %>
+<%
+		}
+
+	}	
+%>
+<%@ CallSubTemplate SubLinkAttributes Level='GridObject.Level' Element='GridObject' Attributes='GridObject.Attributes' IndentLevel='1' IndentLevelChar='"\t"' %>
+<%
+	
+}
+	// Load code for variables.
+	foreach (VariableElement var in GridObject.Attributes.Variables)
+	{
+		if (var.LoadCode != String.Empty)
+		{
+%>
+
+	// Load variable '<%= var.VariableName %>'
+<%= Indentation.Indent(var.LoadCode, 1) %>
+<%
+		}
+	}
+%>
+<%	
+	if (geraBC) 
+	{
+%>
+			<%= Constants.GridName %>.Load()
+		endif			
+	endfor	
+<%
+	}		
+%>	
+
+EndEvent // <%= Constants.GridName %>.Load
+<%
+}
+else
+{
+%>
+Event gxuiSDTGrid.CellClick
+<%
+if (actionsModes) {
+	foreach (ActionElement action in GridObject.Actions.GridActions)
+	{
+	
+		if (!geraBC || (settings.StandardActions.FindAction(action.Name) == null)) 
+		{	
+%>
+<%= Indentation.Indent(action.gxuiCellClick, 1) %>
+<%
+		}
+
+	}	
+}
+%>
+EndEvent
+<%
+}
+}
+%>
+
+<% if (!settings.Grid.PagingButtons(GridObject)) {%>
+Event bFirst.Click
+	&CurrentPage = 1
+<%	if (needGridState) 
+	{
+%>	
+    Do 'SaveGridPage'
+<% }%>    
+    <%= Constants.GridName %>.FirstPage()	
+EndEvent
+
+Event bPrevious.Click
+	&CurrentPage -= 1
+<%	if (needGridState) 
+	{
+%>	
+    Do 'SaveGridPage'
+<% }%>    
+    <%= Constants.GridName %>.PreviousPage()
+EndEvent
+
+Event bNext.Click
+	&CurrentPage += 1
+<%	if (needGridState) 
+	{
+%>	
+    Do 'SaveGridPage'
+<% }%>    
+    <%= Constants.GridName %>.NextPage()	
+EndEvent
+
+Event bLast.Click
+<%	if (settings.Grid.GetEnableDisablePaging(GridObject)) {
+%>
+	do 'SingletonPageCount'
+<%	}
+%>	
+	&CurrentPage = <%= (settings.Grid.GetEnableDisablePaging(GridObject) ? "&PageCount" : Constants.GridName+".PageCount") %>
+<%	if (needGridState) 
+	{
+%>	
+    Do 'SaveGridPage'
+<% }%>   
+<%	if (settings.Grid.GetEnableDisablePaging(GridObject)) {
+%>
+	<%= Constants.GridName %>.GotoPage(&CurrentPage)
+<%	} else {
+%>
+    <%= Constants.GridName %>.LastPage()	
+<%  }
+%>    
+EndEvent
+<% }%>
+
+<%
+if (actionsModes) {
+	foreach (ActionElement action in GridObject.Actions.StandaloneActions)
+	{			
+		if (action.Event() != String.Empty)		
+		{		
+			
+			if (!geraBC || (settings.StandardActions.FindAction(action.Name) == null)) 
+			{
+				//if (GridObject.GridType == SettingsGridElement.GridTypeValue.Standard)
+				//{
+%>
+<%= action.Event() %>
+
+<%
+				//}
+				//else
+				//{
+//action.Eventgxui()
+				//}
+			}
+		}
+	}
+
+	if (GridObject.Actions.MultiRowActions.Count > 0)
+	{
+%>
+Sub 'LoadSelectedRows'
+	&SelectedRows = new()
+	For Each Line
+		If (&Selected)
+			&SelectedRow = new()
+
+<%
+		foreach (IAttributesItem attItem in GridObject.Attributes)
+		{
+%>
+			&SelectedRow.<%= attItem.Id %> = <%= attItem.Name %>
+<%
+		}
+%>
+
+			&SelectedRows.Add(&SelectedRow)
+		Endif
+	Endfor
+EndSub
+
+<%
+	}
+}	
+
+	if (canHideSearch)
+	{
+%>
+Event ImgShowHideSearch.Click
+	&HidingSearch = not &HidingSearch
+	Do 'SaveHidingSearch'
+EndEvent
+
+<%
+	}
+	if (!loadOnStart) {
+%>
+Sub 'FlagGrid'	
+<%
+		if (requiredFilter) {
+			string condRF = "";
+			if (GridObject.Filter != null)
+			{				
+				foreach (FilterAttributeElement filterVar in GridObject.Filter.FilterAttributes)
+				{ 
+					if (String.IsNullOrEmpty(filterVar.Default))
+					{
+						if (condRF != "") condRF += " and ";
+						condRF += filterVar.VariableName+".IsEmpty()";
+						
+						if (filterVar.FilterType == FilterAttributeElement.FilterTypeValue.Interval)
+						{
+							if (condRF != "") condRF += " and ";
+							condRF += filterVar.VariableName+"2.IsEmpty()";
+						}
+						
+					}
+
+				}
+			}
+			if (geraDF) {				
+				for (int i = 1;i<=ch;i++) {			
+					if (condRF != "") condRF += " and ";
+					condRF += "(&Campo"+i.ToString().Trim()+".IsEmpty()";		
+					condRF += " or (&Carac"+i.ToString().Trim()+".IsEmpty()";
+					condRF += " and &Numer"+i.ToString().Trim()+".IsEmpty()";
+					condRF += " and &DataD"+i.ToString().Trim()+".IsEmpty()))";						
+
+				}
+			}			
+		
+			if (GridObject is PromptElement && settings.Template.PromptSearchEvent == SettingsTemplateElement.PromptSearchEventValue.Enter)		
+			{
+%>
+	If (&HTTPRequest.Method <> HttpMethod.Get)
+<%
+			}
+%>	
+		if <%= condRF %>
+			Msg("<%= requiredFilterMessage %>")	
+		else							
+			&loadStart = 2
+		endif
+<%		
+			if (GridObject is PromptElement && settings.Template.PromptSearchEvent == SettingsTemplateElement.PromptSearchEventValue.Enter)		
+			{
+%>
+	endif
+<%
+			}
+		} else {
+%>	
+	&loadStart = 2
+<%		} 
+%>	
+EndSub
+
+<%
+	}	
+	if (needGridState) 
+	{ 
+%>
+/*** Subroutines used to load and save the grid state. ***/
+
+Sub 'LoadGridState'
+	If (&HTTPRequest.Method = HttpMethod.Get)
+		// Load grid state from session.
+		&GridState.FromXml(&Session.Get(&PgmName + !"<%= Constants.SessionKeys.GridState %>"))
+<%
+		if (GridObject.Orders.NeedsChoice) 
+		{
+%>
+
+		<%= OrdersElement.OrderVariableName %> = &GridState.OrderedBy
+<%
+		}
+
+		if (!loadOnStart)  //(canHideSearch)
+		{
+%> 
+		&loadStart = &GridState.HidingSearch
+<%
+		}
+
+		if (GridObject.Filter != null && (GridObject.Filter.FilterAttributes.Count > 0 || geraDF))
+		{
+%>
+
+		If &GridState.FilterValues.Count >= <%= GridObject.Filter.Attributes.CountAll+(tot*5) %>
+<%			int tf = GridObject.Filter.Attributes.CountAll;
+			int ij = 0;
+			for (int i = 0; i < GridObject.Filter.FilterAttributes.Count; i++) 
+			{ 
+%>
+			<%= GridObject.Filter.FilterAttributes[i].VariableName %>.FromString(&GridState.FilterValues.Item(<%= ij + 1 %>).Value)
+<%
+				ij++;
+				if (GridObject.Filter.FilterAttributes[i].FilterType == FilterAttributeElement.FilterTypeValue.Interval) 
+				{
+%>
+			<%= GridObject.Filter.FilterAttributes[i].VariableName %>2.FromString(&GridState.FilterValues.Item(<%= ij + 1 %>).Value)
+<%
+				ij++;				
+				}
+			}
+			if (geraDF) {
+				int t = tf+1;
+				for (int i = 1;i<=ch;i++) {					
+%>			
+			&Campo<%=i.ToString().Trim()%>.FromString(&GridState.FilterValues.Item(<%= t++ %>).Value)
+			&CondD<%=i.ToString().Trim()%>.FromString(&GridState.FilterValues.Item(<%= t++ %>).Value)
+			&Carac<%=i.ToString().Trim()%>.FromString(&GridState.FilterValues.Item(<%= t++ %>).Value)
+			&Numer<%=i.ToString().Trim()%>.FromString(&GridState.FilterValues.Item(<%= t++ %>).Value)
+			&DataD<%=i.ToString().Trim()%>.FromString(&GridState.FilterValues.Item(<%= t++ %>).Value)
+<%
+				}
+			}
+%>
+		EndIf
+<%
+		}
+
+		if (needCurrentPage)
+		{
+%>
+
+		If &GridState.CurrentPage > 0
+			<%= Constants.GridName %>.GotoPage(&GridState.CurrentPage)
+			<% if (!settings.Grid.PagingButtons(GridObject)) {%>
+			&CurrentPage = &GridState.CurrentPage
+			<% }%>
+		EndIf
+<%
+		}
+%>
+	EndIf
+EndSub
+
+<%
+		if (needCurrentPage)
+		{
+%>
+Sub 'SaveGridPage'
+	// Save current page in session.
+	&GridState.FromXml(&Session.Get(&PgmName + !"<%= Constants.SessionKeys.GridState %>"))
+	&GridState.CurrentPage = &CurrentPage
+	&Session.Set(&PgmName + !"<%= Constants.SessionKeys.GridState %>", &GridState.ToXml())
+EndSub
+
+<%
+		}
+		
+		if (canHideSearch)
+		{
+%>
+Sub 'SaveHidingSearch'
+	// Save in session whether the search parameters are shown or not.
+	&GridState.FromXml(&Session.Get(&PgmName + !"<%= Constants.SessionKeys.GridState %>"))
+	&GridState.HidingSearch = &HidingSearch
+	&Session.Set(&PgmName + !"<%= Constants.SessionKeys.GridState %>", &GridState.ToXml())
+EndSub
+
+<%
+		}
+%>
+Sub 'SaveGridState'
+	&GridState.FromXml(&Session.Get(&PgmName + !"<%= Constants.SessionKeys.GridState %>"))
+
+	// Save grid state in session.
+<%
+		if (needCurrentPage)
+		{
+%>
+	&GridState.CurrentPage = &CurrentPage
+<%	
+		}
+
+		if (GridObject.Orders.NeedsChoice) 
+		{
+%>
+	&GridState.OrderedBy = <%= OrdersElement.OrderVariableName %>
+<%	
+		}
+		
+		//if (canHideSearch)
+		if (!loadOnStart)
+		{
+%> 
+	&GridState.HidingSearch = &loadStart
+<%	
+		}
+		
+		if (GridObject.Filter != null && (GridObject.Filter.FilterAttributes.Count > 0 || geraDF))
+		{
+%> 
+	&GridState.FilterValues.Clear()
+<%
+			if (GridObject.Filter != null) 
+			{
+				foreach (FilterAttributeElement filterVar in GridObject.Filter.FilterAttributes) 
+				{ 
+%>
+	&GridStateFilterValue = new()
+	&GridStateFilterValue.Value = <%= filterVar.VariableName %>.ToString()
+	&GridState.FilterValues.Add(&GridStateFilterValue)
+<%
+					if (filterVar.FilterType == FilterAttributeElement.FilterTypeValue.Interval) 
+					{
+%>
+	&GridStateFilterValue = new()
+	&GridStateFilterValue.Value = <%= filterVar.VariableName %>2.ToString()
+	&GridState.FilterValues.Add(&GridStateFilterValue)
+<%
+					}
+				}
+			}
+			if (geraDF) {
+				for (int i = 1;i<=ch;i++) {
+%>			
+	&GridStateFilterValue = new()
+	&GridStateFilterValue.Value = &Campo<%=i.ToString().Trim()%>.ToString()
+	&GridState.FilterValues.Add(&GridStateFilterValue)
+	&GridStateFilterValue = new()
+	&GridStateFilterValue.Value = &CondD<%=i.ToString().Trim()%>.ToString()
+	&GridState.FilterValues.Add(&GridStateFilterValue)
+	&GridStateFilterValue = new()
+	&GridStateFilterValue.Value = &Carac<%=i.ToString().Trim()%>.ToString()
+	&GridState.FilterValues.Add(&GridStateFilterValue)
+	&GridStateFilterValue = new()
+	&GridStateFilterValue.Value = &Numer<%=i.ToString().Trim()%>.ToString()
+	&GridState.FilterValues.Add(&GridStateFilterValue)
+	&GridStateFilterValue = new()
+	&GridStateFilterValue.Value = &DataD<%=i.ToString().Trim()%>.ToString()
+	&GridState.FilterValues.Add(&GridStateFilterValue)
+<%
+				}
+			}			
+		}
+		
+		
+%>
+	&Session.Set(&PgmName + !"<%= Constants.SessionKeys.GridState %>", &GridState.ToXml())
+EndSub
+
+<%
+	}
+
+	if (settings.Template.UseTransactionContext && !(GridObject is PromptElement) && objtype != TabElement.ObjTypeValue.Trn)
+	{
+%>
+Sub 'PrepareTransaction'
+<%@ CallSubTemplate SubPrepareTransaction Transaction='GridObject.Transaction' CallerIsRecord='false' Parameters='GridObject.Parameters' GridObject='GridObject'%>
+EndSub
+
+<%
+	}
+if (actionsModes) {
+	if (GridObject.Actions.Export != null)
+	{
+		string gridParameters = GridObject.Actions.Export.Parameters.List();
+		string exportParameters = (gridParameters != String.Empty ? gridParameters + ", " : String.Empty);
+try {
+if (geraDF) {
+	Dictionary<string,object> propsData = new Dictionary<string,object>();
+	propsData[Properties.ATT.Picture] = "99/99/9999";
+	propsData[Properties.ATT.DateFormat] = Properties.ATT.DateFormat_Values.YearWithFourDigits99999999;
+	for (int i = 1;i<=ch;i++) {
+		exportParameters += "&Campo"+i.ToString().Trim()+",";
+		exportParameters += "&CondD"+i.ToString().Trim()+",";
+		exportParameters += "&Carac"+i.ToString().Trim()+",";
+		exportParameters += "&Numer"+i.ToString().Trim()+",";
+		exportParameters += "&DataD"+i.ToString().Trim()+",";
+	}
+	
+}
+} catch(System.Exception e) {		
+	System.Windows.Forms.MessageBox.Show("Erro var: " + e.Message + Environment.NewLine + e.StackTrace);                   
+}		
+		exportParameters += "&ExcelFilename, &ErrorMessage";
+%>
+Event '<%= Constants.EventExport %>'
+	// Generate Excel spreadsheet and download it.
+	Export<%= Object.Name %>.Call(<%= exportParameters %>)
+	If (&ExcelFilename <> "")
+		Link(&ExcelFilename)
+	Else
+		msg(&ErrorMessage)
+	Endif
+EndEvent
+
+<%
+	}
+}	
+
+try {
+if (geraDF) {
+%>
+Sub 'DynamicFilters'
+<%
+	foreach (AttributeElement ta in GridObject.Filter.Dynamicfilters) {
+		string tipo = "1";
+		if (ta.Attribute.Type == eDBType.NUMERIC)
+			tipo = "2";
+		if (ta.Attribute.Type == eDBType.DATE)
+			tipo = "3";
+%>
+	&att = new()
+	&att.Name = '<%=ta.Attribute.Name%>'
+	&att.Type = '<%=tipo%>'
+	&dyn.Attributes.Add(&att)
+<%	
+	}
+		
+	for (int i = 1;i<=ch;i++) {
+%>
+	excluiD<%=i.ToString().Trim()%>.Link = "javascript:mostraD(<%=i.ToString().Trim()%>,'none')"
+	&fil = new()
+	&fil.Name = &Campo<%=i.ToString().Trim()%>.InternalName
+	&fil.Cond = &CondD<%=i.ToString().Trim()%>.InternalName
+	&fil.Carac = &Carac<%=i.ToString().Trim()%>.InternalName
+	&fil.Numer = &Numer<%=i.ToString().Trim()%>.InternalName
+	&fil.DateD = &DataD<%=i.ToString().Trim()%>.InternalName
+	&fil.deleteD = excluiD<%=i.ToString().Trim()%>.InternalName
+	&dyn.Filters.Add(&fil)
+<%
+	}
+	
+	foreach (SettingsFilterElement sfe in settings.DynamicFilters.Filters) {
+%>
+	&con = new()
+	&con.Name = "<%=sfe.Name%>"
+	&con.Description = "<%=sfe.Description%>"
+<%	if (sfe.IsCaracter) {
+%>	
+	&con.IsCaracter = 1
+<%	}
+%>
+	&dyn.Conditions.Add(&con)
+<%
+	}
+%>
+	&dyn.DefaultCondition = '<%= settings.DynamicFilters.DefaultCondition %>'
+	&dyn.DefaultConditionCaracter = '<%= settings.DynamicFilters.DefaultConditionCaracter %>'
+	js.Caption = WWDynamicFilterBuilder(&dyn)
+	JSHandler1.js = "escondeCampos()"
+EndSub
+<%
+}
+} catch(System.Exception e) {		
+	System.Windows.Forms.MessageBox.Show("Erro Eve2: " + e.Message + Environment.NewLine + e.StackTrace);                   
+}
+%>
+
+<%
+if (hascond) {
+%>
+<%@ CallSubTemplate SecurityTabs wwInstance='Instance' trn='trn' temview='true' aba='idAba' %>
+<%
+}
+%>
+<%
+if (!String.IsNullOrEmpty(SubCode))
+{
+%>
+<%= SubCode%>
+<%
+}
+
+string codes = Heurys.Patterns.WWHeurys.Helpers.TemplateInternal.EventCodes(Heurys.Patterns.WWHeurys.Helpers.TemplateInternal.CodeType.WebPanel, settings);
+if (!String.IsNullOrEmpty(codes))
+{
+%>
+<%= codes%>
+<%    
+}
+
+%>
+]]>
+	</Source>
+</Part>

@@ -1,0 +1,2125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ExportFile>
+  <KMW>
+    <MajorVersion>3</MajorVersion>
+    <MinorVersion>1</MinorVersion>
+    <Build>25269</Build>
+  </KMW>
+  <Source kb="6e8de8ab-a6d6-4b0e-adc4-f40116669293" username="HEURYS\crsienna">
+    <Version guid="c0f447b7-70c9-4110-b662-965530928d1c" name="Sics2" />
+  </Source>
+  <Actions />
+  <Objects>
+    <Object parent="GeneralWeb" parentType="00000000-0000-0000-0000-000000000008" user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2007-06-28T21:58:36.0000000Z" checksum="ec2a74089dd49fc75fb9d0c23d0f4639" guid="f9f26d7b-33ba-47ce-951b-26085044b2bd" name="Home" type="c9584656-94b6-4ccd-890f-332d11fc2c25" description="Home">
+      <Part type="d24a58ad-57ba-41b7-9e6e-eaca3543c778">
+        <Source><![CDATA[<BODY bottomMargin="0" topMargin="0" leftMargin="0" class="Form" rightMargin="0"><TABLE class="ViewTable" id="Table1" style="HEIGHT: 100%; "><TBODY><TR><TD vAlign="Top"><P /><gxFreeStyle cellSpacing="0" gxProp="class=;ControlName=Grid1" style="BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; WIDTH: 100%; BORDER-RIGHT-WIDTH: 0px" width="100%" border="0" class="ViewTable" freestyle="1"><TR><TD><gxAttribute AttID="&amp;MenuItem" Class="(none)" /></TD></TR></gxFreeStyle></TD></TR></TBODY></TABLE></BODY>]]></Source>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="9b0a32a3-de6d-4be1-a4dd-1b85d3741534">
+        <Properties />
+      </Part>
+      <Part type="c44bd5ff-f918-415b-98e6-aca44fed84fa">
+        <Source><![CDATA[Event Load
+    Call(ListPrograms, &ProgramNames)
+    For &ProgramName in &ProgramNames
+        &MenuItem = &ProgramName.Description
+        &MenuItem.Link = &ProgramName.Link
+        Load
+    EndFor
+EndEvent
+]]></Source>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="763f0d8b-d8ac-4db4-8dd4-de8979f2b5b9">
+        <Properties />
+      </Part>
+      <Part type="e4c4ade7-53f0-4a56-bdfd-843735b66f47">
+        <Variable Name="MenuItem">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>MenuItem</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>100</Value></Property><Property><Name>Decimals</Name><Value>0</Value></Property></Properties>
+        </Variable>
+        <Variable Name="ProgramNames">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>ProgramNames</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>sdt:ProgramNames</Value></Property></Properties>
+        </Variable>
+        <Variable Name="ProgramName">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>ProgramName</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>sdt:ProgramNames.ProgramName</Value></Property></Properties>
+        </Variable>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="ad3ca970-19d0-44e1-a7b7-db05556e820c">
+        <Help>
+          <HelpItem>
+            <Language>88313f43-5eb2-0000-0028-e8d9f5bf9588-Portuguese</Language>
+            <Content />
+          </HelpItem>
+        </Help>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties />
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>Home</Value></Property><Property><Name>MasterPage</Name><Value>AppMasterPage</Value></Property><Property><Name>IsMain</Name><Value>True</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="Security" parentType="00000000-0000-0000-0000-000000000008" user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2007-06-28T21:58:38.0000000Z" checksum="7db199ae176b98632bb32d408e03c956" guid="0524dde5-152f-44c3-aff1-4a4d6feadf8a" name="NotAuthorized" type="c9584656-94b6-4ccd-890f-332d11fc2c25" description="Not Authorized web panel">
+      <Part type="d24a58ad-57ba-41b7-9e6e-eaca3543c778">
+        <Source><![CDATA[<BODY bottomMargin="0" topMargin="0" leftMargin="0" class="Form" rightMargin="0"><gxWebComponent ControlName="HeaderBC" /><gxWebComponent ControlName="RecentLinks" /><TABLE class="ViewTable" id="Table1"><TBODY><TR><TD colSpan="2"><gxTextBlock Caption="Not Authorized" style="FONT-WEIGHT: bold; FONT-SIZE: 10pt; COLOR: #666666; FONT-STYLE: normal; FONT-FAMILY: Verdana; BACKGROUND-COLOR: transparent" Class="SubTitle" name="" id="TitleText" /></TD></TR><TR><TD colSpan="2"><gxErrorViewer ControlName="ErrViewer1" /></TD></TR><TR><TD colSpan="2" /></TR></TBODY></TABLE><TABLE class="HorizantalSpace" id="Table2"><TBODY><TR><TD /></TR></TBODY></TABLE><TABLE class="HorizontalLine" id="Table3"><TBODY><TR><TD /></TR></TBODY></TABLE></BODY>]]></Source>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="9b0a32a3-de6d-4be1-a4dd-1b85d3741534">
+        <Source><![CDATA[parm(in:&GxObject);
+]]></Source>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="c44bd5ff-f918-415b-98e6-aca44fed84fa">
+        <Source><![CDATA[
+Event Start
+	//HeaderBC.Object = PageHeader.Create()
+	RecentLinks.Object = RecentLinks.Create("Not Authorized", &Pgmname)
+	Msg('You are not authorized to do this action')
+Endevent
+]]></Source>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="763f0d8b-d8ac-4db4-8dd4-de8979f2b5b9">
+        <Properties />
+      </Part>
+      <Part type="e4c4ade7-53f0-4a56-bdfd-843735b66f47">
+        <Variable Name="GxObject">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>GxObject</Value></Property><Property><Name>idBasedOn</Name><Value>Domain:ObjectName</Value></Property></Properties>
+        </Variable>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="ad3ca970-19d0-44e1-a7b7-db05556e820c">
+        <Help>
+          <HelpItem>
+            <Language>88313f43-5eb2-0000-0028-e8d9f5bf9588-Portuguese</Language>
+            <Content />
+          </HelpItem>
+        </Help>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <InnerHtml><![CDATA[<P>&nbsp;</P>]]></InnerHtml>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>NotAuthorized</Value></Property><Property><Name>Description</Name><Value>Not Authorized web panel</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="GeneralWeb" parentType="00000000-0000-0000-0000-000000000008" user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2007-06-28T21:58:10.0000000Z" checksum="65fbdd4e0000e8e0f02f5567abb61789" guid="7ed88ff3-0c97-4ec3-aed6-d7e0431a34a0" name="ProgramNames" type="447527b5-9210-4523-898b-5dccb17be60a" description="Program Names">
+      <Part type="5c2aa9da-8fc4-4b6b-ae02-8db4fa48976a">
+        <Level Name="ProgramNames">
+          <LevelInfo guid="f287684f-a004-4a0d-a607-9985634e02d2" name="ProgramNames" description="Program Names">
+            <Properties><Property><Name>Name</Name><Value>ProgramNames</Value></Property><Property><Name>AttCollection</Name><Value>True</Value></Property><Property><Name>idCollectionItemName</Name><Value>ProgramName</Value></Property></Properties>
+          </LevelInfo>
+          <Item guid="0ad4c900-4f47-461e-971f-0d0975ac9802" name="Name" description="Name">
+            <Properties><Property><Name>Name</Name><Value>Name</Value></Property><Property><Name>idBasedOn</Name><Value>Domain:ObjectName</Value></Property></Properties>
+          </Item>
+          <Item guid="6890b975-1941-476c-bf51-fcf2b6e90be6" name="Description" description="Description">
+            <Properties><Property><Name>Name</Name><Value>Description</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:VarChar</Value></Property><Property><Name>Length</Name><Value>255</Value></Property><Property><Name>Decimals</Name><Value>0</Value></Property><Property><Name>AttMaxLen</Name><Value>255</Value></Property></Properties>
+          </Item>
+          <Item guid="13d069f5-47be-4a6f-ab92-6b460b90db0f" name="Link" description="Link">
+            <Properties><Property><Name>Name</Name><Value>Link</Value></Property><Property><Name>idBasedOn</Name><Value>Domain:URLString</Value></Property></Properties>
+          </Item>
+        </Level>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties />
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>ProgramNames</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="GeneralWeb" parentType="00000000-0000-0000-0000-000000000008" user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2007-06-28T21:58:10.0000000Z" checksum="0c6102f139a5517f57c3a051ae7be498" guid="759800ad-c380-43eb-af22-8f63796a0e0f" name="TabOptions" type="447527b5-9210-4523-898b-5dccb17be60a" description="Tab Options">
+      <Part type="5c2aa9da-8fc4-4b6b-ae02-8db4fa48976a">
+        <Level Name="TabOptions">
+          <LevelInfo guid="5bb8fed8-e0c8-4d42-adec-67f553be4b86" name="TabOptions" description="Tab Options">
+            <Properties><Property><Name>Name</Name><Value>TabOptions</Value></Property><Property><Name>AttCollection</Name><Value>True</Value></Property><Property><Name>idCollectionItemName</Name><Value>TabOptionsItem</Value></Property></Properties>
+          </LevelInfo>
+          <Item guid="243d1588-cabc-41ee-a330-66e2ed523626" name="Code" description="Code">
+            <Properties><Property><Name>Name</Name><Value>Code</Value></Property><Property><Name>idBasedOn</Name><Value>Domain:TabCode</Value></Property></Properties>
+          </Item>
+          <Item guid="a152415b-a2ec-4179-8b9b-66128bddb6f8" name="Description" description="Description">
+            <Properties><Property><Name>Name</Name><Value>Description</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:VarChar</Value></Property><Property><Name>Length</Name><Value>255</Value></Property><Property><Name>Decimals</Name><Value>0</Value></Property><Property><Name>AttMaxLen</Name><Value>255</Value></Property></Properties>
+          </Item>
+          <Item guid="903a4e81-c970-4600-8843-ef46b6155548" name="Link" description="Link">
+            <Properties><Property><Name>Name</Name><Value>Link</Value></Property><Property><Name>idBasedOn</Name><Value>Domain:URLString</Value></Property></Properties>
+          </Item>
+          <Item guid="8ce7a0c0-fc90-4544-89ad-65127499be67" name="WebComponent" description="Web Component">
+            <Properties><Property><Name>Name</Name><Value>WebComponent</Value></Property><Property><Name>idBasedOn</Name><Value>Domain:URLString</Value></Property></Properties>
+          </Item>
+        </Level>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <InnerHtml><![CDATA[ <P>&nbsp;</P>
+  				]]></InnerHtml>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>TabOptions</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="gxui" parentType="00000000-0000-0000-0000-000000000008" user="ARTECH\gfernandez" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2008-06-05T19:02:23.0000000Z" checksum="941f796b21eaa9033008ac041033fb09" guid="d3138973-5dce-481a-8fa7-7c93e5e38dee" name="gxuiFilter" type="447527b5-9210-4523-898b-5dccb17be60a" description="gxui Filter">
+      <Part type="5c2aa9da-8fc4-4b6b-ae02-8db4fa48976a">
+        <Level Name="gxuiFilter">
+          <LevelInfo guid="f6bfc034-856c-45df-ba74-cc97d9d6b254" name="gxuiFilter" description="gxui Filter">
+            <Properties><Property><Name>Name</Name><Value>gxuiFilter</Value></Property></Properties>
+          </LevelInfo>
+          <Item guid="9581b43a-3dfa-4b6f-b2e8-921fa5e6f89b" name="field" description="field">
+            <Properties><Property><Name>Name</Name><Value>field</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>200</Value></Property><Property><Name>AttMaxLen</Name><Value>200</Value></Property></Properties>
+          </Item>
+          <Item guid="306b56c8-fdc5-405b-a875-15d32cd94ad6" name="value" description="value">
+            <Properties><Property><Name>Name</Name><Value>value</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>200</Value></Property><Property><Name>AttMaxLen</Name><Value>200</Value></Property></Properties>
+          </Item>
+          <Item guid="09268874-c329-44ec-b6d7-b648b7168d99" name="type" description="type">
+            <Properties><Property><Name>Name</Name><Value>type</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property></Properties>
+          </Item>
+          <Item guid="268f9f36-5e0b-48aa-917c-5cd6c97eabd5" name="comparison" description="comparison">
+            <Properties><Property><Name>Name</Name><Value>comparison</Value></Property><Property><Name>idBasedOn</Name><Value>Domain:gxuiFilterComparison</Value></Property></Properties>
+          </Item>
+        </Level>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties />
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>gxuiFilter</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="gxui" parentType="00000000-0000-0000-0000-000000000008" user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2008-10-19T13:42:26.0000000Z" checksum="6af4c0f71b2a9f6e6bd646cba0bb4b55" guid="465ae560-aed2-45e8-92ef-8c11a62924fc" name="gxuiGridParams" type="447527b5-9210-4523-898b-5dccb17be60a" description="gxui.Grid Params">
+      <Part type="5c2aa9da-8fc4-4b6b-ae02-8db4fa48976a">
+        <Level Name="gxuiGridParams">
+          <LevelInfo guid="8975f20f-35dc-4212-957e-3765d5f030df" name="gxuiGridParams" description="gxui Grid Params">
+            <Properties><Property><Name>Name</Name><Value>gxuiGridParams</Value></Property></Properties>
+          </LevelInfo>
+          <Item guid="1fa4d1e5-ba61-4799-84d0-c5846969b8b1" name="start" description="start">
+            <Properties><Property><Name>Name</Name><Value>start</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Numeric</Value></Property><Property><Name>Length</Name><Value>10</Value></Property><Property><Name>AttMaxLen</Name><Value>10</Value></Property></Properties>
+          </Item>
+          <Item guid="f1a040e8-a60b-4d4f-b117-5b820481e620" name="limit" description="limit">
+            <Properties><Property><Name>Name</Name><Value>limit</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Numeric</Value></Property><Property><Name>Length</Name><Value>10</Value></Property><Property><Name>AttMaxLen</Name><Value>10</Value></Property></Properties>
+          </Item>
+          <Item guid="f24119c4-535f-46ba-9328-a90b88b09993" name="sort" description="sort">
+            <Properties><Property><Name>Name</Name><Value>sort</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>200</Value></Property><Property><Name>AttMaxLen</Name><Value>200</Value></Property></Properties>
+          </Item>
+          <Item guid="a4f6e9c3-d2f9-4a71-8fb3-24f7e50120ef" name="dir" description="dir">
+            <Properties><Property><Name>Name</Name><Value>dir</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property></Properties>
+          </Item>
+          <Item guid="ec8b3546-19b2-46d2-8543-918864974dbe" name="query" description="query">
+            <Properties><Property><Name>Name</Name><Value>query</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>200</Value></Property><Property><Name>AttMaxLen</Name><Value>200</Value></Property></Properties>
+          </Item>
+          <Item guid="7a96e1df-e6a1-4274-bfd3-386ad706375b" name="filters" description="filters">
+            <Properties><Property><Name>Name</Name><Value>filters</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>sdt:gxuiFilter</Value></Property><Property><Name>AttCollection</Name><Value>True</Value></Property></Properties>
+          </Item>
+          <Item guid="0862e2b2-36c4-480b-8f73-ff236ce0f87c" name="filterValues" description="filter Values">
+            <Properties><Property><Name>Name</Name><Value>filterValues</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>2000</Value></Property><Property><Name>AttMaxLen</Name><Value>2000</Value></Property></Properties>
+          </Item>
+        </Level>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties />
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>gxuiGridParams</Value></Property><Property><Name>Description</Name><Value>gxui.Grid Params</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="ContextManagement" parentType="00000000-0000-0000-0000-000000000008" user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2007-06-28T21:58:08.0000000Z" checksum="f8ad403bc61bfba168a679964dc5d378" guid="deb8a43e-a3bf-471b-b72e-fdb64749c37b" name="Context" type="447527b5-9210-4523-898b-5dccb17be60a" description="Context">
+      <Part type="5c2aa9da-8fc4-4b6b-ae02-8db4fa48976a">
+        <Level Name="Context">
+          <LevelInfo guid="30d445ea-7d97-4b3b-9778-9d3c2ae96b29" name="Context" description="Context">
+            <Properties><Property><Name>Name</Name><Value>Context</Value></Property><Property><Name>AttCollection</Name><Value>False</Value></Property></Properties>
+          </LevelInfo>
+          <Item guid="0e999cd4-90e7-47ab-8579-1f498d761b15" name="User" description="User">
+            <Properties><Property><Name>Name</Name><Value>User</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>20</Value></Property><Property><Name>Decimals</Name><Value>0</Value></Property></Properties>
+          </Item>
+          <Item guid="aaa73839-2073-44ad-a409-52c43403c877" name="CompanyCode" description="Company Code">
+            <Properties><Property><Name>Name</Name><Value>CompanyCode</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Numeric</Value></Property><Property><Name>Length</Name><Value>4</Value></Property><Property><Name>Decimals</Name><Value>0</Value></Property></Properties>
+          </Item>
+          <Item guid="45287e47-ea78-4466-a639-00b40c8fbaaa" name="Profile" description="Profile">
+            <Properties><Property><Name>Name</Name><Value>Profile</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>20</Value></Property><Property><Name>Decimals</Name><Value>0</Value></Property></Properties>
+          </Item>
+        </Level>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <InnerHtml><![CDATA[<P>&nbsp;</P>]]></InnerHtml>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>Context</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="GeneralWeb" parentType="00000000-0000-0000-0000-000000000008" user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2008-09-05T11:36:48.0000000Z" checksum="64acd95640453308c7c80ab5d342e6b3" guid="89850f51-65d7-4e60-89d7-55cf6a0e6375" name="WWDynamicFilters" type="447527b5-9210-4523-898b-5dccb17be60a" description="WWDynamic Filters">
+      <Part type="5c2aa9da-8fc4-4b6b-ae02-8db4fa48976a">
+        <Level Name="WWDynamicFilters">
+          <LevelInfo guid="e18753ca-b3f1-4edf-a30f-d5b1fbad5fea" name="WWDynamicFilters" description="WWDynamic Filters">
+            <Properties><Property><Name>Name</Name><Value>WWDynamicFilters</Value></Property></Properties>
+          </LevelInfo>
+          <Level Name="Attributes">
+            <LevelInfo guid="0462023b-7b50-47ff-9959-39a97f82459e" name="Attributes" description="Attributes">
+              <Properties><Property><Name>Name</Name><Value>Attributes</Value></Property><Property><Name>AttCollection</Name><Value>True</Value></Property><Property><Name>idCollectionItemName</Name><Value>Attribute</Value></Property></Properties>
+            </LevelInfo>
+            <Item guid="6a015054-38a9-4248-9aee-87511694d793" name="Name" description="Name">
+              <Properties><Property><Name>Name</Name><Value>Name</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>30</Value></Property><Property><Name>AttMaxLen</Name><Value>30</Value></Property></Properties>
+            </Item>
+            <Item guid="f9ee92d1-13ac-4e9c-93e6-18f8aa955720" name="Type" description="Type">
+              <Properties><Property><Name>Name</Name><Value>Type</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>1</Value></Property><Property><Name>AttMaxLen</Name><Value>1</Value></Property></Properties>
+            </Item>
+          </Level>
+          <Level Name="Filters">
+            <LevelInfo guid="3074e067-6f7f-4490-93b0-6a5853a31d3b" name="Filters" description="Filters">
+              <Properties><Property><Name>Name</Name><Value>Filters</Value></Property><Property><Name>AttCollection</Name><Value>True</Value></Property><Property><Name>idCollectionItemName</Name><Value>Filter</Value></Property></Properties>
+            </LevelInfo>
+            <Item guid="cc692968-1b9e-477e-b68f-312f180d1e08" name="Name" description="Name">
+              <Properties><Property><Name>Name</Name><Value>Name</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>100</Value></Property><Property><Name>AttMaxLen</Name><Value>100</Value></Property></Properties>
+            </Item>
+            <Item guid="45b84886-25e9-4685-8506-fc8947bbc0ca" name="Cond" description="Cond">
+              <Properties><Property><Name>Name</Name><Value>Cond</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>100</Value></Property><Property><Name>AttMaxLen</Name><Value>100</Value></Property></Properties>
+            </Item>
+            <Item guid="bc4a52c3-735a-41af-9d1b-b66e92153da8" name="Carac" description="Carac">
+              <Properties><Property><Name>Name</Name><Value>Carac</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>100</Value></Property><Property><Name>AttMaxLen</Name><Value>100</Value></Property></Properties>
+            </Item>
+            <Item guid="660239ca-f3e8-41c6-8c2d-2b02f5bdb079" name="Numer" description="Numer">
+              <Properties><Property><Name>Name</Name><Value>Numer</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>100</Value></Property><Property><Name>AttMaxLen</Name><Value>100</Value></Property></Properties>
+            </Item>
+            <Item guid="2b218a78-eedc-417f-b388-9e5a761c6cc2" name="DateD" description="Date">
+              <Properties><Property><Name>Name</Name><Value>DateD</Value></Property><Property><Name>Description</Name><Value>Date</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>100</Value></Property><Property><Name>AttMaxLen</Name><Value>100</Value></Property></Properties>
+            </Item>
+            <Item guid="92633e2a-d846-48c3-bb3f-32f5c5ff60eb" name="deleteD" description="delete control">
+              <Properties><Property><Name>Name</Name><Value>deleteD</Value></Property><Property><Name>Description</Name><Value>delete control</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>100</Value></Property><Property><Name>AttMaxLen</Name><Value>100</Value></Property></Properties>
+            </Item>
+          </Level>
+          <Level Name="Conditions">
+            <LevelInfo guid="b6dd50e2-e5aa-4da8-9baf-99550b87932f" name="Conditions" description="Conditions">
+              <Properties><Property><Name>Name</Name><Value>Conditions</Value></Property><Property><Name>AttCollection</Name><Value>True</Value></Property><Property><Name>idCollectionItemName</Name><Value>Condition</Value></Property></Properties>
+            </LevelInfo>
+            <Item guid="0436f78b-6f66-4da4-be21-91d1ad6e3378" name="Name" description="Name">
+              <Properties><Property><Name>Name</Name><Value>Name</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>30</Value></Property><Property><Name>AttMaxLen</Name><Value>30</Value></Property></Properties>
+            </Item>
+            <Item guid="94a8a432-85e3-45f3-96d5-a6a05b38ff05" name="Description" description="Description">
+              <Properties><Property><Name>Name</Name><Value>Description</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>30</Value></Property><Property><Name>AttMaxLen</Name><Value>30</Value></Property></Properties>
+            </Item>
+            <Item guid="d21469d5-29fb-424c-8062-9f0064714113" name="IsCaracter" description="Is Caracter">
+              <Properties><Property><Name>Name</Name><Value>IsCaracter</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Numeric</Value></Property><Property><Name>Length</Name><Value>1</Value></Property><Property><Name>AttMaxLen</Name><Value>1</Value></Property></Properties>
+            </Item>
+          </Level>
+          <Item guid="fff7a7bd-e6cd-49a6-8223-af105f14025f" name="DefaultCondition" description="Default Condition">
+            <Properties><Property><Name>Name</Name><Value>DefaultCondition</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>30</Value></Property><Property><Name>AttMaxLen</Name><Value>30</Value></Property></Properties>
+          </Item>
+          <Item guid="c47a8d8d-d03a-493a-aeb9-9d79fc462a7a" name="DefaultConditionCaracter" description="Default Condition Caracter">
+            <Properties><Property><Name>Name</Name><Value>DefaultConditionCaracter</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>30</Value></Property><Property><Name>AttMaxLen</Name><Value>30</Value></Property></Properties>
+          </Item>
+        </Level>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties />
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>WWDynamicFilters</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="GeneralWeb" parentType="00000000-0000-0000-0000-000000000008" user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2007-06-28T21:58:10.0000000Z" checksum="7523ce96287e415945646d0e4e08725a" guid="84f0bcb7-d38f-4a22-a227-43e417263ac3" name="GridState" type="447527b5-9210-4523-898b-5dccb17be60a" description="Grid State">
+      <Part type="5c2aa9da-8fc4-4b6b-ae02-8db4fa48976a">
+        <Level Name="GridState">
+          <LevelInfo guid="595280a3-23bc-4614-967d-ea2d2ac9377c" name="GridState" description="Grid State">
+            <Properties><Property><Name>Name</Name><Value>GridState</Value></Property><Property><Name>AttCollection</Name><Value>False</Value></Property></Properties>
+          </LevelInfo>
+          <Item guid="f5f40368-753e-4154-b7d0-436e618d14e7" name="CurrentPage" description="Current Page">
+            <Properties><Property><Name>Name</Name><Value>CurrentPage</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Numeric</Value></Property><Property><Name>Length</Name><Value>4</Value></Property><Property><Name>Decimals</Name><Value>0</Value></Property><Property><Name>AttMaxLen</Name><Value>4</Value></Property><Property><Name>AttAvgLen</Name><Value>0</Value></Property><Property><Name>AttCollection</Name><Value>False</Value></Property></Properties>
+          </Item>
+          <Item guid="9cf3c3d2-b089-4acd-98bc-32351e427c41" name="OrderedBy" description="Ordered By">
+            <Properties><Property><Name>Name</Name><Value>OrderedBy</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Numeric</Value></Property><Property><Name>Length</Name><Value>4</Value></Property><Property><Name>Decimals</Name><Value>0</Value></Property><Property><Name>AttMaxLen</Name><Value>4</Value></Property><Property><Name>AttAvgLen</Name><Value>0</Value></Property><Property><Name>AttCollection</Name><Value>False</Value></Property></Properties>
+          </Item>
+          <Item guid="0edf4d12-5d69-4148-be8f-97ad0927d6a8" name="HidingSearch" description="Hiding Search">
+            <Properties><Property><Name>Name</Name><Value>HidingSearch</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Numeric</Value></Property><Property><Name>Length</Name><Value>1</Value></Property><Property><Name>Decimals</Name><Value>0</Value></Property><Property><Name>AttMaxLen</Name><Value>1</Value></Property><Property><Name>AttAvgLen</Name><Value>0</Value></Property><Property><Name>AttCollection</Name><Value>False</Value></Property></Properties>
+          </Item>
+          <Level Name="FilterValues">
+            <LevelInfo guid="4c9a9aee-f29a-4308-b8a5-f8fc5050774f" name="FilterValues" description="Filter Values">
+              <Properties><Property><Name>Name</Name><Value>FilterValues</Value></Property><Property><Name>AttCollection</Name><Value>True</Value></Property><Property><Name>idCollectionItemName</Name><Value>FilterValue</Value></Property></Properties>
+            </LevelInfo>
+            <Item guid="82d2a9cb-a8cb-419e-80d5-158f97d6287f" name="Value" description="Value">
+              <Properties><Property><Name>Name</Name><Value>Value</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:VarChar</Value></Property><Property><Name>Length</Name><Value>100</Value></Property><Property><Name>Decimals</Name><Value>0</Value></Property><Property><Name>AttMaxLen</Name><Value>100</Value></Property><Property><Name>AttAvgLen</Name><Value>0</Value></Property><Property><Name>AttCollection</Name><Value>False</Value></Property></Properties>
+            </Item>
+          </Level>
+        </Level>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties />
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>GridState</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="gxui" parentType="00000000-0000-0000-0000-000000000008" user="ARTECH\gfernandez" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2008-04-02T20:17:40.0000000Z" checksum="396b3e54a5c8448a4ec8ebddcb559ab6" guid="d5317118-fd1a-4782-9c88-8b5dbf846032" name="gxuiButton" type="447527b5-9210-4523-898b-5dccb17be60a" description="gxui Button">
+      <Part type="5c2aa9da-8fc4-4b6b-ae02-8db4fa48976a">
+        <Level Name="gxuiButton">
+          <LevelInfo guid="65a479ac-9046-485f-ad66-d53d90eee724" name="gxuiButton" description="gxui Button">
+            <Properties><Property><Name>Name</Name><Value>gxuiButton</Value></Property></Properties>
+          </LevelInfo>
+          <Item guid="ff3e49dd-7cbf-48df-9c0e-dfd7f9fa48b0" name="Id" description="Id">
+            <Properties><Property><Name>Name</Name><Value>Id</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property></Properties>
+          </Item>
+          <Item guid="24005640-d4ad-43a9-872d-431f2bf03865" name="Text" description="Text">
+            <Properties><Property><Name>Name</Name><Value>Text</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property></Properties>
+          </Item>
+          <Item guid="dab9ee24-fd3f-4868-a4ba-72064d610c76" name="Tooltip" description="Tooltip">
+            <Properties><Property><Name>Name</Name><Value>Tooltip</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>200</Value></Property><Property><Name>AttMaxLen</Name><Value>200</Value></Property></Properties>
+          </Item>
+          <Item guid="14bd2cf6-569e-47e5-bfb3-49ee4337ceda" name="Icon" description="Icon">
+            <Properties><Property><Name>Name</Name><Value>Icon</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>200</Value></Property><Property><Name>AttMaxLen</Name><Value>200</Value></Property></Properties>
+          </Item>
+          <Item guid="7d5199c0-0c27-4fc4-8d31-41d290a120ca" name="IconCls" description="Icon Cls">
+            <Properties><Property><Name>Name</Name><Value>IconCls</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>200</Value></Property><Property><Name>AttMaxLen</Name><Value>200</Value></Property></Properties>
+          </Item>
+          <Item guid="16deb1cc-3113-49f8-861e-bd3eeeff1ec7" name="Cls" description="Cls">
+            <Properties><Property><Name>Name</Name><Value>Cls</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>200</Value></Property><Property><Name>AttMaxLen</Name><Value>200</Value></Property></Properties>
+          </Item>
+          <Item guid="74329574-b7b5-43f7-8691-3066657ea567" name="EnableToggle" description="Enable Toggle">
+            <Properties><Property><Name>Name</Name><Value>EnableToggle</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Boolean</Value></Property></Properties>
+          </Item>
+          <Item guid="7a374f64-6cfd-46c1-9746-894940029643" name="Pressed" description="Pressed">
+            <Properties><Property><Name>Name</Name><Value>Pressed</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Boolean</Value></Property></Properties>
+          </Item>
+          <Item guid="052891da-a58e-4c56-939c-0010f883d736" name="Disabled" description="Disabled">
+            <Properties><Property><Name>Name</Name><Value>Disabled</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Boolean</Value></Property></Properties>
+          </Item>
+          <Item guid="bffcdc72-7f79-4f10-85ef-4b0547d030d5" name="Type" description="Type">
+            <Properties><Property><Name>Name</Name><Value>Type</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property></Properties>
+          </Item>
+          <Item guid="a7dd492d-a327-426c-87f3-56bc776a157c" name="IsDropTarget" description="Is Drop Target">
+            <Properties><Property><Name>Name</Name><Value>IsDropTarget</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Boolean</Value></Property></Properties>
+          </Item>
+          <Item guid="e8818a2b-d89e-473e-8c08-75dda378aa47" name="RefreshData" description="Refresh Data">
+            <Properties><Property><Name>Name</Name><Value>RefreshData</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Boolean</Value></Property></Properties>
+          </Item>
+          <Item guid="8a401110-73ac-4122-90ca-5f8fdc4cff8b" name="Items" description="Items">
+            <Properties><Property><Name>Name</Name><Value>Items</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>sdt:gxuiButton</Value></Property><Property><Name>AttCollection</Name><Value>True</Value></Property></Properties>
+          </Item>
+        </Level>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties><Property><Name>IsDefault</Name><Value>True</Value></Property></Properties>
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>gxuiButton</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="gxui" parentType="00000000-0000-0000-0000-000000000008" user="ARTECH\gfernandez" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2008-08-13T17:39:04.0000000Z" checksum="13c61bd743cc160a101125f8f168d97a" guid="0932ba92-58f1-4291-98d3-450aed1f91b9" name="gxuiFilterModel" type="447527b5-9210-4523-898b-5dccb17be60a" description="gxui Filter Model">
+      <Part type="5c2aa9da-8fc4-4b6b-ae02-8db4fa48976a">
+        <Level Name="gxuiFilterModel">
+          <LevelInfo guid="0f08c96c-54ca-4ff5-b6d9-21ddfed237b3" name="gxuiFilterModel" description="gxui Filter Model">
+            <Properties><Property><Name>Name</Name><Value>gxuiFilterModel</Value></Property></Properties>
+          </LevelInfo>
+          <Item guid="48051bf2-9064-4125-a7ff-abcff5877bfc" name="active" description="active">
+            <Properties><Property><Name>Name</Name><Value>active</Value></Property><Property><Name>idBasedOn</Name><Value>Domain:gxuiBoolean</Value></Property></Properties>
+          </Item>
+          <Item guid="407c466a-706d-4eb2-9e68-f4e0434783d5" name="type" description="type">
+            <Properties><Property><Name>Name</Name><Value>type</Value></Property><Property><Name>idBasedOn</Name><Value>Domain:gxuiDataType</Value></Property></Properties>
+          </Item>
+          <Item guid="81837add-c8a5-42fa-bcee-c02e21739cfe" name="dateFormat" description="date Format">
+            <Properties><Property><Name>Name</Name><Value>dateFormat</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>50</Value></Property><Property><Name>AttMaxLen</Name><Value>50</Value></Property></Properties>
+          </Item>
+          <Item guid="2a3a9d88-0533-463c-9100-1333c38582cb" name="value" description="value">
+            <Properties><Property><Name>Name</Name><Value>value</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>100</Value></Property><Property><Name>AttMaxLen</Name><Value>100</Value></Property></Properties>
+          </Item>
+          <Item guid="5bf9c290-aff0-4e72-b3d5-0b2747ae3b49" name="options" description="options">
+            <Properties><Property><Name>Name</Name><Value>options</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>100</Value></Property><Property><Name>AttMaxLen</Name><Value>100</Value></Property><Property><Name>AttCollection</Name><Value>True</Value></Property></Properties>
+          </Item>
+          <Item guid="bf039417-04ed-4832-ba70-1e46991514c6" name="single" description="single">
+            <Properties><Property><Name>Name</Name><Value>single</Value></Property><Property><Name>idBasedOn</Name><Value>Domain:gxuiBoolean</Value></Property></Properties>
+          </Item>
+          <Item guid="1ae56270-837e-47bf-80d0-2f4313c3c899" name="values" description="values">
+            <Properties><Property><Name>Name</Name><Value>values</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>sdt:gxuiFilter</Value></Property><Property><Name>AttCollection</Name><Value>True</Value></Property></Properties>
+          </Item>
+        </Level>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties />
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>gxuiFilterModel</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="gxui" parentType="00000000-0000-0000-0000-000000000008" user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2009-08-17T18:27:51.0000000Z" checksum="d1e0be81e451c7e2122a4ca54cf06eb2" guid="29decb2c-766f-4c88-8491-ecefbbaf9e9a" name="gxuiGridColumn" type="447527b5-9210-4523-898b-5dccb17be60a" description="gxui Grid Column">
+      <Part type="5c2aa9da-8fc4-4b6b-ae02-8db4fa48976a">
+        <Level Name="gxuiGridColumn">
+          <LevelInfo guid="4ea91248-fec1-4cec-8eb3-6ec706e92deb" name="gxuiGridColumn" description="gxui Grid Column">
+            <Properties><Property><Name>Name</Name><Value>gxuiGridColumn</Value></Property></Properties>
+          </LevelInfo>
+          <Item guid="8f2aa6b9-4c96-4aa0-8d4c-2367c3422787" name="id" description="id">
+            <Properties><Property><Name>Name</Name><Value>id</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property></Properties>
+          </Item>
+          <Item guid="cac83629-b1af-4bcd-956b-531219b18210" name="header" description="header">
+            <Properties><Property><Name>Name</Name><Value>header</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>200</Value></Property><Property><Name>AttMaxLen</Name><Value>200</Value></Property></Properties>
+          </Item>
+          <Item guid="4a3bde98-d854-4650-bb99-58f77496aca4" name="dataIndex" description="data Index">
+            <Properties><Property><Name>Name</Name><Value>dataIndex</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>200</Value></Property><Property><Name>AttMaxLen</Name><Value>200</Value></Property></Properties>
+          </Item>
+          <Item guid="b4f4cb6e-3412-4be2-92d1-ab7d4a9cfffb" name="dataType" description="data Type">
+            <Properties><Property><Name>Name</Name><Value>dataType</Value></Property><Property><Name>idBasedOn</Name><Value>Domain:gxuiDataType</Value></Property></Properties>
+          </Item>
+          <Item guid="c7620a20-3234-41c1-97de-992e7c608094" name="width" description="width">
+            <Properties><Property><Name>Name</Name><Value>width</Value></Property></Properties>
+          </Item>
+          <Item guid="6a50d6ec-98a8-4f8b-85a4-e03b6492f53c" name="hidden" description="hidden">
+            <Properties><Property><Name>Name</Name><Value>hidden</Value></Property><Property><Name>idBasedOn</Name><Value>Domain:gxuiBoolean</Value></Property></Properties>
+          </Item>
+          <Item guid="4b813cea-489f-43b8-9927-0c03807fe573" name="resizable" description="resizable">
+            <Properties><Property><Name>Name</Name><Value>resizable</Value></Property><Property><Name>idBasedOn</Name><Value>Domain:gxuiBoolean</Value></Property></Properties>
+          </Item>
+          <Item guid="96548416-096c-492f-9993-292ecdcc158f" name="fixed" description="fixed">
+            <Properties><Property><Name>Name</Name><Value>fixed</Value></Property><Property><Name>idBasedOn</Name><Value>Domain:gxuiBoolean</Value></Property></Properties>
+          </Item>
+          <Item guid="b70af475-f927-4385-a09d-43458ec9484d" name="sortable" description="sortable">
+            <Properties><Property><Name>Name</Name><Value>sortable</Value></Property><Property><Name>idBasedOn</Name><Value>Domain:gxuiBoolean</Value></Property></Properties>
+          </Item>
+          <Item guid="eaab97de-6396-4754-9375-f51d533e37ad" name="hideable" description="hideable">
+            <Properties><Property><Name>Name</Name><Value>hideable</Value></Property></Properties>
+          </Item>
+          <Item guid="9b6dd154-c2d0-4a1c-8e84-5d276e946126" name="align" description="align">
+            <Properties><Property><Name>Name</Name><Value>align</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property></Properties>
+          </Item>
+          <Item guid="f35edd70-5caa-4f32-8bcb-ee0da8e23c83" name="renderer" description="renderer">
+            <Properties><Property><Name>Name</Name><Value>renderer</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>500</Value></Property><Property><Name>AttMaxLen</Name><Value>500</Value></Property></Properties>
+          </Item>
+          <Item guid="a8677f78-2c2f-4e78-928a-3ebeed40182d" name="dateFormat" description="date Format">
+            <Properties><Property><Name>Name</Name><Value>dateFormat</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property></Properties>
+          </Item>
+          <Item guid="b2aa6aca-f865-497d-aaa1-03ab61a8b00f" name="css" description="css">
+            <Properties><Property><Name>Name</Name><Value>css</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>200</Value></Property><Property><Name>AttMaxLen</Name><Value>200</Value></Property></Properties>
+          </Item>
+          <Item guid="b913cab9-35f0-4937-879c-9c26e590ac54" name="filter" description="filter">
+            <Properties><Property><Name>Name</Name><Value>filter</Value></Property><Property><Name>idBasedOn</Name><Value>Domain:gxuiBoolean</Value></Property></Properties>
+          </Item>
+          <Item guid="6faa60b4-e64e-4709-8f05-e37cc08e0ddd" name="filterData" description="filter Data">
+            <Properties><Property><Name>Name</Name><Value>filterData</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>sdt:gxuiFilterModel</Value></Property></Properties>
+          </Item>
+          <Item guid="3923cc46-6e81-44ff-99a6-f27b2752a6e8" name="menuDisabled" description="menu Disabled">
+            <Properties><Property><Name>Name</Name><Value>menuDisabled</Value></Property><Property><Name>idBasedOn</Name><Value>Domain:gxuiBoolean</Value></Property></Properties>
+          </Item>
+          <Item guid="fdec0c52-8827-4365-9a9b-b4296d6bc1ff" name="tooltip" description="tooltip">
+            <Properties><Property><Name>Name</Name><Value>tooltip</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>200</Value></Property><Property><Name>AttMaxLen</Name><Value>200</Value></Property></Properties>
+          </Item>
+        </Level>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties><Property><Name>IsDefault</Name><Value>True</Value></Property></Properties>
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>gxuiGridColumn</Value></Property><Property><Name>Description</Name><Value>gxui Grid Column</Value></Property><Property><Name>ExternalNamespace</Name><Value>gxui</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="gxuiSample" parentType="00000000-0000-0000-0000-000000000008" user="ARTECH\acardoso" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2008-10-09T17:03:02.0000000Z" checksum="34211f17d4ab03aee9d6f27c29dabb11" guid="10f5655e-978e-4694-af27-9117add61de4" name="gxuiGridColumnModel" type="447527b5-9210-4523-898b-5dccb17be60a" description="gxui Grid Column Model">
+      <Part type="5c2aa9da-8fc4-4b6b-ae02-8db4fa48976a">
+        <Level Name="gxuiGridColumnModel">
+          <LevelInfo guid="3e70f704-9635-43a3-a726-dfeebe01464d" name="gxuiGridColumnModel" description="gxui Grid Column Model">
+            <Properties><Property><Name>Name</Name><Value>gxuiGridColumnModel</Value></Property><Property><Name>AttCollection</Name><Value>False</Value></Property></Properties>
+          </LevelInfo>
+          <Item guid="b29c9319-e81b-4078-a169-06c13b392f98" name="DefaultSortable" description="Default Sortable">
+            <Properties><Property><Name>Name</Name><Value>DefaultSortable</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Boolean</Value></Property></Properties>
+          </Item>
+          <Item guid="c2a45ddf-6e10-4f5c-92df-bdfd2bef7b79" name="DefaultWidth" description="Default Width">
+            <Properties><Property><Name>Name</Name><Value>DefaultWidth</Value></Property></Properties>
+          </Item>
+          <Item guid="9bd2e2fe-8b53-46f6-ac27-f096e67a7efd" name="Columns" description="Columns">
+            <Properties><Property><Name>Name</Name><Value>Columns</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>sdt:gxuiGridColumn</Value></Property><Property><Name>AttCollection</Name><Value>True</Value></Property></Properties>
+          </Item>
+        </Level>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties><Property><Name>IsDefault</Name><Value>True</Value></Property></Properties>
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>gxuiGridColumnModel</Value></Property><Property><Name>ExternalNamespace</Name><Value>gxui</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="gxui" parentType="00000000-0000-0000-0000-000000000008" user="ARTECH\gfernandez" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2008-03-17T18:37:28.0000000Z" checksum="60fb28ffe217a3acf1ca74ed04985fc8" guid="7cfd50eb-c5a9-48df-b9e4-89ef1b36e490" name="gxuiToolbar" type="447527b5-9210-4523-898b-5dccb17be60a" description="gxui Toolbar">
+      <Part type="5c2aa9da-8fc4-4b6b-ae02-8db4fa48976a">
+        <Level Name="gxuiToolbar">
+          <LevelInfo guid="56489a37-cdba-4e81-84b3-b35ca53155da" name="gxuiToolbar" description="gxui Toolbar">
+            <Properties><Property><Name>Name</Name><Value>gxuiToolbar</Value></Property></Properties>
+          </LevelInfo>
+          <Item guid="39f4592a-a910-440c-818a-b6fb3e54aa4a" name="Buttons" description="Buttons">
+            <Properties><Property><Name>Name</Name><Value>Buttons</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>sdt:gxuiButton</Value></Property><Property><Name>AttCollection</Name><Value>True</Value></Property></Properties>
+          </Item>
+          <Item guid="4a5147db-a3d8-4e37-a86d-6fcef0fedfd6" name="SeparateAll" description="Separate All Toolbar Items">
+            <Properties><Property><Name>Name</Name><Value>SeparateAll</Value></Property><Property><Name>Description</Name><Value>Separate All Toolbar Items</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Boolean</Value></Property></Properties>
+          </Item>
+          <Item guid="de19ce42-ef01-47fa-a088-e36675ef7701" name="MaxButtons" description="Max Buttons">
+            <Properties><Property><Name>Name</Name><Value>MaxButtons</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Numeric</Value></Property></Properties>
+          </Item>
+        </Level>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties><Property><Name>IsDefault</Name><Value>True</Value></Property></Properties>
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>gxuiToolbar</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="DolphinStyleMenu" parentType="00000000-0000-0000-0000-000000000008" user="ARTECH\acardoso" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2008-04-26T19:03:32.0000000Z" checksum="84ce3b0c08b35e84a5e2aee77712f049" guid="2d1a2c0c-c983-400b-bb92-cdd297fcb77f" name="MenuData" type="447527b5-9210-4523-898b-5dccb17be60a" description="Menu Data">
+      <Part type="5c2aa9da-8fc4-4b6b-ae02-8db4fa48976a">
+        <Level Name="MenuData">
+          <LevelInfo guid="81fc4c55-4be7-4323-968c-8319d417c233" name="MenuData" description="Menu Data">
+            <Properties><Property><Name>Name</Name><Value>MenuData</Value></Property><Property><Name>AttCollection</Name><Value>True</Value></Property></Properties>
+          </LevelInfo>
+          <Item guid="ccfe7118-917b-4cd8-b0ce-266a0d094746" name="MenuId" description="Menu Id">
+            <Properties><Property><Name>Name</Name><Value>MenuId</Value></Property></Properties>
+          </Item>
+          <Item guid="3ed31bba-3143-4862-88ec-2c9fb24e8be3" name="MenuTitle" description="Menu Title">
+            <Properties><Property><Name>Name</Name><Value>MenuTitle</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property></Properties>
+          </Item>
+          <Item guid="fbd37705-4650-43e9-97dd-f45b86e754e9" name="MenuDescription" description="Menu Description">
+            <Properties><Property><Name>Name</Name><Value>MenuDescription</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>40</Value></Property><Property><Name>AttMaxLen</Name><Value>40</Value></Property></Properties>
+          </Item>
+          <Item guid="9c24ed83-8b91-474f-aeb7-5b7f231828c4" name="MenuURL" description="Menu URL">
+            <Properties><Property><Name>Name</Name><Value>MenuURL</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:VarChar</Value></Property><Property><Name>Length</Name><Value>100</Value></Property><Property><Name>AttMaxLen</Name><Value>100</Value></Property></Properties>
+          </Item>
+        </Level>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties><Property><Name>IsDefault</Name><Value>True</Value></Property></Properties>
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>MenuData</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="GeneralWeb" parentType="00000000-0000-0000-0000-000000000008" user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2007-06-28T21:58:10.0000000Z" checksum="aeb4985afeb8433cd6a4862527596c40" guid="a7249048-a550-4806-a2db-54bfdcd10fd3" name="RecentLinksItems" type="447527b5-9210-4523-898b-5dccb17be60a" description="Recent Links Info">
+      <Part type="5c2aa9da-8fc4-4b6b-ae02-8db4fa48976a">
+        <Level Name="RecentLinksItems">
+          <LevelInfo guid="ef4999a9-2b50-4fd8-9edd-1505abdd3c4d" name="RecentLinksItems" description="Recent Links Items">
+            <Properties><Property><Name>Name</Name><Value>RecentLinksItems</Value></Property><Property><Name>AttCollection</Name><Value>True</Value></Property><Property><Name>idCollectionItemName</Name><Value>RecentLinksItem</Value></Property></Properties>
+          </LevelInfo>
+          <Item guid="48522cb2-e454-432a-9d6f-2452a108fef8" name="Caption" description="Caption">
+            <Properties><Property><Name>Name</Name><Value>Caption</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:VarChar</Value></Property><Property><Name>Length</Name><Value>255</Value></Property><Property><Name>Decimals</Name><Value>0</Value></Property></Properties>
+          </Item>
+          <Item guid="94026908-430d-489e-a65a-59e0d51a22b8" name="URL" description="URL">
+            <Properties><Property><Name>Name</Name><Value>URL</Value></Property><Property><Name>idBasedOn</Name><Value>Domain:URLString</Value></Property></Properties>
+          </Item>
+        </Level>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties><Property><Name>IsDefault</Name><Value>True</Value></Property></Properties>
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>RecentLinksItems</Value></Property><Property><Name>Description</Name><Value>Recent Links Info</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="GeneralWeb" parentType="00000000-0000-0000-0000-000000000008" user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2007-06-28T21:58:10.0000000Z" checksum="6282e6c13540ebd759bafb2bea57ae5b" guid="a660ec17-05af-4659-8c50-50db237c3b29" name="TransactionContext" type="447527b5-9210-4523-898b-5dccb17be60a" description="Transaction Context">
+      <Part type="5c2aa9da-8fc4-4b6b-ae02-8db4fa48976a">
+        <Level Name="TransactionContext">
+          <LevelInfo guid="51623b7b-64c9-481c-9990-af7409a01783" name="TransactionContext" description="Transaction Context">
+            <Properties><Property><Name>Name</Name><Value>TransactionContext</Value></Property><Property><Name>AttCollection</Name><Value>False</Value></Property></Properties>
+          </LevelInfo>
+          <Item guid="9b496226-c9d3-48ff-b4de-2de0c3d20425" name="CallerObject" description="Caller Object">
+            <Properties><Property><Name>Name</Name><Value>CallerObject</Value></Property><Property><Name>idBasedOn</Name><Value>Domain:ObjectName</Value></Property></Properties>
+          </Item>
+          <Item guid="59e926c3-659d-4fc3-b22d-0d57b271683c" name="CallerOnDelete" description="Caller On Delete">
+            <Properties><Property><Name>Name</Name><Value>CallerOnDelete</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Boolean</Value></Property></Properties>
+          </Item>
+          <Item guid="358a792b-4b9e-4110-b1fc-e94fed961774" name="CallerURL" description="Caller URL">
+            <Properties><Property><Name>Name</Name><Value>CallerURL</Value></Property><Property><Name>idBasedOn</Name><Value>Domain:URLString</Value></Property></Properties>
+          </Item>
+          <Item guid="fec8a046-b1e9-4772-9470-2694e48ad883" name="TransactionName" description="Transaction Name">
+            <Properties><Property><Name>Name</Name><Value>TransactionName</Value></Property><Property><Name>idBasedOn</Name><Value>Domain:ObjectName</Value></Property></Properties>
+          </Item>
+          <Level Name="Attributes">
+            <LevelInfo guid="dc63b6b2-a3c9-4d6c-946e-f74bc34a49aa" name="Attributes" description="Attributes">
+              <Properties><Property><Name>Name</Name><Value>Attributes</Value></Property><Property><Name>AttCollection</Name><Value>True</Value></Property><Property><Name>idCollectionItemName</Name><Value>Attribute</Value></Property></Properties>
+            </LevelInfo>
+            <Item guid="6cfb502c-cdef-4354-9c58-0b29cb02e0d8" name="AttributeName" description="Attribute Name">
+              <Properties><Property><Name>Name</Name><Value>AttributeName</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:VarChar</Value></Property><Property><Name>Length</Name><Value>128</Value></Property><Property><Name>Decimals</Name><Value>0</Value></Property><Property><Name>AttMaxLen</Name><Value>128</Value></Property></Properties>
+            </Item>
+            <Item guid="47edb640-11af-42fe-94f9-3648b97bc5af" name="AttributeValue" description="Attribute Value">
+              <Properties><Property><Name>Name</Name><Value>AttributeValue</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:VarChar</Value></Property><Property><Name>Length</Name><Value>1000</Value></Property><Property><Name>Decimals</Name><Value>0</Value></Property><Property><Name>AttMaxLen</Name><Value>1000</Value></Property></Properties>
+            </Item>
+          </Level>
+        </Level>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties />
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>TransactionContext</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2007-06-28T21:58:06.0000000Z" checksum="ccb384cb7d5d08bfa6d4a432f2aaeb93" guid="6c5d4d0f-883d-4d22-addd-6f46175f2f63" name="ObjectName" type="00972a17-9975-449e-aab1-d26165d51393" description="Object Name">
+      <Part type="ad3ca970-19d0-44e1-a7b7-db05556e820c">
+        <Help>
+          <HelpItem>
+            <Language>88313f43-5eb2-0000-0028-e8d9f5bf9588-Portuguese</Language>
+            <Content />
+          </HelpItem>
+        </Help>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties />
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>ObjectName</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:VarChar</Value></Property><Property><Name>Length</Name><Value>256</Value></Property><Property><Name>AttMaxLen</Name><Value>256</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2007-06-28T21:58:08.0000000Z" checksum="ea4533a6c8a42296e02e2a7b9f323ad9" guid="b67b7a1b-60cd-4f53-8610-f94684abcdc7" name="URLString" type="00972a17-9975-449e-aab1-d26165d51393" description="URLString">
+      <Part type="ad3ca970-19d0-44e1-a7b7-db05556e820c">
+        <Help>
+          <HelpItem>
+            <Language>88313f43-5eb2-0000-0028-e8d9f5bf9588-Portuguese</Language>
+            <Content />
+          </HelpItem>
+        </Help>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties />
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>URLString</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:VarChar</Value></Property><Property><Name>Length</Name><Value>1000</Value></Property><Property><Name>AttMaxLen</Name><Value>1000</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2007-06-28T21:58:08.0000000Z" checksum="e22a22f0261c348f8b234f63abaeee47" guid="7396ea52-298a-484a-8465-1631dbbfb0e2" name="TabCode" type="00972a17-9975-449e-aab1-d26165d51393" description="Tab Code">
+      <Part type="ad3ca970-19d0-44e1-a7b7-db05556e820c">
+        <Help>
+          <HelpItem>
+            <Language>88313f43-5eb2-0000-0028-e8d9f5bf9588-Portuguese</Language>
+            <Content />
+          </HelpItem>
+        </Help>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties />
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>TabCode</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>50</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object user="GONCHI\Gonzalo Fernandez" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2008-05-29T00:44:11.0000000Z" checksum="fd7ba016cc7a07cb5b401dc551c0d77f" guid="c4f2ba9d-9749-4ca6-9f92-ab7aae5507cf" name="gxuiFilterComparison" type="00972a17-9975-449e-aab1-d26165d51393" description="gxui Filter Comparison">
+      <Part type="ad3ca970-19d0-44e1-a7b7-db05556e820c">
+        <Help>
+          <HelpItem>
+            <Language>88313f43-5eb2-0000-0028-e8d9f5bf9588-Portuguese</Language>
+            <Content />
+          </HelpItem>
+        </Help>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties />
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>gxuiFilterComparison</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>IDEnumDefinedValues</Name><Value>after, after, after; before, before, before; on, on, on; lt, lt, lt; gt, gt, gt; eq, eq, eq</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object user="ARTECH\gfernandez" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2008-04-03T12:03:57.0000000Z" checksum="69afa0b5383ca435fa6022327b2b3b6e" guid="89b1cdef-3afd-4653-88fb-8a2cec6ab14d" name="gxuiBoolean" type="00972a17-9975-449e-aab1-d26165d51393" description="gxui Boolean">
+      <Part type="ad3ca970-19d0-44e1-a7b7-db05556e820c">
+        <Help>
+          <HelpItem>
+            <Language>88313f43-5eb2-0000-0028-e8d9f5bf9588-Portuguese</Language>
+            <Content />
+          </HelpItem>
+        </Help>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties />
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>gxuiBoolean</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>10</Value></Property><Property><Name>AttMaxLen</Name><Value>10</Value></Property><Property><Name>IDEnumDefinedValues</Name><Value>True, True, True; False, False, False</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object user="ARTECH\gfernandez" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2008-06-05T19:53:21.0000000Z" checksum="2fbd1b28f414790140b6088847fc318d" guid="e5c7b852-e517-495e-b6fe-08e911cf3db6" name="gxuiDataType" type="00972a17-9975-449e-aab1-d26165d51393" description="gxui Data Type">
+      <Part type="ad3ca970-19d0-44e1-a7b7-db05556e820c">
+        <Help>
+          <HelpItem>
+            <Language>88313f43-5eb2-0000-0028-e8d9f5bf9588-Portuguese</Language>
+            <Content />
+          </HelpItem>
+        </Help>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties />
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>gxuiDataType</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>IDEnumDefinedValues</Name><Value>numeric, numeric, numeric; string, string, string; date, date, date; boolean, boolean, boolean; list, list, list</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2007-06-28T21:58:06.0000000Z" checksum="bfe918249c2d899648bdde394e67a941" guid="bb90db53-7413-406b-a750-d5229aeb31e0" name="HttpMethod" type="00972a17-9975-449e-aab1-d26165d51393" description="Http Method">
+      <Part type="ad3ca970-19d0-44e1-a7b7-db05556e820c">
+        <Help>
+          <HelpItem>
+            <Language>88313f43-5eb2-0000-0028-e8d9f5bf9588-Portuguese</Language>
+            <Content />
+          </HelpItem>
+        </Help>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties />
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>HttpMethod</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>4</Value></Property><Property><Name>IDEnumDefinedValues</Name><Value>GET, Get, Get; POST, Post, Post</Value></Property><Property><Name>ControlType</Name><Value>Combo Box</Value></Property><Property><Name>ControlValues</Name><Value>Get:GET,Post:POST</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2007-06-28T21:58:08.0000000Z" checksum="406708f47de0519a1e666aa524fdf27b" guid="a3149f29-1031-4f7d-b1cb-abe5fb6a0562" name="Page" type="00972a17-9975-449e-aab1-d26165d51393" description="Page">
+      <Part type="ad3ca970-19d0-44e1-a7b7-db05556e820c">
+        <Help>
+          <HelpItem>
+            <Language>88313f43-5eb2-0000-0028-e8d9f5bf9588-Portuguese</Language>
+            <Content />
+          </HelpItem>
+        </Help>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties />
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>Page</Value></Property><Property><Name>Length</Name><Value>4</Value></Property><Property><Name>Decimals</Name><Value>0</Value></Property><Property><Name>IDEnumDefinedValues</Name><Value>10, Rows, Rows</Value></Property><Property><Name>ControlType</Name><Value>Combo Box</Value></Property><Property><Name>ControlValues</Name><Value>Rows:10</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2007-06-28T21:58:08.0000000Z" checksum="1c707a34d89186b001c5a95f38eb1f6f" guid="09d9015c-903a-4142-b78e-72dca73ba789" name="RecentLinksOptions" type="00972a17-9975-449e-aab1-d26165d51393" description="Recent Links Options">
+      <Part type="ad3ca970-19d0-44e1-a7b7-db05556e820c">
+        <Help>
+          <HelpItem>
+            <Language>88313f43-5eb2-0000-0028-e8d9f5bf9588-Portuguese</Language>
+            <Content />
+          </HelpItem>
+        </Help>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties />
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>RecentLinksOptions</Value></Property><Property><Name>Length</Name><Value>4</Value></Property><Property><Name>Decimals</Name><Value>0</Value></Property><Property><Name>IDEnumDefinedValues</Name><Value>8, Size, Size</Value></Property><Property><Name>ControlType</Name><Value>Combo Box</Value></Property><Property><Name>ControlValues</Name><Value>Size:8</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2007-06-28T21:58:08.0000000Z" checksum="447f7b42dce471a16f57358383cbd988" guid="c748a2d2-6081-4dde-ac0b-067e53df501c" name="TrnMode" type="00972a17-9975-449e-aab1-d26165d51393" description="TrnMode">
+      <Part type="ad3ca970-19d0-44e1-a7b7-db05556e820c">
+        <Help>
+          <HelpItem>
+            <Language>88313f43-5eb2-0000-0028-e8d9f5bf9588-Portuguese</Language>
+            <Content />
+          </HelpItem>
+        </Help>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties />
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>TrnMode</Value></Property><Property><Name>Description</Name><Value>TrnMode</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>3</Value></Property><Property><Name>IDEnumDefinedValues</Name><Value>INS, Insert, Insert; UPD, Update, Update; DLT, Delete, Delete; DSP, Display, Display</Value></Property><Property><Name>ControlType</Name><Value>Combo Box</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="GeneralWeb" parentType="00000000-0000-0000-0000-000000000008" user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2007-06-28T21:58:52.0000000Z" checksum="453669f58d462a303500097b8db87443" guid="87ff6662-990c-4153-b23a-0e528d958757" name="TabbedView" type="c9584656-94b6-4ccd-890f-332d11fc2c25" description="Tabbed View">
+      <Part type="d24a58ad-57ba-41b7-9e6e-eaca3543c778">
+        <Source><![CDATA[<BODY bottomMargin="0" topMargin="0" rightMargin="0" leftMargin="0" class="Form" noWrap="False"><TABLE cellPadding="0" rules="None" class="ViewTable" id="Table1" cellSpacing="0"><TBODY><TR vAlign="Bottom"><TD colSpan="0" rowSpan="0" vAlign="Bottom" style="HEIGHT: 40px; "><TABLE cellPadding="0" border="0" rules="None" class="Table" id="TableTabs" cellSpacing="0"><TBODY><TR><TD colSpan="0" rowSpan="0" vAlign="Bottom"><gxFreeStyle cellSpacing="0" cellPadding="0" freestyle="1" gxprop="MaxCols=0;class=FreeStyleGrid;ControlName=TabsGrid;GxObjClass=13"><TR vAlign="Top"><TD colSpan="0" rowSpan="0" vAlign="Bottom"><IMG class="TabImage" id="BeginTab" imagereference="9fb193d9-64a4-4d30-b129-ff7c76830f7e-TabBeginUnselected" hspace="0" /></TD><TD colSpan="0" rowSpan="0" vAlign="Top" style="WIDTH: 63px; "><gxTextBlock Caption="Tab Name" Class="UnSelectedTab" id="Tab" /></TD></TR></gxFreeStyle></TD><TD colSpan="0" rowSpan="0" vAlign="Bottom"><IMG class="TabImage" id="EndTab" imagereference="9fb193d9-64a4-4d30-b129-ff7c76830f7e-TabEndUnselected" hspace="0" /></TD><TD background="" style="WIDTH: 15px" rowSpan="0" colSpan="0"><IMG title="Previous Tab" class="Image" id="TabPrevious" imagereference="9fb193d9-64a4-4d30-b129-ff7c76830f7e-TabGroupPrevious" hspace="0" /></TD><TD background="" style="WIDTH: 13px" rowSpan="0" colSpan="0"><IMG title="Next Tab" class="Image" id="TabNext" imagereference="9fb193d9-64a4-4d30-b129-ff7c76830f7e-TabGroupNext" hspace="0" /></TD></TR></TBODY></TABLE></TD></TR><TR><TD colSpan="0" rowSpan="0" vAlign="Top" style="HEIGHT: 39px; "><TABLE cellPadding="0" rules="None" class="TableBorder" id="Table2" cellSpacing="0"><TBODY><TR><TD colSpan="0" rowSpan="0" vAlign="Top"><gxWebComponent ControlName="Component" /></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE></BODY>]]></Source>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="9b0a32a3-de6d-4be1-a4dd-1b85d3741534">
+        <Source><![CDATA[parm(in:&Tabs, in:&TabCode);
+]]></Source>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="c44bd5ff-f918-415b-98e6-aca44fed84fa">
+        <Source><![CDATA[Event TabsGrid.Load
+	// Select the subset of tabs that will be shown.
+	Do 'FindTabIndex'
+	Do 'ScrollTabs'
+
+	&IsFirstTab = True
+	For &Index = &FirstTab To &LastTab
+		&Tab = &Tabs.Item(&Index)
+		Do 'LoadItem'
+		Load
+		&IsFirstTab = False
+	Endfor
+
+	If (&Tabs.Count > 0)
+		&TabBitmap = GetTabImage.Udp(&IsFirstTab, &IsSelectedTab, False, True)
+		EndTab.Bitmap = &TabBitmap
+	Else
+		EndTab.Visible = 0
+	EndIf
+EndEvent
+
+Sub 'FindTabIndex'
+	// Searches for the tab with the specified code.
+	// If not found, or code is empty, returns first tab.
+	&Found = False
+	If (&TabCode <> "")
+		For &Index = 1 to &Tabs.Count
+			If (&Tabs.Item(&Index).Code = &TabCode)
+				&SelectedTab = &Index
+				&Found = True
+				Exit
+			EndIf
+		EndFor
+	EndIf
+
+	If (not &Found and &Tabs.Count > 0)
+		&SelectedTab = 1
+	EndIf
+EndSub
+
+Sub 'ScrollTabs'
+	// Tab scrolling logic (disabled for the moment)
+	&FirstTab = 1
+	&LastTab = &Tabs.Count
+	TabPrevious.Visible = 0
+	TabNext.Visible = 0
+EndSub
+
+Sub 'LoadItem'
+	Tab.Caption = &Tab.Description
+	If &Index = &SelectedTab
+		&TabBitmap = GetTabImage.udp(&IsFirstTab, True, False, False)
+		&IsSelectedTab = True
+		Tab.Class = !"SelectedTab"
+		Tab.Link = ""
+		&WebComponentUrl = &Tab.WebComponent
+		Component.Object = CreateFromURL(&WebComponentUrl)
+	Else
+		&TabBitmap = GetTabImage.udp(&IsFirstTab, False, &IsSelectedTab, False)
+		&IsSelectedTab = False
+		Tab.Class = !"UnSelectedTab"
+		Tab.Link = &Tab.Link
+	Endif
+	BeginTab.Bitmap = &TabBitmap
+EndSub
+]]></Source>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="763f0d8b-d8ac-4db4-8dd4-de8979f2b5b9">
+        <Source><![CDATA[]]></Source>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="e4c4ade7-53f0-4a56-bdfd-843735b66f47">
+        <Variable Name="Tabs">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>Tabs</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>sdt:TabOptions</Value></Property></Properties>
+        </Variable>
+        <Variable Name="Tab">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>Tab</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>sdt:TabOptions.TabOptionsItem</Value></Property></Properties>
+        </Variable>
+        <Variable Name="TabCode">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>TabCode</Value></Property><Property><Name>DomainKey</Name><Value>TabCode</Value></Property><Property><Name>idBasedOn</Name><Value>Domain:TabCode</Value></Property></Properties>
+        </Variable>
+        <Variable Name="SelectedTab">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>SelectedTab</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Numeric</Value></Property></Properties>
+        </Variable>
+        <Variable Name="FirstTab">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>FirstTab</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Numeric</Value></Property></Properties>
+        </Variable>
+        <Variable Name="LastTab">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>LastTab</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Numeric</Value></Property></Properties>
+        </Variable>
+        <Variable Name="Index">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>Index</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Numeric</Value></Property></Properties>
+        </Variable>
+        <Variable Name="IsFirstTab">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>IsFirstTab</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Boolean</Value></Property></Properties>
+        </Variable>
+        <Variable Name="IsSelectedTab">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>IsSelectedTab</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Boolean</Value></Property></Properties>
+        </Variable>
+        <Variable Name="Found">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>Found</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Boolean</Value></Property></Properties>
+        </Variable>
+        <Variable Name="TabBitmap">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>TabBitmap</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Bitmap</Value></Property></Properties>
+        </Variable>
+        <Variable Name="WebComponentUrl">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>WebComponentUrl</Value></Property><Property><Name>idBasedOn</Name><Value>Domain:URLString</Value></Property></Properties>
+        </Variable>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="ad3ca970-19d0-44e1-a7b7-db05556e820c">
+        <Help>
+          <HelpItem>
+            <Language>88313f43-5eb2-0000-0028-e8d9f5bf9588-Portuguese</Language>
+            <Content />
+          </HelpItem>
+        </Help>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties />
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>TabbedView</Value></Property><Property><Name>WEB_COMP</Name><Value>Yes</Value></Property><Property><Name>STD_FUNC_OBJECT</Name><Value>No</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="Util" parentType="00000000-0000-0000-0000-000000000008" user="DS_SSILVA\SSilva" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2009-01-14T13:26:25.0000000Z" checksum="364da08f4272f3ff501ca4034fad1cb2" guid="4b6d7f36-d183-4fc3-96d4-7047584430c5" name="FazImagem" type="84a12160-f59b-4ad7-a683-ea4481ac23e9" description="Faz Imagem">
+      <Part type="528d1c06-a9c2-420d-bd35-21dca83f12ff">
+        <Source><![CDATA[&saida += '<img '
+if not &tooltip.IsEmpty()
+	&saida += 'ext:qtip="'+&tooltip.Trim()+'" '
+endif
+&saida += 'src="'+&imagem.Trim()+'">'
+]]></Source>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="c414ed00-8cc4-4f44-8820-4baf93547173">
+        <Layout>
+          <Bands />
+          <Properties />
+        </Layout>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="9b0a32a3-de6d-4be1-a4dd-1b85d3741534">
+        <Source><![CDATA[parm(in:&tooltip,in:&imagem,out:&saida);
+]]></Source>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="763f0d8b-d8ac-4db4-8dd4-de8979f2b5b9">
+        <Properties />
+      </Part>
+      <Part type="e4c4ade7-53f0-4a56-bdfd-843735b66f47">
+        <Variable Name="imagem">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>imagem</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>2000</Value></Property><Property><Name>AttMaxLen</Name><Value>2000</Value></Property></Properties>
+        </Variable>
+        <Variable Name="saida">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>saida</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>200</Value></Property><Property><Name>AttMaxLen</Name><Value>200</Value></Property></Properties>
+        </Variable>
+        <Variable Name="titulo">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>titulo</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>200</Value></Property><Property><Name>AttMaxLen</Name><Value>200</Value></Property></Properties>
+        </Variable>
+        <Variable Name="tooltip">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>tooltip</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>200</Value></Property><Property><Name>AttMaxLen</Name><Value>200</Value></Property></Properties>
+        </Variable>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="ad3ca970-19d0-44e1-a7b7-db05556e820c">
+        <Help>
+          <HelpItem>
+            <Language>88313f43-5eb2-0000-0028-e8d9f5bf9588-Portuguese</Language>
+            <Content />
+          </HelpItem>
+        </Help>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties />
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>FazImagem</Value></Property><Property><Name>Description</Name><Value>Faz Imagem</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="GeneralWeb" parentType="00000000-0000-0000-0000-000000000008" user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2007-06-28T21:58:24.0000000Z" checksum="2ff3cd9563684a246c2d871672e9cb1c" guid="2079bc53-08d3-451a-884a-81d3a12ade3c" name="GetTabImage" type="84a12160-f59b-4ad7-a683-ea4481ac23e9" description="Get Tab Image Name">
+      <Part type="528d1c06-a9c2-420d-bd35-21dca83f12ff">
+        <Source><![CDATA[
+If (&IsLastTab)
+	If (&IsSelected)
+		&Bitmap.FromImage(TabEndSelected)
+	Else
+		&Bitmap.FromImage(TabEndUnselected)
+	Endif
+Else
+	If (&IsSelected)
+		If (&IsFirstTab)
+			&Bitmap.FromImage(TabBeginSelected)
+		Else
+			&Bitmap.FromImage(TabUnselectedSelected)
+		Endif
+	Else
+		If (&IsFirstTab)
+			&Bitmap.FromImage(TabBeginUnselected)
+		Else
+			If (&IsBeforeTabSelected)
+				&Bitmap.FromImage(TabSelectedUnselected)
+			Else
+				&Bitmap.FromImage(TabUnselectedUnselected)
+			Endif
+		Endif
+	Endif
+Endif
+]]></Source>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="c414ed00-8cc4-4f44-8820-4baf93547173">
+        <Layout>
+          <Bands />
+          <Properties />
+        </Layout>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="9b0a32a3-de6d-4be1-a4dd-1b85d3741534">
+        <Source><![CDATA[
+parm(in:&IsFirstTab, in:&IsSelected, in:&IsBeforeTabSelected, in:&IsLastTab, out:&Bitmap);
+]]></Source>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="763f0d8b-d8ac-4db4-8dd4-de8979f2b5b9">
+        <Properties />
+      </Part>
+      <Part type="e4c4ade7-53f0-4a56-bdfd-843735b66f47">
+        <Variable Name="Bitmap">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>Bitmap</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Bitmap</Value></Property></Properties>
+        </Variable>
+        <Variable Name="IsFirstTab">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>IsFirstTab</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Boolean</Value></Property></Properties>
+        </Variable>
+        <Variable Name="IsSelected">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>IsSelected</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Boolean</Value></Property></Properties>
+        </Variable>
+        <Variable Name="IsBeforeTabSelected">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>IsBeforeTabSelected</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Boolean</Value></Property></Properties>
+        </Variable>
+        <Variable Name="IsLastTab">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>IsLastTab</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Boolean</Value></Property></Properties>
+        </Variable>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="ad3ca970-19d0-44e1-a7b7-db05556e820c">
+        <Help>
+          <HelpItem>
+            <Language>88313f43-5eb2-0000-0028-e8d9f5bf9588-Portuguese</Language>
+            <Content />
+          </HelpItem>
+        </Help>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <InnerHtml><![CDATA[Gets the tab image name depending on which tab was selected. Used by the View webpanels.]]></InnerHtml>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>GetTabImage</Value></Property><Property><Name>Description</Name><Value>Get Tab Image Name</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="gxui" parentType="00000000-0000-0000-0000-000000000008" user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2008-10-19T14:15:00.0000000Z" checksum="b7813cd9c2aca7763734d15a10c1d3ca" guid="50827ab1-f126-4de8-aa42-a7a1082ba206" name="gxuiGridGetParams" type="84a12160-f59b-4ad7-a683-ea4481ac23e9" description="gxui.Grid Get Params">
+      <Part type="528d1c06-a9c2-420d-bd35-21dca83f12ff">
+        <Source><![CDATA[//Http POST method
+&gridParams.start 	= Val(&request.GetVariable(!'start'))
+&gridParams.limit 	= Val(&request.GetVariable(!'limit'))
+&gridParams.sort 	= &request.GetVariable(!'sort')
+&gridParams.dir 	= &request.GetVariable(!'dir')
+&gridParams.query 	= &request.GetVariable(!'query')
+
+&exit = False
+&i = 0
+
+&gridParams.filterValues = &request.GetVariable("filters")
+
+Do While &exit = False
+	&filter = new()
+	&filter.field = &request.GetVariable("filter[" + trim(str(&i)) + "][field]")
+	If Not &filter.field.IsEmpty()
+		&filter.value = &request.GetVariable("filter[" + trim(str(&i)) + "][data][value]")
+		&filter.type = &request.GetVariable("filter[" + trim(str(&i)) + "][data][type]")
+		&filter.comparison = gxuiFilterComparison.Convert(&request.GetVariable("filter[" + trim(str(&i)) + "][data][comparison]"))
+		&gridParams.filters.Add(&filter)
+	Else
+		&exit = True
+	Endif
+	&i += 1
+EndDo
+]]></Source>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="c414ed00-8cc4-4f44-8820-4baf93547173">
+        <Layout>
+          <Bands />
+          <Properties />
+        </Layout>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="9b0a32a3-de6d-4be1-a4dd-1b85d3741534">
+        <Source><![CDATA[parm(in: &request, out: &gridParams);
+]]></Source>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="763f0d8b-d8ac-4db4-8dd4-de8979f2b5b9">
+        <Properties />
+      </Part>
+      <Part type="e4c4ade7-53f0-4a56-bdfd-843735b66f47">
+        <Variable Name="gridParams">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>gridParams</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>sdt:gxuiGridParams</Value></Property></Properties>
+        </Variable>
+        <Variable Name="i">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>i</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Numeric</Value></Property></Properties>
+        </Variable>
+        <Variable Name="param">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>param</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>100</Value></Property><Property><Name>AttMaxLen</Name><Value>100</Value></Property></Properties>
+        </Variable>
+        <Variable Name="params">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>params</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>100</Value></Property><Property><Name>AttMaxLen</Name><Value>100</Value></Property><Property><Name>AttCollection</Name><Value>True</Value></Property></Properties>
+        </Variable>
+        <Variable Name="queryString">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>queryString</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>200</Value></Property><Property><Name>AttMaxLen</Name><Value>200</Value></Property></Properties>
+        </Variable>
+        <Variable Name="request">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>request</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>ext:HttpRequest</Value></Property></Properties>
+        </Variable>
+        <Variable Name="subparam">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>subparam</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>100</Value></Property><Property><Name>AttMaxLen</Name><Value>100</Value></Property></Properties>
+        </Variable>
+        <Variable Name="subparams">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>subparams</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>100</Value></Property><Property><Name>AttMaxLen</Name><Value>100</Value></Property><Property><Name>AttCollection</Name><Value>True</Value></Property></Properties>
+        </Variable>
+        <Variable Name="exit">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>exit</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Boolean</Value></Property></Properties>
+        </Variable>
+        <Variable Name="filter">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>filter</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>sdt:gxuiFilter</Value></Property></Properties>
+        </Variable>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="ad3ca970-19d0-44e1-a7b7-db05556e820c">
+        <Help>
+          <HelpItem>
+            <Language>88313f43-5eb2-0000-0028-e8d9f5bf9588-Portuguese</Language>
+            <Content />
+          </HelpItem>
+        </Help>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties />
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>gxuiGridGetParams</Value></Property><Property><Name>Description</Name><Value>gxui.Grid Get Params</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="HMask2" parentType="00000000-0000-0000-0000-000000000008" user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2009-05-03T00:14:10.0000000Z" checksum="e7992674e86f599ae45dca831643f51d" guid="19b814a2-dfec-472e-9e68-833b772a111b" name="HMask2UnmaskedValue" type="84a12160-f59b-4ad7-a683-ea4481ac23e9" description="HMask2 Unmasked Value">
+      <Part type="528d1c06-a9c2-420d-bd35-21dca83f12ff">
+        <Source><![CDATA[&unmasked = &valor
+&tot = &picture.Length()
+if &tot > 0
+	for &i= 1 to &tot
+		&char = &picture.Substring(&i,1)
+		&unmasked = &unmasked.Replace(&char,"")
+	endfor
+endif
+]]></Source>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="c414ed00-8cc4-4f44-8820-4baf93547173">
+        <Layout>
+          <Bands />
+          <Properties />
+        </Layout>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="9b0a32a3-de6d-4be1-a4dd-1b85d3741534">
+        <Source><![CDATA[parm(in:&valor,in:&picture,out:&unmasked);
+]]></Source>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="763f0d8b-d8ac-4db4-8dd4-de8979f2b5b9">
+        <Properties />
+      </Part>
+      <Part type="e4c4ade7-53f0-4a56-bdfd-843735b66f47">
+        <Variable Name="char">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>char</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>1</Value></Property><Property><Name>AttMaxLen</Name><Value>1</Value></Property></Properties>
+        </Variable>
+        <Variable Name="i">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>i</Value></Property></Properties>
+        </Variable>
+        <Variable Name="picture">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>picture</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>200</Value></Property><Property><Name>AttMaxLen</Name><Value>200</Value></Property></Properties>
+        </Variable>
+        <Variable Name="tot">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>tot</Value></Property></Properties>
+        </Variable>
+        <Variable Name="unmasked">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>unmasked</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>200</Value></Property><Property><Name>AttMaxLen</Name><Value>200</Value></Property></Properties>
+        </Variable>
+        <Variable Name="valor">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>valor</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>200</Value></Property><Property><Name>AttMaxLen</Name><Value>200</Value></Property></Properties>
+        </Variable>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="ad3ca970-19d0-44e1-a7b7-db05556e820c">
+        <Help>
+          <HelpItem>
+            <Language>88313f43-5eb2-0000-0028-e8d9f5bf9588-Portuguese</Language>
+            <Content />
+          </HelpItem>
+        </Help>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties />
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>HMask2UnmaskedValue</Value></Property><Property><Name>CommitOnExit</Name><Value>No</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="Security" parentType="00000000-0000-0000-0000-000000000008" user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2007-06-28T21:58:24.0000000Z" checksum="70b213ad7886ba4392b6e8973c870ca8" guid="81627646-3007-46d5-8088-81d231f378c5" name="IsAuthorized" type="84a12160-f59b-4ad7-a683-ea4481ac23e9" description="Is Authorized">
+      <Part type="528d1c06-a9c2-420d-bd35-21dca83f12ff">
+        <Source><![CDATA[&Authorized = True
+
+/*
+LoadContext.Call(&Context)
+If (&GxObject = 'ViewInvoices' and &Context.UserLevel = 0)
+	&Authorized = False
+Endif
+*/
+]]></Source>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="c414ed00-8cc4-4f44-8820-4baf93547173">
+        <Layout>
+          <Bands />
+          <Properties />
+        </Layout>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="9b0a32a3-de6d-4be1-a4dd-1b85d3741534">
+        <Source><![CDATA[parm(in:&GxObject, out:&Authorized);
+]]></Source>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="763f0d8b-d8ac-4db4-8dd4-de8979f2b5b9">
+        <Properties />
+      </Part>
+      <Part type="e4c4ade7-53f0-4a56-bdfd-843735b66f47">
+        <Variable Name="GxObject">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>GxObject</Value></Property><Property><Name>idBasedOn</Name><Value>Domain:ObjectName</Value></Property></Properties>
+        </Variable>
+        <Variable Name="Authorized">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>Authorized</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Boolean</Value></Property></Properties>
+        </Variable>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="ad3ca970-19d0-44e1-a7b7-db05556e820c">
+        <Help>
+          <HelpItem>
+            <Language>88313f43-5eb2-0000-0028-e8d9f5bf9588-Portuguese</Language>
+            <Content />
+          </HelpItem>
+        </Help>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <InnerHtml><![CDATA[<P>&nbsp;</P>]]></InnerHtml>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>IsAuthorized</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="GeneralWeb" parentType="00000000-0000-0000-0000-000000000008" user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2007-06-28T21:58:26.0000000Z" checksum="c293d2d6fede05b72211bc52f0bcdb64" guid="f505dd93-4991-4b98-8c9c-9f052cbd556a" name="ListPrograms" type="84a12160-f59b-4ad7-a683-ea4481ac23e9" description="List Programs">
+      <Part type="528d1c06-a9c2-420d-bd35-21dca83f12ff">
+        <Properties><Property><Name>IsDefault</Name><Value>True</Value></Property><Property><Name>Defaults</Name><Value>WorkWith:(global)Templates\ListProgramsProcedure.dkt</Value></Property></Properties>
+      </Part>
+      <Part type="c414ed00-8cc4-4f44-8820-4baf93547173">
+        <Layout>
+          <Bands />
+          <Properties />
+        </Layout>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="9b0a32a3-de6d-4be1-a4dd-1b85d3741534">
+        <Source><![CDATA[parm(out:&ProgramNames);
+]]></Source>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="763f0d8b-d8ac-4db4-8dd4-de8979f2b5b9">
+        <Properties />
+      </Part>
+      <Part type="e4c4ade7-53f0-4a56-bdfd-843735b66f47">
+        <Properties><Property><Name>IsDefault</Name><Value>True</Value></Property><Property><Name>Defaults</Name><Value>WorkWith:(global)Templates\ListProgramsVariables.dkt</Value></Property></Properties>
+      </Part>
+      <Part type="ad3ca970-19d0-44e1-a7b7-db05556e820c">
+        <Help>
+          <HelpItem>
+            <Language>88313f43-5eb2-0000-0028-e8d9f5bf9588-Portuguese</Language>
+            <Content />
+          </HelpItem>
+        </Help>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties />
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>ListPrograms</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="ContextManagement" parentType="00000000-0000-0000-0000-000000000008" user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2007-06-28T21:58:26.0000000Z" checksum="3efbcbb41192e493516dad617aa99861" guid="91e79b6f-fc8d-4871-b283-28ee9d0a1338" name="LoadContext" type="84a12160-f59b-4ad7-a683-ea4481ac23e9" description="Load Context">
+      <Part type="528d1c06-a9c2-420d-bd35-21dca83f12ff">
+        <Source><![CDATA[&Context.FromXml(&Session.Get(!"context"))
+]]></Source>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="c414ed00-8cc4-4f44-8820-4baf93547173">
+        <Layout>
+          <Bands />
+          <Properties />
+        </Layout>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="9b0a32a3-de6d-4be1-a4dd-1b85d3741534">
+        <Source><![CDATA[parm(out:&Context);
+]]></Source>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="763f0d8b-d8ac-4db4-8dd4-de8979f2b5b9">
+        <Properties />
+      </Part>
+      <Part type="e4c4ade7-53f0-4a56-bdfd-843735b66f47">
+        <Variable Name="Context">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>Context</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>sdt:Context</Value></Property></Properties>
+        </Variable>
+        <Variable Name="Session">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>Session</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>ext:WebSession</Value></Property><Property><Name>Length</Name><Value>0</Value></Property><Property><Name>Decimals</Name><Value>0</Value></Property></Properties>
+        </Variable>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="ad3ca970-19d0-44e1-a7b7-db05556e820c">
+        <Help>
+          <HelpItem>
+            <Language>88313f43-5eb2-0000-0028-e8d9f5bf9588-Portuguese</Language>
+            <Content />
+          </HelpItem>
+        </Help>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <InnerHtml><![CDATA[<P>&nbsp;</P>]]></InnerHtml>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>LoadContext</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="ContextManagement" parentType="00000000-0000-0000-0000-000000000008" user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2007-06-28T21:58:26.0000000Z" checksum="4f41c8470123578f7d95f8ae1b3da0ef" guid="069f0679-dbcf-4d8a-9619-1c8bd144082e" name="SetContext" type="84a12160-f59b-4ad7-a683-ea4481ac23e9" description="Set Context">
+      <Part type="528d1c06-a9c2-420d-bd35-21dca83f12ff">
+        <Source><![CDATA[&Session.Set(!"context", &Context.ToXml())
+]]></Source>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="c414ed00-8cc4-4f44-8820-4baf93547173">
+        <Layout>
+          <Bands />
+          <Properties />
+        </Layout>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="9b0a32a3-de6d-4be1-a4dd-1b85d3741534">
+        <Source><![CDATA[parm(in:&Context);
+]]></Source>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="763f0d8b-d8ac-4db4-8dd4-de8979f2b5b9">
+        <Properties />
+      </Part>
+      <Part type="e4c4ade7-53f0-4a56-bdfd-843735b66f47">
+        <Variable Name="Context">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>Context</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>sdt:Context</Value></Property></Properties>
+        </Variable>
+        <Variable Name="Session">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>Session</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>ext:WebSession</Value></Property><Property><Name>Length</Name><Value>0</Value></Property><Property><Name>Decimals</Name><Value>0</Value></Property></Properties>
+        </Variable>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="ad3ca970-19d0-44e1-a7b7-db05556e820c">
+        <Help>
+          <HelpItem>
+            <Language>88313f43-5eb2-0000-0028-e8d9f5bf9588-Portuguese</Language>
+            <Content />
+          </HelpItem>
+        </Help>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <InnerHtml><![CDATA[<P>&nbsp;</P>]]></InnerHtml>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>SetContext</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="GeneralWeb" parentType="00000000-0000-0000-0000-000000000008" user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2008-09-05T11:38:26.0000000Z" checksum="3fb8d2cf899f357b67456b7bcf62edc1" guid="e0b78aec-be52-46cf-be32-6b50b0ff40c6" name="WWDynamicFilterBuilder" type="84a12160-f59b-4ad7-a683-ea4481ac23e9" description="WWDynamic Filter Builder">
+      <Part type="528d1c06-a9c2-420d-bd35-21dca83f12ff">
+        <Source><![CDATA[	&js = '<script language="javascript">'+NewLine()
+    &js += 'function mostraD(num,mostra) {mostraF(num,mostra);inclui();}'+NewLine()
+
+	// Atualiza o Combo de Condition do filtro
+    &js += 'function CriaCond(obj,num,tipo) {'+NewLine()
+    &js += 'var valor = "";'+NewLine()  // Limpa combo
+    &js += 'if (obj.selectedIndex >= 0) {valor = obj.options[obj.selectedIndex].value;}'+NewLine()  // Limpa combo
+    &js += 'while(obj.length > 0) obj['+'0'+'] = null;'+NewLine()  // Limpa combo
+    &js += 'if (tipo == 1) {'+NewLine()   // se for caracter adiciona mais os like
+for &con in &dyn.Conditions
+	if &con.IsCaracter = 1 and &con.Name = &dyn.DefaultConditionCaracter
+    	&js += '   AddCombo(obj,"'+&con.Name.Trim()+'","'+&con.Description.Trim()+'",valor == "'+&con.Name.Trim()+'" ? true : false);'+NewLine()
+	endif
+endfor
+for &con in &dyn.Conditions
+	if &con.IsCaracter = 1 and &con.Name <> &dyn.DefaultConditionCaracter
+    	&js += '   AddCombo(obj,"'+&con.Name.Trim()+'","'+&con.Description.Trim()+'",valor == "'+&con.Name.Trim()+'" ? true : false);'+NewLine()
+	endif
+endfor
+    &js += '}'+NewLine()
+for &con in &dyn.Conditions
+	if &con.IsCaracter <> 1 and &con.Name = &dyn.DefaultCondition
+    	&js += '   AddCombo(obj,"'+&con.Name.Trim()+'","'+&con.Description.Trim()+'",valor == "'+&con.Name.Trim()+'" ? true : false);'+NewLine()
+	endif
+endfor
+for &con in &dyn.Conditions
+	if &con.IsCaracter <> 1 and &con.Name <> &dyn.DefaultCondition
+    	&js += '   AddCombo(obj,"'+&con.Name.Trim()+'","'+&con.Description.Trim()+'",valor == "'+&con.Name.Trim()+'" ? true : false);'+NewLine()
+	endif
+endfor
+    &js += '}'+NewLine()
+
+    &js += 'function AddCombo(obj,valor,desc,sel) {'+NewLine() // Adiciona itens ao combo
+    &js += 'obj.options.add(new Option(desc,valor,sel,sel));'+NewLine()
+    &js += '}'+NewLine()
+
+	// Mostra e Esconde os filtros
+    &js += 'function mostraF(num,mostra) {'+NewLine()
+    &js += 'switch(num) {'+NewLine()
+	&conta = 0
+for &fil in &dyn.Filters
+	&conta += 1
+    &js += '   case '+&conta.ToString().Trim()+':'+NewLine()
+    &js += '      document.forms['+'0'+'].'+&fil.Name.Trim()+'.value="";'+NewLine()
+    &js += '      document.forms['+'0'+'].'+&fil.Name.Trim()+'.style.display=mostra;'+NewLine()
+    &js += '      document.forms['+'0'+'].'+&fil.Cond.Trim()+'.style.display=mostra;'+NewLine()
+    &js += '      document.forms['+'0'+'].'+&fil.Carac.Trim()+'.style.display="none";'+NewLine()
+    &js += '      document.forms['+'0'+'].'+&fil.Numer.Trim()+'.style.display="none";'+NewLine()
+    &js += '      document.getElementById("'+&fil.DateD.Trim()+'_dp_container").style.display="none";'+NewLine()
+    &js += '      document.getElementById("'+&fil.deleteD.Trim()+'").style.display=mostra;'+NewLine()
+    &js += '      break;'+NewLine()
+endfor
+    &js += '}'+NewLine()
+    &js += 'return false;'+NewLine()
+    &js += '}'+NewLine()
+
+    // Rotina que inclui e exclui filtros automaticamente
+    &js += 'function inclui() {'+NewLine()
+    &js += ' achou = 0;'+NewLine()
+	&conta = 0
+for &fil in &dyn.Filters
+	&conta += 1
+    &js += ' if (achou < '+&conta.ToString().Trim()+' && document.forms['+'0'+'].'+&fil.Name.Trim()+'.value=="") {'+NewLine()
+    &js += '      mostraF('+&conta.ToString().Trim()+',achou > 0 ? "none" : "");'+NewLine()
+    &js += '      achou = '+&conta.ToString().Trim()+';'+NewLine()
+    &js += ' }'+NewLine()
+endfor
+    &js += 'return false;'+NewLine()
+    &js += '}'+NewLine()
+
+	// Rotina que mostra os campos corretos e monta a codio correta de cada campo
+    &js += 'function selCampo(num,obj) {'+NewLine()
+    &js += '   var vc = 4;'+NewLine()
+    &js += '   switch(obj.value) {'+NewLine()
+for &att in &dyn.Attributes
+    &js += '      case "'+&att.Name.Trim()+'": vc = '+&att.Type+'; break;'+NewLine()
+endfor
+    &js += '   }'+NewLine()
+    &js += '   mostratipo(num,vc);'+NewLine()
+    &js += 'switch(num) {'+NewLine()
+&conta = 0
+for &fil in &dyn.Filters
+	&conta += 1
+    &js += '   case '+&conta.ToString().Trim()+':'+NewLine()
+    &js += '     CriaCond(document.forms['+'0'+'].'+&fil.Cond.Trim()+',num,vc);'+NewLine()
+    &js += '     break;'+NewLine()
+endfor
+    &js += '}'+NewLine()
+    &js += 'inclui();'+NewLine()
+    &js += 'return false;'+NewLine()
+    &js += '}'+NewLine()
+
+    // Rotina que mostra a variavel correta dependendo do tipo do campo selecionado
+    &js += 'function mostratipo(num,tipo){'+NewLine()
+    &js += 'switch(num) {'+NewLine()
+&conta = 0
+for &fil in &dyn.Filters
+	&conta += 1
+    &js += '   case '+&conta.ToString().Trim()+':'+NewLine()
+    &js += '      switch (tipo) {'+NewLine()
+    &js += '         case 1:'+NewLine() // Caracter
+    &js += '             document.forms['+'0'+'].'+&fil.Carac.Trim()+'.style.display="";'+NewLine()
+    &js += '             document.forms['+'0'+'].'+&fil.Numer.Trim()+'.style.display="none";'+NewLine()
+    &js += '             document.getElementById("'+&fil.DateD.Trim()+'_dp_container").style.display="none";'+NewLine()
+    &js += '             break;'+NewLine()
+    &js += '         case 2:'+NewLine() // Numerico
+    &js += '             document.forms['+'0'+'].'+&fil.Carac.Trim()+'.style.display="none";'+NewLine()
+    &js += '             document.forms['+'0'+'].'+&fil.Numer.Trim()+'.style.display="";'+NewLine()
+    &js += '             document.getElementById("'+&fil.DateD.Trim()+'_dp_container").style.display="none";'+NewLine()
+    &js += '             break;'+NewLine()
+    &js += '         case 3:'+NewLine() // Data
+    &js += '             document.forms['+'0'+'].'+&fil.Carac.Trim()+'.style.display="none";'+NewLine()
+    &js += '             document.forms['+'0'+'].'+&fil.Numer.Trim()+'.style.display="none";'+NewLine()
+    &js += '             document.getElementById("'+&fil.DateD.Trim()+'_dp_container").style.display="";'+NewLine()
+    &js += '             break;'+NewLine()
+    &js += '         case 4:'+NewLine() // Nenhum
+    &js += '             document.forms['+'0'+'].'+&fil.Carac.Trim()+'.style.display="none";'+NewLine()
+    &js += '             document.forms['+'0'+'].'+&fil.Numer.Trim()+'.style.display="none";'+NewLine()
+    &js += '             document.getElementById("'+&fil.DateD.Trim()+'_dp_container").style.display="none";'+NewLine()
+    &js += '             break;'+NewLine()
+    &js += '      }'+NewLine()
+    &js += '      break;'+NewLine()
+endfor
+    &js += '}'+NewLine()
+    &js += '}'+NewLine()
+
+	// Rotina que esconde os filtros quando carrega a pagina
+    &js += 'function escondeCampos() {'+NewLine()
+&conta = 0
+for &fil in &dyn.Filters
+	&conta += 1
+	if &conta = 1
+		&js += 'if (document.forms['+'0'+'].'+&fil.Name.Trim()+'.value == "") {'+NewLine()
+		&js += '   document.forms['+'0'+'].'+&fil.Carac.Trim()+'.style.display="none";'+NewLine()
+		&js += '   document.forms['+'0'+'].'+&fil.Numer.Trim()+'.style.display="none";'+NewLine()
+		&js += '   document.getElementById("'+&fil.DateD.Trim()+'_dp_container").style.display="none";'+NewLine()
+		&js += '   document.getElementById("'+&fil.deleteD.Trim()+'").style.display="none";'+NewLine()
+		&js += '} else {selCampo('+&conta.ToString().Trim()+',document.forms['+'0'+'].'+&fil.Name.Trim()+');}'+NewLine()
+	else
+		&js += 'if (document.forms['+'0'+'].'+&fil.Name.Trim()+'.value == "") {'+NewLine()
+    	&js += "   mostraF('+&conta.ToString().Trim()+','none');"+NewLine()
+    	&js += '} else {selCampo('+&conta.ToString().Trim()+',document.forms['+'0'+'].'+&fil.Name.Trim()+');}'+NewLine()
+	endif
+endfor
+	&js += 'inclui();'+NewLine()
+    &js += '}'+NewLine()
+
+&conta = 0
+for &fil in &dyn.Filters
+	&conta += 1
+	&js += 'var control1'+&conta.ToString().Trim()+' = gx.dom.el("'+&fil.Name.Trim()+'");'+NewLine()
+	&js += 'var handler1'+&conta.ToString().Trim()+' = function(e){selCampo('+&conta.ToString().Trim()+',document.forms['+'0'+'].'+&fil.Name.Trim()+');};'+Newline()
+	&js += 'gx.evt.attach( control1'+&conta.ToString().Trim()+',"change",handler1'+&conta.ToString().Trim()+');'+Newline()
+
+//	&js += 'var control2'+&conta.ToString().Trim()+' = gx.dom.el("'+&fil.deleteD.Trim()+'");'+NewLine()
+//	&js += 'var handler2'+&conta.ToString().Trim()+' = function(e){mostraD('+&conta.ToString().Trim()+',"none");};'+Newline()
+//	&js += 'gx.evt.attach( control2'+&conta.ToString().Trim()+',"click",handler2'+&conta.ToString().Trim()+');'+Newline()
+endfor
+
+    &js += '</script>'+NewLine()
+    //&js += '<script language="javascript">GXOnloadUsr = function() { escondeCampos();};</script>'+NewLine()
+
+
+
+]]></Source>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="c414ed00-8cc4-4f44-8820-4baf93547173">
+        <Layout>
+          <Bands />
+          <Properties />
+        </Layout>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="9b0a32a3-de6d-4be1-a4dd-1b85d3741534">
+        <Source><![CDATA[parm(in:&dyn,out:&js);
+]]></Source>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="763f0d8b-d8ac-4db4-8dd4-de8979f2b5b9">
+        <Properties />
+      </Part>
+      <Part type="e4c4ade7-53f0-4a56-bdfd-843735b66f47">
+        <Variable Name="att">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>att</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>sdt:WWDynamicFilters.Attribute</Value></Property></Properties>
+        </Variable>
+        <Variable Name="conta">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>conta</Value></Property></Properties>
+        </Variable>
+        <Variable Name="dyn">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>dyn</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>sdt:WWDynamicFilters</Value></Property></Properties>
+        </Variable>
+        <Variable Name="fil">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>fil</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>sdt:WWDynamicFilters.Filter</Value></Property></Properties>
+        </Variable>
+        <Variable Name="js">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>js</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>102400</Value></Property><Property><Name>AttMaxLen</Name><Value>102400</Value></Property></Properties>
+        </Variable>
+        <Variable Name="con">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>con</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>sdt:WWDynamicFilters.Condition</Value></Property></Properties>
+        </Variable>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="ad3ca970-19d0-44e1-a7b7-db05556e820c">
+        <Help>
+          <HelpItem>
+            <Language>88313f43-5eb2-0000-0028-e8d9f5bf9588-Portuguese</Language>
+            <Content />
+          </HelpItem>
+        </Help>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties />
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>WWDynamicFilterBuilder</Value></Property><Property><Name>CommitOnExit</Name><Value>No</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2009-05-17T21:30:09.0000000Z" checksum="33e9512ed37cccc7c3cd3284f4de8c33" guid="2b665e9f-74f5-4fb4-8be7-fc5fddd9c299" name="TransactionTemplate.html" type="1132ac08-290f-4fd1-bd18-64777b7329d1" description="Transaction Template.html">
+      <Part type="9b6155f9-f286-4ed5-bd15-67672e8ea320">
+        <Data><base64Binary>PHRhYmxlIGNsYXNzPSJUYWJlbGFGdW5kbyIgaWQ9IlRhYmxlTWFpbiI+DQogIDx0Ym9keT4NCiAgICA8dHI+DQogICAgICA8dGQ+DQogICAgICAgICRpZih0b29sYmFyKSQNCiAgICAgICAgICA8dGFibGUgY2xhc3M9IlRhYmxlIiBpZD0iVGFibGVUb29sYmFyIj4NCgkJCTx0cj4NCgkJCQk8dGQ+DQoJCQkJJHRvb2xiYXIkDQoJCQkJPC90ZD4NCgkJCTwvdHI+DQoJCQk8dHI+DQoJCQkJPHRkPg0KCQkJCTwvdGQ+DQoJCQk8L3RyPg0KCQkgIDwvdGFibGU+DQoJCSRlbmRpZiQNCgkgICA8L3RkPg0KICAgICAgPHRyPg0KICAgICAgICA8dGQ+DQoJCQkkaWYodGl0bGVpbWFnZSkkDQoJCQk8dGFibGUgY2xhc3M9IlRhYmVsYVRpdHVsbyIgaWQ9IlRhYmxlVGl0bGUiIGNlbGxzcGFjaW5nPSIwIiBjZWxscGFkZGluZz0iMCI+DQoJCQkgIDx0Ym9keT4NCgkJCQk8dHI+DQoJCQkJICA8dGQgd2lkdGg9IjYwIj4kdGl0bGVpbWFnZSQ8L3RkPg0KCQkJCSAgPHRkPiR0aXRsZSQ8L3RkPg0KCQkJCTwvdHI+DQoJCQkgIDwvdGJvZHk+DQoJCQk8L3RhYmxlPg0KCQkJJGVsc2UkDQoJCQkJJHRpdGxlJA0KCQkJJGVuZGlmJA0KICAgICAgICA8L3RkPg0KICAgICAgPC90cj4NCgkgIDx0cj4NCgkJPHRkPg0KCQkJJGVycm9ydmlld2VyJA0KCQk8L3RkPg0KCSAgPC90cj4NCiAgICAgIDx0cj4NCiAgICAgICAgPHRkPg0KICAgICAgICAgICR0YWJzJA0KICAgICAgICAgIDx0YWJsZSBjbGFzcz0iVGFibGUiIGlkPSJUYWJsZTExIj4NCiAgICAgICAgICAgIDx0Ym9keT4NCiAgICAgICAgICAgICAgJGF0dHJpYnV0ZXMkDQogICAgICAgICAgICAgIDx0cj4NCiAgICAgICAgICAgICAgICA8dGQ+DQogICAgICAgICAgICAgICAgICA8dGFibGUgY2xhc3M9IlRhYmxlMTIiIGlkPSJGb3JtQnV0dG9ucyI+DQogICAgICAgICAgICAgICAgICAgIDx0Ym9keT4NCiAgICAgICAgICAgICAgICAgICAgICA8dHI+DQogICAgICAgICAgICAgICAgICAgICAgICA8dGQ+DQogICAgICAgICAgICAgICAgICAgICAgICAgICRidXR0b25lbnRlciQNCiAgICAgICAgICAgICAgICAgICAgICAgIDwvdGQ+DQogICAgICAgICAgICAgICAgICAgICAgICAkaWYoYnV0dG9uY2FuY2VsKSQNCgkJCQkJCQk8dGQ+DQoJCQkJCQkJICAkYnV0dG9uY2FuY2VsJA0KCQkJCQkJCTwvdGQ+DQogICAgICAgICAgICAgICAgICAgICAgICAkZW5kaWYkDQogICAgICAgICAgICAgICAgICAgICAgICAkaWYoYnV0dG9uZGVsZXRlKSQNCgkJCQkJCQk8dGQ+DQoJCQkJCQkJJGJ1dHRvbmRlbGV0ZSQNCgkJCQkJCQk8L3RkPg0KICAgICAgICAgICAgICAgICAgICAgICAgJGVuZGlmJA0KICAgICAgICAgICAgICAgICAgICAgICAgJGlmKGJ1dHRvbmhlbHApJA0KCQkJCQkJCTx0ZD4NCgkJCQkJCQkgICRidXR0b25oZWxwJA0KCQkJCQkJCTwvdGQ+DQogICAgICAgICAgICAgICAgICAgICAgICAkZW5kaWYkDQogICAgICAgICAgICAgICAgICAgICAgICAkaWYoYnV0dG9uYWN0aW9uKSQNCgkJCQkJCQk8dGQ+DQoJCQkJCQkJICAkYnV0dG9uYWN0aW9uJA0KCQkJCQkJCTwvdGQ+DQogICAgICAgICAgICAgICAgICAgICAgICAkZW5kaWYkDQogICAgICAgICAgICAgICAgICAgICAgPC90cj4NCiAgICAgICAgICAgICAgICAgICAgPC90Ym9keT4NCiAgICAgICAgICAgICAgICAgIDwvdGFibGU+PC90ZD4NCiAgICAgICAgICAgICAgPC90cj4NCiAgICAgICAgICAgIDwvdGJvZHk+DQogICAgICAgICAgPC90YWJsZT4NCgkJPC90ZD4NCiAgICAgIDwvdHI+DQogICAgPC90cj4NCiAgPC90Ym9keT4NCjwvdGFibGU+DQokZm9vdGVyJA==</base64Binary></Data>
+        <Properties><Property><Name>FileName</Name><Value>TransactionTemplate.html</Value></Property><Property><Name>FileExtension</Name><Value>.html</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <InnerHtml><![CDATA[]]></InnerHtml>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>TransactionTemplate.html</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2009-05-18T17:36:39.0000000Z" checksum="78748465229540fd7c5320a7817d6a4c" guid="01c9f990-fa0e-4a2c-8459-7c4849677eab" name="SelectionTemplate.html" type="1132ac08-290f-4fd1-bd18-64777b7329d1" description="Selection Template.html">
+      <Part type="9b6155f9-f286-4ed5-bd15-67672e8ea320">
+        <Data><base64Binary>PHRhYmxlIGNsYXNzPSJUYWJlbGFGdW5kbyIgaWQ9IlRhYmxlIiBjZWxsc3BhY2luZz0iMCIgY2VsbHBhZGRpbmc9IjAiPg0KICA8dGJvZHk+DQogICAgPHRyPg0KICAgICAgPHRkPg0KCQkkaWYodGl0bGVpbWFnZSkkDQoJCTx0YWJsZSBjbGFzcz0iVGFiZWxhVGl0dWxvIiBpZD0iVGFibGVUaXRsZSIgY2VsbHNwYWNpbmc9IjAiIGNlbGxwYWRkaW5nPSIwIj4NCgkJICA8dGJvZHk+DQoJCQk8dHI+DQoJCQkgIDx0ZCB3aWR0aD0iNjAiPiR0aXRsZWltYWdlJDwvdGQ+DQoJCQkgIDx0ZD4kdGl0bGUkPC90ZD4NCgkJCTwvdHI+DQoJCSAgPC90Ym9keT4NCgkJPC90YWJsZT4NCgkJJGVsc2UkDQoJCQkkdGl0bGUkDQoJCSRlbmRpZiQNCiAgICAgICAgJHRhYnMkDQogICAgICA8L3RkPg0KICAgIDwvdHI+DQogICAgPHRyPg0KICAgICAgPHRkPg0KCQkkaWYoZmlsdGVyY29sbGFwc2VpbWFnZSkkDQoJCQk8dGFibGUgY2xhc3M9IlRhYmxlR3JpZCIgaWQ9IlRhYmxlR3JpZEhlYWRlcjExIiBjZWxsc3BhY2luZz0iMCIgY2VsbHBhZGRpbmc9IjAiPg0KCQkJICA8dGJvZHk+DQoJCQkJPHRyPg0KCQkJCSAgPHRkPg0KCQkJCQk8dGFibGUgY2xhc3M9IiIgc3R5bGU9IldJRFRIOiAxMDAlIiBjZWxsc3BhY2luZz0iMCIgY2VsbHBhZGRpbmc9IjAiIGJvcmRlcj0iMCI+DQoJCQkJCSAgPHRib2R5Pg0KCQkJCQkJPHRyPg0KCQkJCQkJICA8dGQ+PGd4VGV4dEJsb2NrIGlkPSJGaWx0ZXJUZXh0IiBDbGFzcz0iVGV4dEJsb2NrIiBDYXB0aW9uRXhwcmVzc2lvbj0iRmlsdHJvIi8+PC90ZD4NCgkJCQkJCSAgPHRkIGFsaWduPSJyaWdodCI+JGZpbHRlcmNvbGxhcHNlaW1hZ2UkPC90ZD4NCgkJCQkJCTwvdHI+DQoJCQkJCSAgPC90Ym9keT4NCgkJCQkJPC90YWJsZT48L3RkPg0KCQkJCTwvdHI+DQoJCQkJPHRyPg0KCQkJCSAgPHRkIHZhbGlnbj0idG9wIiBjb2xzcGFuPSIxIj4NCgkJCQkJJGlmKGZpbHRlcnMpJA0KCQkJCQk8dGFibGUgY2xhc3M9IiIgaWQ9IlRhYmxlU2VhcmNoIj4NCgkJCQkJICA8dGJvZHk+DQoJCQkJCQkkZmlsdGVyczp7DQoJCQkJCQk8dHI+DQoJCQkJCQkgIDxURD4NCgkJCQkJCSAgJGl0LmZpbHRlclJvdyQNCgkJCQkJCSAgPC9URD4NCgkJCQkJCTwvdHI+DQoJCQkJCQl9JA0KCQkJCQkJPHRyPg0KCQkJCQkJICA8dGQgYWxpZ249InJpZ2h0IiBjb2xzcGFuPSIyIj4NCgkJCQkJCQkkZmlsdGVyQnV0dG9ucyQNCgkJCQkJCSAgPC90ZD4NCgkJCQkJCTwvdHI+DQoJCQkJCQk8dHI+DQoJCQkJCQkgIDx0ZD48L3RkPg0KCQkJCQkJPC90cj4NCgkJCQkJICA8L3Rib2R5Pg0KCQkJCQk8L3RhYmxlPg0KCQkJCQkkZW5kaWYkDQoJCQkJPC90ZD4NCgkJCSAgPC90cj4NCgkJCTwvdGJvZHk+DQoJCSAgPC90YWJsZT4NCgkJJGVsc2UkDQoJCQkkaWYoZmlsdGVycykkDQoJCQk8dGFibGUgY2xhc3M9IiIgaWQ9IlRhYmxlU2VhcmNoIj4NCgkJCSAgPHRib2R5Pg0KCQkJCSRmaWx0ZXJzOnsNCgkJCQk8dHI+DQoJCQkJICA8VEQ+DQoJCQkJICAkaXQuZmlsdGVyUm93JA0KCQkJCSAgPC9URD4NCgkJCQk8L3RyPg0KCQkJCX0kDQoJCQkJPHRyPg0KCQkJCSAgPHRkIGFsaWduPSJyaWdodCIgY29sc3Bhbj0iMiI+DQoJCQkJCSRmaWx0ZXJCdXR0b25zJA0KCQkJCSAgPC90ZD4NCgkJCQk8L3RyPg0KCQkJCTx0cj4NCgkJCQkgIDx0ZD48L3RkPg0KCQkJCTwvdHI+DQoJCQkgIDwvdGJvZHk+DQoJCQk8L3RhYmxlPg0KCQkJJGVuZGlmJA0KCQkkZW5kaWYkDQogICAgICAgICRlcnJvcnZpZXdlciQNCiAgICAgICAgPC90ZD4NCiAgICA8L3RyPg0KICAgIDx0cj4NCiAgICAgIDx0ZD4NCiAgICAgICAgPHRhYmxlIGNsYXNzPSJUYWJsZSIgaWQ9IlRhYmxlR3JpZEhlYWRlciIgY2VsbHNwYWNpbmc9IjAiIGNlbGxwYWRkaW5nPSIwIj4NCiAgICAgICAgICA8dGJvZHk+DQogICAgICAgICAgICA8dHI+DQogICAgICAgICAgICAgIDx0ZD4NCiAgICAgICAgICAgICAgJGdyaWRQYWdpbmdGaXJzdCQNCiAgICAgICAgICAgICAgJGdyaWRQYWdpbmdQcmV2aW91cyQNCiAgICAgICAgICAgICAgJGdyaWRQYWdpbmdOZXh0JA0KICAgICAgICAgICAgICAkZ3JpZFBhZ2luZ0xhc3QkDQogICAgICAgICAgICAgICRncmlkRXhwb3J0JA0KICAgICAgICAgICAgICAkZ3JpZEJ1dHRvbnMkDQogICAgICAgICAgICAgICRpZihjdXJyZW50cGFnZSkkDQogICAgICAgICAgICAgIAkkaWYobWF4cGFnZSkkDQoJCQkJCSAgPC90ZD4NCgkJCQkJICA8dGQ+DQogICAgICAgICAgICAgIAkJPGd4VGV4dEJsb2NrIENsYXNzPSJUZXh0QmxvY2siIENhcHRpb25FeHByZXNzaW9uPSJQYWcuICIvPg0KICAgICAgICAgICAgICAJCSRjdXJyZW50cGFnZSQNCiAgICAgICAgICAgICAgCQk8Z3hUZXh0QmxvY2sgQ2xhc3M9IlRleHRCbG9jayIgQ2FwdGlvbkV4cHJlc3Npb249IiBkZSAiLz4NCiAgICAgICAgICAgICAgCQkkbWF4cGFnZSQNCiAgICAgICAgICAgICAgCSRlbHNlJA0KICAgICAgICAgICAgICAJCSRjdXJyZW50cGFnZSQNCiAgICAgICAgICAgICAgCSRlbmRpZiQNCiAgICAgICAgICAgICAgJGVsc2UkDQogICAgICAgICAgICAgIAkkaWYobWF4cGFnZSkkDQogICAgICAgICAgICAgIAkJJG1heHBhZ2UkDQogICAgICAgICAgICAgIAkkZW5kaWYkDQogICAgICAgICAgICAgICRlbmRpZiQNCiAgICAgICAgICAgICAgPC90ZD4NCiAgICAgICAgICAgIDwvdHI+DQogICAgICAgICAgICA8dHI+DQogICAgICAgICAgICAgIDx0ZCB2YWxpZ249InRvcCIgY29sc3Bhbj0iMiI+DQogICAgICAgICAgICAgICAkZ3JpZCQNCiAgICAgICAgICAgICAgPC90ZD4NCiAgICAgICAgICAgIDwvdHI+DQogICAgICAgICAgPC90Ym9keT4NCiAgICAgICAgPC90YWJsZT48L3RkPg0KICAgIDwvdHI+DQogICAgJGlmKHRyYW5zYWN0aW9uKSQNCiAgICA8dHI+DQogICAgICA8dGQ+JHRyYW5zYWN0aW9uJDwvdGQ+DQogICAgPC90cj4NCiAgICAkZW5kaWYkDQogICAgPHRyPg0KICAgICAgPHRkPiRmb290ZXJCdXR0b25zJDwvdGQ+DQogICAgPC90cj4NCiAgPC90Ym9keT4NCjwvdGFibGU+DQokZm9vdGVyJA==</base64Binary></Data>
+        <Properties><Property><Name>FileName</Name><Value>SelectionTemplate.html</Value></Property><Property><Name>FileExtension</Name><Value>.html</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties />
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>SelectionTemplate.html</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2008-10-24T13:32:14.0000000Z" checksum="edb5605cf8e0cebe44e1e7a3fb9d0ed8" guid="830d5ba9-a43a-416b-815e-e04e1671dda2" name="collapse" type="9fb193d9-64a4-4d30-b129-ff7c76830f7e" description="collapse">
+      <Part type="36f350de-f768-425f-ac20-773749f331bf">
+        <Images>
+          <ImageItem><Image name="collapse.gif" description="collapse.gif"><Data>
+<base64Binary>
+R0lGODlhCgAKAIABAC16wP///yH5BAEAAAEALAAAAAAKAAoAAAIMjI+pywkPn4mx2XsLADs=
+</base64Binary>
+</Data></Image><Properties><Property><Name>Name</Name><Value>collapse.gif</Value></Property><Property><Name>Description</Name><Value>collapse.gif</Value></Property><Property><Name>ImageOriginalFullPath</Name><Value>C:\Program Files\Apache Software Foundation\Tomcat 5.5\webapps\rasds\static\collapse.gif</Value></Property></Properties></ImageItem>
+        </Images>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties />
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>collapse</Value></Property><Property><Name>IsThemeDependant</Name><Value>False</Value></Property><Property><Name>IsLanguageDependant</Name><Value>False</Value></Property><Property><Name>DefaultImage</Name><Value>,,</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2008-10-24T13:32:23.0000000Z" checksum="3093e115a31e7101ac1481d138ea2c23" guid="5c2de7c6-42be-48af-ab35-50e3f2a09078" name="expand" type="9fb193d9-64a4-4d30-b129-ff7c76830f7e" description="expand">
+      <Part type="36f350de-f768-425f-ac20-773749f331bf">
+        <Images>
+          <ImageItem><Image name="expand.gif" description="expand.gif"><Data>
+<base64Binary>
+R0lGODlhCgAKAIABAC16wP///yH5BAEAAAEALAAAAAAKAAoAAAIRjI8IkLdtnlpU1ppk05nBVgAAOw==
+</base64Binary>
+</Data></Image><Properties><Property><Name>Name</Name><Value>expand.gif</Value></Property><Property><Name>Description</Name><Value>expand.gif</Value></Property><Property><Name>ImageOriginalFullPath</Name><Value>C:\Program Files\Apache Software Foundation\Tomcat 5.5\webapps\rasds\static\expand.gif</Value></Property></Properties></ImageItem>
+        </Images>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties />
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>expand</Value></Property><Property><Name>IsThemeDependant</Name><Value>False</Value></Property><Property><Name>IsLanguageDependant</Name><Value>False</Value></Property><Property><Name>DefaultImage</Name><Value>,,</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="Objects" parentType="00000000-0000-0000-0000-000000000008" user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2007-06-28T21:58:22.0000000Z" checksum="2b0f60ec5ceb865aabe9af4f38248112" guid="7116838b-20ea-4e4e-9c14-99359afb92f0" name="ContextManagement" type="00000000-0000-0000-0000-000000000008" description="ContextManagement">
+      <Properties><Property><Name>Name</Name><Value>ContextManagement</Value></Property><Property><Name>Description</Name><Value>ContextManagement</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="Objects" parentType="00000000-0000-0000-0000-000000000008" user="ARTECH\acardoso" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2008-01-18T12:29:02.0000000Z" checksum="76ed5d8f9100a7ef19b72a0eca715f2d" guid="17b41c01-3525-41e6-9722-7751f0b01d39" name="DolphinStyleMenu" type="00000000-0000-0000-0000-000000000008" description="Dolphin Style Menu">
+      <Properties><Property><Name>Name</Name><Value>DolphinStyleMenu</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="Objects" parentType="00000000-0000-0000-0000-000000000008" user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2007-06-28T21:58:22.0000000Z" checksum="42512072f1302d266cdd807ce8a3a069" guid="a676350a-d3a1-4850-9f51-4cef8688b224" name="GeneralWeb" type="00000000-0000-0000-0000-000000000008" description="GeneralWeb">
+      <Properties><Property><Name>Name</Name><Value>GeneralWeb</Value></Property><Property><Name>Description</Name><Value>GeneralWeb</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="Objects" parentType="00000000-0000-0000-0000-000000000008" user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2009-05-08T13:56:13.0000000Z" checksum="6c81d3fb5e986a7edc33e5c0161307da" guid="98d6fe17-0824-424e-911e-b04dcb719395" name="gxui" type="00000000-0000-0000-0000-000000000008" description="gxui">
+      <Properties><Property><Name>Name</Name><Value>gxui</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="Objects" parentType="00000000-0000-0000-0000-000000000008" user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2009-05-08T13:56:14.0000000Z" checksum="20593e654ec7d0be97fc2f91406a13be" guid="87ee3420-c062-4f5e-a8a0-38dbf20e3deb" name="gxuiSample" type="00000000-0000-0000-0000-000000000008" description="gxui Sample">
+      <Properties><Property><Name>Name</Name><Value>gxuiSample</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="Objects" parentType="00000000-0000-0000-0000-000000000008" user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2007-06-28T21:58:22.0000000Z" checksum="df1034e7c9c0e8dbd61510dab4271968" guid="2c01440d-1215-4aa3-81fe-3334dd0a38f6" name="Security" type="00000000-0000-0000-0000-000000000008" description="Security">
+      <Properties><Property><Name>Name</Name><Value>Security</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="Objects" parentType="00000000-0000-0000-0000-000000000008" user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2009-05-08T13:58:12.0000000Z" checksum="065860906530284cc781607c23f05702" guid="eb124edf-84ab-4654-aa6f-3e61a64eacf1" name="Util" type="00000000-0000-0000-0000-000000000008" description="Util">
+      <Properties><Property><Name>Name</Name><Value>Util</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="UtlPrc" parentType="00000000-0000-0000-0000-000000000008" user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2010-09-09T01:33:39.0000000Z" checksum="0aa6b88257a43666e9c10e1e92ceb47e" guid="2635e5f1-0d43-42a0-932b-ffde316c73bf" name="UtlPrRetornaErroBanco" type="84a12160-f59b-4ad7-a683-ea4481ac23e9" description="Retorna Erro BD">
+      <Part type="528d1c06-a9c2-420d-bd35-21dca83f12ff">
+        <Source><![CDATA[&Mensagem = 'Origem: ' + &Programa.Trim().ToUpper()
+&Mensagem += '<BR>' + ' | Err: ' + &ErrN.ToString().Trim()
+
+Do Case
+	Case &ErrN = 1
+		&Mensagem += ' - Duplicate record'
+	Case &ErrN = 101
+		&Mensagem += ' - End of file'
+	Case &ErrN = 103
+		&Mensagem += ' - Object locked (record or file)'
+	Case &ErrN = 105
+		&Mensagem += ' - Object not found'
+	Case &ErrN = 106
+		&Mensagem += ' - Database already exists'
+	Case &ErrN = 500
+		&Mensagem += ' - Parent primary key not found'
+	Case &ErrN = 999
+		&Mensagem += ' - Unexpected DBMS error'
+	OtherWise
+		&Mensagem += ' - Error!!!'
+EndCase
+
+&Mensagem += '<BR>' + ' | Native DBMS Error Code: ' + &gxDBErr.ToString().Trim() + ' - ' + &gxDBTxt.Trim()
+&Mensagem += ' | Operação: ' + &gxOper.Trim()
+&Mensagem += '<BR>' + ' | Objeto: ' + &gxErrTbl.Trim()
+&Mensagem += '<BR>' + ' | Processamento: '
+
+Do Case
+	Case &gxErrOpt = 0
+		&Mensagem += ' 0 - Continue processing. The error is ignored.'
+	Case &gxErrOpt = 1
+		&Mensagem += ' 1 - Retry the operation'
+	Case &gxErrOpt = 2
+		&Mensagem += ' 2 - Cancel application execution'
+	Case &gxErrOpt = 3
+		&Mensagem += ' 3 - Perform default GeneXus processing'
+	OtherWise
+		&Mensagem += ' ' + &gxErrOpt.ToString().Trim()
+EndCase
+]]></Source>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="c414ed00-8cc4-4f44-8820-4baf93547173">
+        <Layout>
+          <Bands />
+          <Properties />
+        </Layout>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="9b0a32a3-de6d-4be1-a4dd-1b85d3741534">
+        <Source><![CDATA[Parm(in:&Programa, in:&ErrN, in:&gxDBErr, in:&gxDBTxt, in:&gxOper, in:&gxErrTbl, in:&gxErrOpt, out:&Mensagem);
+]]></Source>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="763f0d8b-d8ac-4db4-8dd4-de8979f2b5b9">
+        <Properties />
+      </Part>
+      <Part type="e4c4ade7-53f0-4a56-bdfd-843735b66f47">
+        <Variable Name="Mensagem">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>Mensagem</Value></Property><Property><Name>idBasedOn</Name><Value>Domain:DomErrorHandlerMensagem</Value></Property></Properties>
+        </Variable>
+        <Variable Name="Programa">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>Programa</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:VarChar</Value></Property><Property><Name>Length</Name><Value>254</Value></Property><Property><Name>AttMaxLen</Name><Value>254</Value></Property></Properties>
+        </Variable>
+        <Variable Name="gxErrOpt">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>gxErrOpt</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Numeric</Value></Property><Property><Name>Length</Name><Value>1</Value></Property><Property><Name>AttMaxLen</Name><Value>1</Value></Property></Properties>
+        </Variable>
+        <Variable Name="ErrN">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>ErrN</Value></Property></Properties>
+        </Variable>
+        <Variable Name="gxDBErr">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>gxDBErr</Value></Property></Properties>
+        </Variable>
+        <Variable Name="gxDBTxt">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>gxDBTxt</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:VarChar</Value></Property><Property><Name>Length</Name><Value>255</Value></Property><Property><Name>AttMaxLen</Name><Value>255</Value></Property></Properties>
+        </Variable>
+        <Variable Name="gxOper">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>gxOper</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:VarChar</Value></Property><Property><Name>Length</Name><Value>30</Value></Property><Property><Name>AttMaxLen</Name><Value>30</Value></Property></Properties>
+        </Variable>
+        <Variable Name="gxErrTbl">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>gxErrTbl</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:VarChar</Value></Property><Property><Name>Length</Name><Value>30</Value></Property><Property><Name>AttMaxLen</Name><Value>30</Value></Property></Properties>
+        </Variable>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="ad3ca970-19d0-44e1-a7b7-db05556e820c">
+        <Help>
+          <HelpItem>
+            <Language>88313f43-5eb2-0000-0028-e8d9f5bf9588-Portuguese</Language>
+            <Content />
+          </HelpItem>
+        </Help>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties />
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>UtlPrRetornaErroBanco</Value></Property><Property><Name>Description</Name><Value>Retorna Erro BD</Value></Property><Property><Name>CommitOnExit</Name><Value>No</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2010-09-09T01:33:22.0000000Z" checksum="4f9db637f20bdcf0fa19a6448cabeb72" guid="32a780c1-efb6-4626-b8fa-8c41f6e56e51" name="DomErrorHandlerMensagem" type="00972a17-9975-449e-aab1-d26165d51393" description="Dom Error Handler Mensagem">
+      <Part type="ad3ca970-19d0-44e1-a7b7-db05556e820c">
+        <Help>
+          <HelpItem>
+            <Language>88313f43-5eb2-0000-0028-e8d9f5bf9588-Portuguese</Language>
+            <Content />
+          </HelpItem>
+        </Help>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties />
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>DomErrorHandlerMensagem</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:VarChar</Value></Property><Property><Name>Length</Name><Value>4098</Value></Property><Property><Name>AttMaxLen</Name><Value>4098</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+<Object parent="Objects" parentType="00000000-0000-0000-0000-000000000008" user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2011-11-07T11:36:46.0000000Z" checksum="3196a850bf60a68db0645af5bb059a76" guid="1ddb0468-f695-49c9-b32a-cf633a483699" name="HPatternLegend" type="447527b5-9210-4523-898b-5dccb17be60a" description="HPattern Legend">
+      <Part type="5c2aa9da-8fc4-4b6b-ae02-8db4fa48976a">
+        <Level Name="HPatternLegend">
+          <LevelInfo guid="be4aca38-e659-4bb5-a1f6-c54ad077df71" name="HPatternLegend" description="HPattern Legend">
+            <Properties><Property><Name>Name</Name><Value>HPatternLegend</Value></Property></Properties>
+          </LevelInfo>
+          <Item guid="d192aeee-a4d1-493c-9599-345ea3e0ab92" name="Type" description="Type">
+            <Properties><Property><Name>Name</Name><Value>Type</Value></Property><Property><Name>idBasedOn</Name><Value>Domain:HPatternLegendType</Value></Property></Properties>
+          </Item>
+          <Item guid="87db5b39-e73d-4b20-8044-aae1a0ebd990" name="Name" description="Name">
+            <Properties><Property><Name>Name</Name><Value>Name</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>200</Value></Property><Property><Name>AttMaxLen</Name><Value>200</Value></Property></Properties>
+          </Item>
+          <Item guid="45100383-73d2-43ec-a335-4a296c723ab6" name="Resource" description="Resource">
+            <Properties><Property><Name>Name</Name><Value>Resource</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>200</Value></Property><Property><Name>AttMaxLen</Name><Value>200</Value></Property></Properties>
+          </Item>
+          <Item guid="698c705b-a15a-4407-adfe-386be4cf29cf" name="Description" description="Description">
+            <Properties><Property><Name>Name</Name><Value>Description</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>200</Value></Property><Property><Name>AttMaxLen</Name><Value>200</Value></Property></Properties>
+          </Item>
+        </Level>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties />
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>HPatternLegend</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+    <Object parent="Objects" parentType="00000000-0000-0000-0000-000000000008" user="HEURYS\crsienna" versionDate="0001-01-01T00:00:00.0000000" lastUpdate="2011-11-07T12:25:05.0000000Z" checksum="542c8017d79fac736d0b6cd114e528b9" guid="47ce89a3-27a8-4ef7-b96e-6da24cd81232" name="WpLegenda" type="c9584656-94b6-4ccd-890f-332d11fc2c25" description="Legenda">
+      <Part type="d24a58ad-57ba-41b7-9e6e-eaca3543c778">
+        <Source><![CDATA[<BODY bottomMargin="0" rightMargin="0" leftMargin="0" class="Form" topMargin="0"><TABLE style="WIDTH: 600px" class="Table" id="Table1"><TBODY><TR><TD /><TD><gxFreeStyle border="0" SdtColMember="&amp;HPatternLegendCollection" rules="None" ControlName="Grid1" freestyle="1"><TR><TD align="Center"><gxButton Event="'nada'" ControlName="Button1" /><IMG class="Image" id="Image1" imagereference="9fb193d9-64a4-4d30-b129-ff7c76830f7e-prompt" hspace="0" /><gxTextBlock id="TextBlock1" CaptionExpression="Text Block" /></TD><TD><gxAttribute FieldSpecifier="item(0).Description" AttID="&amp;HPatternLegendCollection" ReadOnly="True" /></TD></TR></gxFreeStyle></TD></TR><TR><TD /><TD /></TR></TBODY></TABLE></BODY>]]></Source>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="9b0a32a3-de6d-4be1-a4dd-1b85d3741534">
+        <Source><![CDATA[parm(in:&Identificador);
+]]></Source>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="c44bd5ff-f918-415b-98e6-aca44fed84fa">
+        <Source><![CDATA[Event Start
+	&HPatternLegendCollection.FromXml(&Session.Get(!"Legend"+&Identificador.Trim()))
+EndEvent
+
+Event Grid1.Load
+
+	if &HPatternLegendCollection.CurrentItem.Type = HPatternLegendType.Button
+		Button1.Class = &HPatternLegendCollection.CurrentItem.Resource
+		Button1.Caption = &HPatternLegendCollection.CurrentItem.Name
+		Button1.Tooltiptext = &HPatternLegendCollection.CurrentItem.Description
+		Button1.Visible = true
+		Image1.Visible = false
+		TextBlock1.Visible = false
+	Else
+		if &HPatternLegendCollection.CurrentItem.Type = HPatternLegendType.Image
+			Image1.FromURL(&HPatternLegendCollection.CurrentItem.Name)
+			Image1.Class = &HPatternLegendCollection.CurrentItem.Resource
+			Image1.Tooltiptext = &HPatternLegendCollection.CurrentItem.Description
+			Button1.Visible = false
+			Image1.Visible = true
+			TextBlock1.Visible = false
+		Else
+			TextBlock1.Class = &HPatternLegendCollection.CurrentItem.Resource
+			TextBlock1.Caption = &HPatternLegendCollection.CurrentItem.Name
+			TextBlock1.Tooltiptext = &HPatternLegendCollection.CurrentItem.Description
+			Button1.Visible = false
+			Image1.Visible = false
+			TextBlock1.Visible = true
+		EndIf
+	EndIf
+EndEvent
+
+Event 'nada'
+
+EndEvent
+
+]]></Source>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="763f0d8b-d8ac-4db4-8dd4-de8979f2b5b9">
+        <Properties />
+      </Part>
+      <Part type="e4c4ade7-53f0-4a56-bdfd-843735b66f47">
+        <Variable Name="Identificador">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>Identificador</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property><Property><Name>Length</Name><Value>120</Value></Property><Property><Name>AttMaxLen</Name><Value>120</Value></Property></Properties>
+        </Variable>
+        <Variable Name="HPatternLegendCollection">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>HPatternLegendCollection</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>sdt:HPatternLegend</Value></Property><Property><Name>AttCollection</Name><Value>True</Value></Property></Properties>
+        </Variable>
+        <Variable Name="Session">
+          <Documentation />
+          <Help />
+          <Properties><Property><Name>Name</Name><Value>Session</Value></Property><Property><Name>ATTCUSTOMTYPE</Name><Value>ext:WebSession</Value></Property></Properties>
+        </Variable>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="ad3ca970-19d0-44e1-a7b7-db05556e820c">
+        <Help>
+          <HelpItem>
+            <Language>88313f43-5eb2-0000-0028-e8d9f5bf9588-Portuguese</Language>
+            <Content />
+          </HelpItem>
+        </Help>
+        <Properties><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+      </Part>
+      <Part type="babf62c5-0111-49e9-a1c3-cc004d90900a">
+        <Properties />
+      </Part>
+      <Properties><Property><Name>Name</Name><Value>WpLegenda</Value></Property><Property><Name>Description</Name><Value>Legenda</Value></Property><Property><Name>IsDefault</Name><Value>False</Value></Property></Properties>
+    </Object>
+  </Objects>
+  <Attributes />
+  <Dependencies>
+    <Reference Package="3ea7e1c6-b849-4df9-931a-070171a8a2f0" Type="Object" Id="c9584656-94b6-4ccd-890f-332d11fc2c25">
+      <Properties Name="Web Panel" PackageName="GenexusBL" />
+    </Reference>
+    <Reference Package="3ea7e1c6-b849-4df9-931a-070171a8a2f0" Type="Part" Id="d24a58ad-57ba-41b7-9e6e-eaca3543c778">
+      <Properties Name="Web Form" PackageName="GenexusBL" />
+    </Reference>
+    <Reference Package="3ea7e1c6-b849-4df9-931a-070171a8a2f0" Type="Part" Id="9b0a32a3-de6d-4be1-a4dd-1b85d3741534">
+      <Properties Name="Rules" PackageName="GenexusBL" />
+    </Reference>
+    <Reference Package="3ea7e1c6-b849-4df9-931a-070171a8a2f0" Type="Part" Id="c44bd5ff-f918-415b-98e6-aca44fed84fa">
+      <Properties Name="Events" PackageName="GenexusBL" />
+    </Reference>
+    <Reference Package="3ea7e1c6-b849-4df9-931a-070171a8a2f0" Type="Part" Id="763f0d8b-d8ac-4db4-8dd4-de8979f2b5b9">
+      <Properties Name="Conditions" PackageName="GenexusBL" />
+    </Reference>
+    <Reference Package="3ea7e1c6-b849-4df9-931a-070171a8a2f0" Type="Part" Id="e4c4ade7-53f0-4a56-bdfd-843735b66f47">
+      <Properties Name="Variables" PackageName="GenexusBL" />
+    </Reference>
+    <Reference Package="3ea7e1c6-b849-4df9-931a-070171a8a2f0" Type="Part" Id="ad3ca970-19d0-44e1-a7b7-db05556e820c">
+      <Properties Name="Help" PackageName="GenexusBL" />
+    </Reference>
+    <Reference Package="3ea7e1c6-b849-4df9-931a-070171a8a2f0" Type="Part" Id="babf62c5-0111-49e9-a1c3-cc004d90900a">
+      <Properties Name="Documentation" PackageName="GenexusBL" />
+    </Reference>
+    <Reference Package="3ea7e1c6-b849-4df9-931a-070171a8a2f0" Type="Object" Id="447527b5-9210-4523-898b-5dccb17be60a">
+      <Properties Name="Structured Data Type" PackageName="GenexusBL" />
+    </Reference>
+    <Reference Package="3ea7e1c6-b849-4df9-931a-070171a8a2f0" Type="Part" Id="5c2aa9da-8fc4-4b6b-ae02-8db4fa48976a">
+      <Properties Name="Structure" PackageName="GenexusBL" />
+    </Reference>
+    <Reference Package="3ea7e1c6-b849-4df9-931a-070171a8a2f0" Type="Object" Id="00972a17-9975-449e-aab1-d26165d51393">
+      <Properties Name="Domain" PackageName="GenexusBL" />
+    </Reference>
+    <Reference Package="3ea7e1c6-b849-4df9-931a-070171a8a2f0" Type="Object" Id="84a12160-f59b-4ad7-a683-ea4481ac23e9">
+      <Properties Name="Procedure" PackageName="GenexusBL" />
+    </Reference>
+    <Reference Package="3ea7e1c6-b849-4df9-931a-070171a8a2f0" Type="Part" Id="528d1c06-a9c2-420d-bd35-21dca83f12ff">
+      <Properties Name="Source" PackageName="GenexusBL" />
+    </Reference>
+    <Reference Package="3ea7e1c6-b849-4df9-931a-070171a8a2f0" Type="Part" Id="c414ed00-8cc4-4f44-8820-4baf93547173">
+      <Properties Name="Layout" PackageName="GenexusBL" />
+    </Reference>
+    <Reference Package="3ea7e1c6-b849-4df9-931a-070171a8a2f0" Type="Object" Id="1132ac08-290f-4fd1-bd18-64777b7329d1">
+      <Properties Name="File" PackageName="GenexusBL" />
+    </Reference>
+    <Reference Package="3ea7e1c6-b849-4df9-931a-070171a8a2f0" Type="Part" Id="9b6155f9-f286-4ed5-bd15-67672e8ea320">
+      <Properties Name="Binary Content" PackageName="GenexusBL" />
+    </Reference>
+    <Reference Package="3ea7e1c6-b849-4df9-931a-070171a8a2f0" Type="Object" Id="9fb193d9-64a4-4d30-b129-ff7c76830f7e">
+      <Properties Name="Image" PackageName="GenexusBL" />
+    </Reference>
+    <Reference Package="3ea7e1c6-b849-4df9-931a-070171a8a2f0" Type="Part" Id="36f350de-f768-425f-ac20-773749f331bf">
+      <Properties Name="Images" PackageName="GenexusBL" />
+    </Reference>
+    <Reference Package="3ea7e1c6-b849-4df9-931a-070171a8a2f0" Type="Object" Id="00000000-0000-0000-0000-000000000008">
+      <Properties Name="Folder" PackageName="GenexusBL" />
+    </Reference>
+  </Dependencies>
+  <ObjectsIdentityMapping>
+    <ObjectIdentity Type="9fb193d9-64a4-4d30-b129-ff7c76830f7e" Name="TabGroupPrevious">
+      <Guid>23d403d6-d1e5-4c79-aab4-f073de218b70</Guid>
+    </ObjectIdentity>
+    <ObjectIdentity Type="c804fdbd-7c0b-440d-8527-4316c92649a6" Name="GeneXusX">
+      <Guid>842bca5d-8be0-4367-9226-b245d0ab3e57</Guid>
+    </ObjectIdentity>
+    <ObjectIdentity Type="c9584656-94b6-4ccd-890f-332d11fc2c25" Name="AppMasterPage">
+      <Guid>0d98c411-d9b1-4077-beb3-8a6b3751d736</Guid>
+    </ObjectIdentity>
+    <ObjectIdentity Type="c9584656-94b6-4ccd-890f-332d11fc2c25" Name="RecentLinks">
+      <Guid>e54a8580-861c-4151-8d54-6e1fc936e334</Guid>
+    </ObjectIdentity>
+    <ObjectIdentity Type="9fb193d9-64a4-4d30-b129-ff7c76830f7e" Name="TabGroupNext">
+      <Guid>f12b6130-24bd-4bf1-be14-7f0779ca7d89</Guid>
+    </ObjectIdentity>
+    <ObjectIdentity Type="9fb193d9-64a4-4d30-b129-ff7c76830f7e" Name="TabEndUnselected">
+      <Guid>a46a2602-a799-4dab-a329-130bd24fbbb4</Guid>
+    </ObjectIdentity>
+    <ObjectIdentity Type="00000000-0000-0000-0000-000000000008" Name="Objects">
+      <Guid>727caeef-4b76-4c2c-81cd-d23b18071aa6</Guid>
+    </ObjectIdentity>
+    <ObjectIdentity Type="9fb193d9-64a4-4d30-b129-ff7c76830f7e" Name="TabBeginUnselected">
+      <Guid>014ad39b-4d50-4343-92ef-0117c86e1b16</Guid>
+    </ObjectIdentity>
+    <ObjectIdentity Type="9fb193d9-64a4-4d30-b129-ff7c76830f7e" Name="TabUnselectedUnselected">
+      <Guid>ce463bdd-5a79-4a33-a6e5-8b0b7cb85bcd</Guid>
+    </ObjectIdentity>
+    <ObjectIdentity Type="9fb193d9-64a4-4d30-b129-ff7c76830f7e" Name="TabBeginSelected">
+      <Guid>f4a0965f-129d-45fc-bdfe-107944e516c0</Guid>
+    </ObjectIdentity>
+    <ObjectIdentity Type="9fb193d9-64a4-4d30-b129-ff7c76830f7e" Name="TabUnselectedSelected">
+      <Guid>a908a75c-9ebf-4d01-bcda-9711089e0493</Guid>
+    </ObjectIdentity>
+    <ObjectIdentity Type="9fb193d9-64a4-4d30-b129-ff7c76830f7e" Name="TabEndSelected">
+      <Guid>0424c12e-f1b1-4123-889e-b2966eb27e93</Guid>
+    </ObjectIdentity>
+    <ObjectIdentity Type="9fb193d9-64a4-4d30-b129-ff7c76830f7e" Name="TabSelectedUnselected">
+      <Guid>3e28b5a8-f17c-43b3-8850-2e932e706b48</Guid>
+    </ObjectIdentity>
+    <ObjectIdentity Type="00000000-0000-0000-0000-000000000008" Name="HMask2">
+      <Guid>e1574525-8560-42ca-a862-22b61d711916</Guid>
+    </ObjectIdentity>
+  </ObjectsIdentityMapping>
+</ExportFile>

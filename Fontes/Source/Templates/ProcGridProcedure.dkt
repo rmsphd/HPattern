@@ -1,0 +1,223 @@
+<%@ Template Language="C#" TargetLanguage="GX" Description="Export Procedure" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Assembly Name="Artech.Architecture.Common" %>
+<%@ Assembly Name="Artech.Common" %>
+<%@ Assembly Name="Artech.Common.Helpers" %>
+<%@ Assembly Name="Artech.Common.Properties" %>
+<%@ Assembly Name="Artech.Genexus.Common" %>
+<%@ Assembly Name="Artech.Packages.Patterns" %>
+<%@ Assembly Name="Artech.Udm.Framework" %>
+<%@ Assembly Name="Artech.Template.Base" %>
+<%@ Assembly Name="System.Xml" %>
+<%@ Assembly Name="StringTemplate" %>
+<%@ Assembly Name="Artech.Architecture.UI.Framework" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Artech.Common.Properties" %>
+<%@ Import Namespace="Artech.Architecture.Common.Collections" %>
+<%@ Import Namespace="Artech.Architecture.Common.Objects" %>
+<%@ Import Namespace="Artech.Udm.Framework" %>
+<%@ Import Namespace="Artech.Genexus.Common" %>
+<%@ Import Namespace="Artech.Genexus.Common.Helpers" %>
+<%@ Import Namespace="Artech.Genexus.Common.Objects" %>
+<%@ Import Namespace="Artech.Genexus.Common.Parts" %>
+<%@ Import Namespace="Artech.Packages.Patterns" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Objects" %>
+<%@ Import Namespace="System" %>
+<%@ Import Namespace="System.Collections.Generic" %>
+<%@ Import Namespace="System.Text" %>
+<%@ Import Namespace="System.Xml" %>
+<%@ Import Namespace="Antlr.StringTemplate" %>
+<%@ Import Namespace="Artech.Genexus.Common.Wiki" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern.Resources" %>
+<%@ Property Name="Object" Type="Artech.Architecture.Common.Objects.KBObject" %>
+<%@ Property Name="Part" Type="Artech.Architecture.Common.Objects.KBObjectPart" %>
+<%@ Property Name="Instance" Type="Artech.Packages.Patterns.Objects.PatternInstance" %>
+<%@ Property Name="Element" Type="Artech.Packages.Patterns.Objects.PatternInstanceElement" %>
+<%@ SubTemplate Name="FilterCondition" File="FilterCondition.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="SubLoadContext" File="SubLoadContext.dkt" MergeProperties="True"%>
+<%
+	HPatternInstance wwInstance = HPatternInstance.Load(Instance);
+	HPatternSettings settings = wwInstance.Settings;
+	Transaction trn = wwInstance.Transaction.Transaction;
+	SelectionElement selection = wwInstance.GetElement<SelectionElement>(Element);
+	
+	int contai = 0;
+	ArrayList lista = new ArrayList();
+	foreach (TransactionAttribute trnAtt in trn.Structure.Root.PrimaryKey) {
+
+		lista.Add(trnAtt.Attribute);
+		
+	}
+	
+	bool geraDF = false;
+	int ch = settings.DynamicFilters.MaxChoices;
+	int tot = 0;
+	
+	
+try {
+	if (selection.Filter != null) {
+		if (selection.Filter.Dynamicfilters != null) {
+			tot = selection.Filter.Dynamicfilters.Count;
+			if (tot > ch) {
+				tot = ch;
+			}
+			geraDF = (selection.Filter.Dynamicfilters.Count > 0 && ch > 0) ? true : false;
+		}
+	}
+} catch(System.Exception e) {		
+	System.Windows.Forms.MessageBox.Show("Erro event: " + e.Message + Environment.NewLine + e.StackTrace);                   
+}		
+
+bool loadOnStart = selection.GetLoadOnStart; 
+
+%>
+<Part type="<%= PartType.Procedure %>">
+	<Source><![CDATA[<%= Messages.VersionHPattern() %>
+
+// Monta o cabeçalho
+&response.AddHeader(!"Content-Type", !"text/xml")
+&xmlwriter.OpenResponse(&response)
+&xmlwriter.WriteStartDocument()
+
+<%@ CallSubTemplate SubLoadContext Settings='settings' tipo='2' %>
+
+// Pega os parametros da requisição
+gxuiGridGetParams.Call(&request, &params)
+&PageNumber = (&params.start / &params.limit) + 1
+
+// Carrega os filtros da sessão
+
+&GridState.FromXml(&params.filterValues)
+<%
+int parms = selection.Parameters.FindAll(delegate(ParameterElement parameter) { return true; /* parameter.IsAttribute; */ }).Count;
+int j = 0;
+%>
+<%	
+	if (!loadOnStart) {
+		j++;
+%>
+If &GridState.FilterValues.Count >= 1
+	&loadStart.FromString(&GridState.FilterValues.Item(<%= j %>).Value)
+endif
+<%
+	}
+%>
+
+
+<% 
+	if (parms > 0) {
+%>
+If &GridState.FilterValues.Count >= <%= parms %>
+<%
+	
+	foreach (ParameterElement parameter in selection.Parameters)
+	{		
+		//if (parameter.IsAttribute)
+		//{
+			j++;
+		// parameter.ParameterConditionPrc
+%>
+	&<%= parameter.Name.Replace("&","") %>.FromString(&GridState.FilterValues.Item(<%= j %>).Value)
+<%
+		//}
+	}
+
+%>
+endif
+<%
+	}
+	if (!loadOnStart) {		
+		parms++;
+	}
+%>
+<%	
+		if (selection.Filter != null && (selection.Filter.FilterAttributes.Count > 0 || geraDF))
+		{
+%>
+
+If &GridState.FilterValues.Count >= <%= parms+selection.Filter.FilterAttributes.Count+(tot*5) %>
+<%			int tf = selection.Filter.FilterAttributes.Count+parms;
+			for (int i = 0; i < selection.Filter.FilterAttributes.Count; i++) 
+			{ 
+%>
+	<%= selection.Filter.FilterAttributes[i].VariableName %>.FromString(&GridState.FilterValues.Item(<%= parms+(i + 1) %>).Value)
+<%
+			}
+			if (geraDF) {
+				int t = tf+1;
+				for (int i = 1;i<=ch;i++) {					
+%>			
+	&Campo<%=i.ToString().Trim()%>.FromString(&GridState.FilterValues.Item(<%= t++ %>).Value)
+	&CondD<%=i.ToString().Trim()%>.FromString(&GridState.FilterValues.Item(<%= t++ %>).Value)
+	&Carac<%=i.ToString().Trim()%>.FromString(&GridState.FilterValues.Item(<%= t++ %>).Value)
+	&Numer<%=i.ToString().Trim()%>.FromString(&GridState.FilterValues.Item(<%= t++ %>).Value)
+	&DataD<%=i.ToString().Trim()%>.FromString(&GridState.FilterValues.Item(<%= t++ %>).Value)
+<%
+				}
+			}
+%>
+EndIf
+<%
+		}
+%>
+
+// Carrega os dados do dataprovider
+<%
+if (!loadOnStart) {
+%>
+If &loadStart = 2
+<%
+}
+%>
+	&items = DPGrid<%=trn.Name%><%=selection.Parameters.RuleGxui("","",true).TrimEnd(';') %>
+<%
+if (!loadOnStart) {
+%>
+EndIf
+<%
+}
+%>
+&xmlwriter.WriteStartElement(!'ItemSearchResponse')
+&xmlwriter.WriteRawText(&items.ToXml())
+
+// calcula o total de registros
+<%
+if (!loadOnStart) {
+%>
+If &loadStart = 2
+<%
+}
+%>
+For Each  
+<%@ CallSubTemplate FilterCondition Object='Object' Part='Part' Instance='wwInstance' GridObject='selection' WhereForEach='true'%>
+		
+	&Total += 1
+EndFor
+<%
+if (!loadOnStart) {
+%>
+Else
+	&Total = 0
+EndIf
+<%
+}
+%>
+
+&xmlwriter.WriteElement(!'Total', Trim(&Total.ToString()))
+&xmlwriter.WriteEndElement()
+&xmlwriter.Close()
+
+<%
+	string codes = Heurys.Patterns.HPattern.Helpers.TemplateInternal.EventCodes(Heurys.Patterns.HPattern.Helpers.TemplateInternal.CodeType.Procedure, settings);
+	if (!String.IsNullOrEmpty(codes))
+	{
+%>
+<%= codes%>
+<%    
+	}
+%>
+
+]]>
+	</Source>
+</Part>

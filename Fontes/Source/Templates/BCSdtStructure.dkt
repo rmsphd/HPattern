@@ -1,0 +1,171 @@
+<%@ Template Language="C#" TargetLanguage="GX" Description="Grid Selected Objects SDT" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Assembly Name="Artech.Architecture.Common" %>
+<%@ Assembly Name="Artech.Common" %>
+<%@ Assembly Name="Artech.Common.Helpers" %>
+<%@ Assembly Name="Artech.Common.Properties" %>
+<%@ Assembly Name="Artech.Genexus.Common" %>
+<%@ Assembly Name="Artech.Packages.Patterns" %>
+<%@ Assembly Name="Artech.Udm.Framework" %>
+<%@ Assembly Name="Artech.Template.Base" %>
+<%@ Assembly Name="System.Xml" %>
+<%@ Assembly Name="StringTemplate" %>
+<%@ Assembly Name="Artech.Architecture.UI.Framework" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Artech.Common.Properties" %>
+<%@ Import Namespace="Artech.Architecture.Common.Collections" %>
+<%@ Import Namespace="Artech.Architecture.Common.Objects" %>
+<%@ Import Namespace="Artech.Udm.Framework" %>
+<%@ Import Namespace="Artech.Genexus.Common" %>
+<%@ Import Namespace="Artech.Genexus.Common.Helpers" %>
+<%@ Import Namespace="Artech.Genexus.Common.Objects" %>
+<%@ Import Namespace="Artech.Genexus.Common.Parts" %>
+<%@ Import Namespace="Artech.Packages.Patterns" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Objects" %>
+<%@ Import Namespace="System" %>
+<%@ Import Namespace="System.Collections.Generic" %>
+<%@ Import Namespace="System.Text" %>
+<%@ Import Namespace="System.Xml" %>
+<%@ Import Namespace="Antlr.StringTemplate" %>
+<%@ Import Namespace="Artech.Genexus.Common.Wiki" %>
+<%@ Property Name="Object" Type="Artech.Architecture.Common.Objects.KBObject" %>
+<%@ Property Name="Part" Type="Artech.Architecture.Common.Objects.KBObjectPart" %>
+<%@ Property Name="Instance" Type="Artech.Packages.Patterns.Objects.PatternInstance" %>
+<%@ Property Name="Element" Type="Artech.Packages.Patterns.Objects.PatternInstanceElement" %>
+
+<%
+	HPatternInstance wwInstance = HPatternInstance.Load(Instance);
+	Transaction trn = wwInstance.Transaction.Transaction;
+	
+	string sdtName = "SDT"+trn.Name+"BC";
+
+%>
+<Part type="<%= PartType.SDTStructure %>">
+	<Level Name="<%= sdtName %>">
+		<LevelInfo guid="<%= Guid.NewGuid() %>" name="<%= sdtName %>">
+			<Properties />
+		</LevelInfo>
+<%
+	ArrayList lista = new ArrayList();
+	foreach (TransactionAttribute gridItem in trn.Structure.Root.Attributes)
+	{
+		lista.Add(gridItem.Attribute);
+%>
+		<Item guid="<%= Guid.NewGuid() %>" name="<%= gridItem.Name %>">
+			<Properties><Property><Name><%= Properties.ATT.BasedOn %></Name><Value>Attribute:<%= gridItem.Name %></Value></Property></Properties>
+		</Item>
+<%
+	}
+	
+	foreach (RowElement row in wwInstance.Transaction.GetRows(""))		
+	{		
+		foreach (ColumnElement col in row.Columns) 
+		{	
+			foreach (AttributeElement att in col.Attributes)
+			{
+				if (att.Attribute != null) 
+				{				
+					if (!lista.Contains(att.Attribute))
+					{						
+%>			
+		<Item guid="<%= Guid.NewGuid() %>" name="<%= att.AttributeName %>">
+			<Properties><Property><Name><%= Properties.ATT.BasedOn %></Name><Value>Attribute:<%= att.AttributeName %></Value></Property></Properties>
+		</Item>
+<%					}
+				}
+			}
+		}
+	}	
+	
+	/*
+	foreach (TabFormElement tabf in wwInstance.Transaction.Form.Tabs)
+	{	
+		foreach (RowElement row in tabf.Rows)		
+		{		
+			foreach (ColumnElement col in row.Columns) 
+			{	
+				foreach (AttributeElement att in col.Attributes)
+				{
+					if (att.Attribute != null) 
+					{				
+						if (!lista.Contains(att.Attribute))
+						{						
+%>			
+		<Item guid="<%= Guid.NewGuid() %>" name="<%= att.AttributeName %>">
+			<Properties><Property><Name><%= Properties.ATT.BasedOn %></Name><Value>Attribute:<%= att.AttributeName %></Value></Property></Properties>
+		</Item>
+<%						}
+					}
+				}
+			}
+		}	
+	}	
+	*/
+	
+%>
+		<Item guid="<%= Guid.NewGuid() %>" name="ReferenciaBC">
+			<Properties>
+				<Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property>
+				<Property><Name>Length</Name><Value>200</Value></Property>
+				<Property><Name>AttMaxLen</Name><Value>200</Value></Property>
+			</Properties>
+		</Item>
+<%		
+	LevelElement level = wwInstance.Levels[0];
+	if (level != null) 
+	{
+		if (level.View != null)
+		{
+			foreach (TabElement tabe in level.View.Tabs)
+			{
+				if (tabe.Type.ToLower() == "grid" && tabe.Transaction != null) 
+				{
+					if (tabe.Transaction.Transaction != null) 
+					{
+%>
+
+      <Level Name="<%= tabe.Code %>">
+        <LevelInfo guid="<%= Guid.NewGuid() %>" name="<%= tabe.Code %>" description="<%= tabe.Code %>">
+          <Properties><Property><Name>Name</Name><Value><%= tabe.Code %></Value></Property><Property><Name>AttCollection</Name><Value>True</Value></Property><Property><Name>idCollectionItemName</Name><Value><%= tabe.Code %></Value></Property></Properties>
+        </LevelInfo>
+<%	
+						foreach (TransactionAttribute gridItem in tabe.Transaction.Transaction.Structure.Root.Attributes)
+						{
+							if (!lista.Contains(gridItem.Attribute))
+							{	
+%>
+		<Item guid="<%= Guid.NewGuid() %>" name="<%= gridItem.Name %>">
+			<Properties><Property><Name><%= Properties.ATT.BasedOn %></Name><Value>Attribute:<%= gridItem.Name %></Value></Property></Properties>
+		</Item>
+<%							}
+						}		
+%>            
+		<Item guid="<%= Guid.NewGuid() %>" name="ReferenciaBC">
+			<Properties>
+				<Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property>
+				<Property><Name>Length</Name><Value>200</Value></Property>
+				<Property><Name>AttMaxLen</Name><Value>200</Value></Property>
+			</Properties>
+		</Item>
+        <Item guid="<%= Guid.NewGuid() %>" name="Apagar" description="Apagar">
+			<Properties>
+				<Property><Name>Name</Name><Value>Apagar</Value></Property>
+				<Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Boolean</Value></Property>
+			</Properties>
+        </Item>
+        <Item guid="<%= Guid.NewGuid() %>" name="Atualizado" description="Atualizado">
+			<Properties>
+				<Property><Name>Name</Name><Value>Atualizado</Value></Property>
+				<Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Boolean</Value></Property>
+			</Properties>
+        </Item>        
+	  </Level>        
+<%					}
+				}
+			}	
+		}
+	}	
+%>	
+	</Level>
+</Part>

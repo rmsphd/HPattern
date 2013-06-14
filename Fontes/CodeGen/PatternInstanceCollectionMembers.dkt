@@ -1,0 +1,93 @@
+﻿<%@ Template Language="C#" TargetLanguage="C#" Description="Pattern Instance"%>
+<%@ Assembly Name="Artech.Common.Properties"%>
+<%@ Assembly Name="Artech.Packages.Patterns"%>
+<%@ Import Namespace="System.Collections.Generic"%>
+<%@ Import Namespace="Artech.Common.Properties" %>
+<%@ Import Namespace="Artech.Packages.Patterns" %>
+<%@ Import Namespace="Artech.Packages.Patterns.CodeGen" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Definition" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Specification" %>
+<%@ Property Name="Definition" Type="Artech.Packages.Patterns.Definition.PatternDefinition" %>
+<%@ Property Name="SpecType" Type="Artech.Packages.Patterns.Specification.SpecificationType" %>
+<%@ Property Name="GenerationType" Type="System.String" %>
+<%
+	SpecificationChildElement child = SpecType.ChildrenElements[0];
+	SpecificationType childType = child.SpecificationType;
+	SpecificationAttribute collectionKeyAtt = childType.KeyAttribute;
+
+	string childTypeName = CodeGeneratorHelper.GetTypeName(childType);
+	string childName = CodeGeneratorHelper.GetCollectionItemName(child);
+	string childVarName = CodeGeneratorHelper.GetChildVarName(SpecType.ChildrenElements[0]) + "Item";
+%>
+		#region Construction
+
+		internal <%= CodeGeneratorHelper.GetTypeName(SpecType) %>()
+		{
+			Initialize();
+		}
+
+		private void Initialize()
+		{
+			m_ElementName = "<Unknown>";
+			ItemAdded += new EventHandler<CollectionItemEventArgs<<%= childTypeName %>>>(Collection_ItemAdded);
+		}
+
+		#endregion
+
+		#region Properties
+
+		/// <summary>
+		/// The element's name in the pattern instance.
+		/// </summary>
+		internal string ElementName
+		{
+			get { return m_ElementName; }
+			set { m_ElementName = value; }
+		}
+
+		#endregion
+
+		#region Parent Element
+
+		private <%= CodeGeneratorHelper.BestParentTypeName(SpecType) %> m_Parent;
+
+		/// <summary>
+		/// Parent Element.
+		/// </summary>
+		public <%= CodeGeneratorHelper.BestParentTypeName(SpecType) %> Parent
+		{
+			get { return m_Parent; }
+			internal set { m_Parent = value; }
+		}
+
+		private void Collection_ItemAdded(object sender, CollectionItemEventArgs<<%= childTypeName %>> e)
+		{
+			if (Parent == null)
+				throw new PatternInstanceException("Parent of <%= CodeGeneratorHelper.GetTypeName(SpecType) %> must be set before adding elements.");
+
+			e.Data.Parent = this.Parent;
+		}
+
+		#endregion
+
+<%
+	if (collectionKeyAtt != null)
+	{
+		string keyParameterName = CodeGeneratorHelper.GetAttributeVarName(collectionKeyAtt);
+		string keyParameterDeclaration = CodeGeneratorHelper.GetAttributeType(collectionKeyAtt) + " " + keyParameterName;
+%>
+		#region Collection methods
+
+		/// <summary>
+		/// Finds the <see cref="<%= childTypeName %>"/> in the collection that has the specified value in its <see cref="<%= CodeGeneratorHelper.GetAttributeName(collectionKeyAtt) %>"/> property.
+		/// If no <%= childName %> is found, <b>null</b> is returned.
+		/// </summary>
+		public <%= childTypeName %> Find<%= childName %>(<%= keyParameterDeclaration %>)
+		{
+			return this.Find(delegate (<%= childTypeName %> <%= childVarName %>) { return <%= childVarName %>.<%= CodeGeneratorHelper.GetAttributeName(collectionKeyAtt) %> == <%= keyParameterName %>; });
+		}
+
+		#endregion
+<%
+	}
+%>

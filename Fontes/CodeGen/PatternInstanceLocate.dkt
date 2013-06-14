@@ -1,0 +1,97 @@
+﻿<%@ Template Language="C#" TargetLanguage="C#" Description="Pattern Instance"%>
+<%@ Assembly Name="Artech.Common.Properties"%>
+<%@ Assembly Name="Artech.Packages.Patterns"%>
+<%@ Import Namespace="System.Collections.Generic"%>
+<%@ Import Namespace="Artech.Common.Properties" %>
+<%@ Import Namespace="Artech.Packages.Patterns" %>
+<%@ Import Namespace="Artech.Packages.Patterns.CodeGen" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Definition" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Specification" %>
+<%@ Property Name="Definition" Type="Artech.Packages.Patterns.Definition.PatternDefinition" %>
+<%@ Property Name="SpecType" Type="Artech.Packages.Patterns.Specification.SpecificationType" %>
+<%@ Property Name="BaseInterface" Type="System.String" %>
+<%@ Property Name="GenerationType" Type="System.String" %>
+<%@ Property Name="MethodQualifier" Type="System.String" %>
+		/// <summary>
+		/// Gets the element with the specified path, local to the current element (empty string means current one).
+		/// </summary>
+		internal<%= MethodQualifier %>object GetElement(List<string> path)
+		{
+			if (path.Count == 0)
+				return this;
+
+<%
+	if (SpecType.ChildrenElements.Length > 0)
+	{
+%>
+			string childName; int childIndex;
+			<%= Definition.Name %><%= GenerationType %>.ParseChildPath(path[0], out childName, out childIndex);
+
+			path.RemoveAt(0);
+			switch (childName)
+			{
+<%
+		IList<SpecificationChildElement> collectionChildren = null;
+		bool isMixedCollection = CodeGeneratorHelper.IsMixedCollection(SpecType, out collectionChildren);
+
+		foreach (SpecificationChildElement specChild in SpecType.ChildrenElements)
+		{
+%>
+				case "<%= specChild.Name %>" :
+				{
+<%
+			if (CodeGeneratorHelper.IsSimpleCollection(specChild.SpecificationType))
+			{
+%>
+					if (path.Count == 0)
+						return <%= CodeGeneratorHelper.GetChildName(specChild) %>;
+
+					string itemName; int itemIndex;
+					<%= Definition.Name %><%= GenerationType %>.ParseChildPath(path[0], out itemName, out itemIndex);
+					if (itemName != "<%= specChild.SpecificationType.ChildrenElements[0].Name %>")
+						throw new PatternInstanceException(String.Format("Child '{0}' not found in '{1}'.", childName + "/" + itemName, this.GetType()));
+
+					path.RemoveAt(0);
+
+					if (<%= CodeGeneratorHelper.GetChildName(specChild) %> != null && itemIndex >= 0 && itemIndex < <%= CodeGeneratorHelper.GetChildName(specChild) %>.Count)
+						return <%= CodeGeneratorHelper.GetChildName(specChild) %>[itemIndex].GetElement(path);
+					else
+						return null;
+<%
+			}
+			else if (specChild.Multiple)
+			{
+%>
+					if (<%= CodeGeneratorHelper.GetChildName(specChild) %> != null && childIndex >= 0 && childIndex < <%= CodeGeneratorHelper.GetChildName(specChild) %>.Count)
+						return <%= CodeGeneratorHelper.GetChildName(specChild) %>[childIndex].GetElement(path);
+					else
+						return null;
+<%
+			}
+			else
+			{
+%>
+					if (<%= CodeGeneratorHelper.GetChildName(specChild) %> != null)
+						return <%= CodeGeneratorHelper.GetChildName(specChild) %>.GetElement(path);
+					else
+						return null;
+<%
+			}
+%>
+				}
+<%
+		}
+%>
+			}
+
+<%
+	}
+	else
+	{
+%>
+			string childName = path[0];
+<%
+	}
+%>
+			throw new PatternInstanceException(String.Format("Child '{0}' not found in '{1}'.", childName, this.GetType()));
+		}

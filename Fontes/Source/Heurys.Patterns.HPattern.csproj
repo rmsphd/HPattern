@@ -1,0 +1,382 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0EC04C33-A207-4541-9A27-BDF414032BE8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Heurys.Patterns.HPattern</RootNamespace>
+    <AssemblyName>Heurys.Patterns.HPattern</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+    <ApplicationIcon>WWHeurys.ico</ApplicationIcon>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <PlatformTarget>x86</PlatformTarget>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Artech.Architecture.BL.Framework">
+      <HintPath>..\..\..\..\..\Program Files (x86)\ARTech\GeneXus\GeneXusXEv2\Artech.Architecture.BL.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Artech.Architecture.Common">
+      <HintPath>..\..\..\..\..\Program Files (x86)\ARTech\GeneXus\GeneXusXEv2\Artech.Architecture.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Artech.Architecture.UI.Framework">
+      <HintPath>..\..\..\..\..\Program Files (x86)\ARTech\GeneXus\GeneXusXEv2\Artech.Architecture.UI.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Artech.Common">
+      <HintPath>..\..\..\..\..\Program Files (x86)\ARTech\GeneXus\GeneXusXEv2\Artech.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Artech.Common.Controls">
+      <HintPath>..\..\..\..\..\Program Files (x86)\ARTech\GeneXus\GeneXusXEv2\Artech.Common.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="Artech.Common.Framework">
+      <HintPath>..\..\..\..\..\Program Files (x86)\ARTech\GeneXus\GeneXusXEv2\Artech.Common.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Artech.Common.Helpers">
+      <HintPath>..\..\..\..\..\Program Files (x86)\ARTech\GeneXus\GeneXusXEv2\Artech.Common.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="Artech.Common.Language">
+      <HintPath>..\..\..\..\..\Program Files (x86)\ARTech\GeneXus\GeneXusXEv2\Artech.Common.Language.dll</HintPath>
+    </Reference>
+    <Reference Include="Artech.Common.Properties">
+      <HintPath>..\..\..\..\..\Program Files (x86)\ARTech\GeneXus\GeneXusXEv2\Artech.Common.Properties.dll</HintPath>
+    </Reference>
+    <Reference Include="Artech.Genexus.Common">
+      <HintPath>..\..\..\..\..\Program Files (x86)\ARTech\GeneXus\GeneXusXEv2\Artech.Genexus.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Artech.Genexus.UI.Common">
+      <HintPath>..\..\..\..\..\Program Files (x86)\ARTech\GeneXus\GeneXusXEv2\Artech.Genexus.UI.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Artech.Packages.Patterns">
+      <HintPath>..\..\..\..\..\Program Files (x86)\ARTech\GeneXus\GeneXusXEv2\Packages\Artech.Packages.Patterns.dll</HintPath>
+    </Reference>
+    <Reference Include="Artech.Template.Base">
+      <HintPath>..\..\..\..\..\Program Files (x86)\ARTech\GeneXus\GeneXusXEv2\Artech.Template.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="Artech.Template.Helper">
+      <HintPath>..\..\..\..\..\Program Files (x86)\ARTech\GeneXus\GeneXusXEv2\Artech.Template.Helper.dll</HintPath>
+    </Reference>
+    <Reference Include="Artech.Template.Parser">
+      <HintPath>..\..\..\..\..\Program Files (x86)\ARTech\GeneXus\GeneXusXEv2\Artech.Template.Parser.dll</HintPath>
+    </Reference>
+    <Reference Include="Artech.Udm.Framework">
+      <HintPath>..\..\..\..\..\Program Files (x86)\ARTech\GeneXus\GeneXusXEv2\Artech.Udm.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ExceptionMessageBox, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\ARTech\GeneXus\GeneXusXEv2\Microsoft.ExceptionMessageBox.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BasicParser.cs" />
+    <Compile Include="CommonPackageInfo.cs" />
+    <Compile Include="CommonPatternInfo.cs" />
+    <Compile Include="GXVersion.cs" />
+    <Compile Include="Code.Settings\ActionElement.cs" />
+    <Compile Include="Code.Settings\ContextElement.cs" />
+    <Compile Include="Code.Settings\ContextVariableElement.cs" />
+    <Compile Include="Code.Settings\GridElement.cs" />
+    <Compile Include="Code.Settings\ObjectsElement.cs" />
+    <Compile Include="Code.Settings\SecurityElement.cs" />
+    <Compile Include="Code.Settings\StandardActionsElement.cs" />
+    <Compile Include="Code.Settings\TemplateElement.cs" />
+    <Compile Include="Code.Settings\WorkWithSettings.cs" />
+    <Compile Include="Code\ActionElement.cs" />
+    <Compile Include="Code\AttributesElement.cs" />
+    <Compile Include="Code\ColumnElement.cs" />
+    <Compile Include="Code\ConditionElement.cs" />
+    <Compile Include="Code\FilterAttribute.cs" />
+    <Compile Include="Code\FilterElement.cs" />
+    <Compile Include="Code\FormElement.cs" />
+    <Compile Include="Code\IAttributesItem.cs" />
+    <Compile Include="Code\IGridObject.cs" />
+    <Compile Include="Code\ITabObject.cs" />
+    <Compile Include="Code\IWorkWithComponent.cs" />
+    <Compile Include="Code\LevelElement.cs" />
+    <Compile Include="Code\LinkElement.cs" />
+    <Compile Include="Code\OrderElement.cs" />
+    <Compile Include="Code\ParameterElement.cs" />
+    <Compile Include="Code\TabElement.cs" />
+    <Compile Include="Code\TabFormElement.cs" />
+    <Compile Include="Code\TransactionElement.cs" />
+    <Compile Include="Code\VariableElement.cs" />
+    <Compile Include="Code\ViewElement.cs" />
+    <Compile Include="Code\WebObject.cs" />
+    <Compile Include="Code\WebPanelRootElement.cs" />
+    <Compile Include="Code\WorkWithInstance.cs" />
+    <Compile Include="Editor\CommandAddTab.cs" />
+    <Compile Include="Helpers\CacheHTemplate.cs" />
+    <Compile Include="Helpers\DolphinStyleMenu.cs" />
+    <Compile Include="Helpers\MenuContext.cs" />
+    <Compile Include="Helpers\SubActionElement.cs" />
+    <Compile Include="Helpers\TabDefault.cs" />
+    <Compile Include="Helpers\HTemplate.cs" />
+    <Compile Include="Helpers\Tab.cs" />
+    <Compile Include="Helpers\TemplateGrid.cs" />
+    <Compile Include="Helpers\TreeViewAnchor.cs" />
+    <Compile Include="StandardMessageBox.cs" />
+    <Compile Include="TemplateException.cs" />
+    <Compile Include="WorkWithSettingsValidator.cs" />
+    <Compile Include="Custom\WorkWithCustomTypeSupport.cs" />
+    <Compile Include="Custom\WorkWithInstanceVersionAdapter.cs" />
+    <Compile Include="Editor\CommandAddFilterVariable.cs" />
+    <Compile Include="Editor\WorkWithEditorHelper.cs" />
+    <Compile Include="Helpers\AutoLinkGenerator.cs" />
+    <Compile Include="Helpers\BaseAction.cs" />
+    <Compile Include="Helpers\ActionHelper.cs" />
+    <Compile Include="Helpers\HParser.cs" />
+    <Compile Include="Helpers\ParserFactory.cs" />
+    <Compile Include="Helpers\StandaloneAction.cs" />
+    <Compile Include="Helpers\StandaloneButtonAction.cs" />
+    <Compile Include="Helpers\GridAction.cs" />
+    <Compile Include="Helpers\GridImageAction.cs" />
+    <Compile Include="Helpers\GridTextAction.cs" />
+    <Compile Include="Helpers\ActionImplementation.cs" />
+    <Compile Include="Helpers\StandaloneImageAction.cs" />
+    <Compile Include="Helpers\StandaloneMultiRowAction.cs" />
+    <Compile Include="Helpers\StandardAction.cs" />
+    <Compile Include="Helpers\Template.cs" />
+    <Compile Include="Helpers\TemplateAbas.cs" />
+    <Compile Include="Helpers\TemplateInternal.cs" />
+    <Compile Include="Helpers\WebPanelUpdater.cs" />
+    <Compile Include="LicenseException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="LogLicense.cs" />
+    <Compile Include="Resources\Messages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Messages.resx</DependentUpon>
+    </Compile>
+    <None Include="Definition.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="InstanceSpecification.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Templates\Constants.cs" />
+    <None Include="Templates\WebFormScript.cs" />
+    <None Include="Templates\TemplateApply.cs" />
+    <Compile Include="TesteClass1.cs" />
+    <Compile Include="WebFormHelper.cs" />
+    <Compile Include="WorkWithBuildProcess.cs" />
+    <Compile Include="WorkWithDeleteProcess.cs" />
+    <Compile Include="WorkWithImportHelper.cs" />
+    <Compile Include="WorkWithInstance.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="WorkWithInstanceValidator.cs" />
+    <Compile Include="WorkWithObjects.cs" />
+    <Compile Include="WorkWithPattern.cs" />
+    <Compile Include="WorkWithInstanceGenerator.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WorkWithSettings.cs" />
+    <Compile Include="WorkWithTransactionUpdater.cs" />
+    <Compile Include="WWHeurysException.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Messages.resx">
+      <SubType>Designer</SubType>
+      <Generator>GXResourceGenerator</Generator>
+      <LastGenOutput>Messages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="atualizadebug.bat" />
+    <None Include="Definitions\HPattern.Pattern">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Templates\BCConditions.dkt" />
+    <None Include="Templates\BCEvents.dkt" />
+    <None Include="Templates\BCRules.dkt" />
+    <None Include="Templates\BCSdtStructure.dkt" />
+    <None Include="Templates\BCValidationAttribute.dkt" />
+    <None Include="Templates\BCVariables.dkt" />
+    <None Include="Templates\build dll.bat" />
+    <None Include="Templates\build.msbuild" />
+    <None Include="Templates\Compiler.dkt" />
+    <None Include="Templates\DPDSMRules.dkt" />
+    <None Include="Templates\DPDSMSource.dkt" />
+    <None Include="Templates\DPDSMVariables.dkt" />
+    <None Include="Templates\DPGridRules.dkt" />
+    <None Include="Templates\DPGridSource.dkt" />
+    <None Include="Templates\DPGridVariables.dkt" />
+    <None Include="Templates\DPRules.dkt" />
+    <None Include="Templates\DPSource.dkt" />
+    <None Include="Templates\DPVariables.dkt" />
+    <None Include="Templates\EventIsValid.dkt" />
+    <None Include="Templates\ExportProcedure.dkt" />
+    <None Include="Templates\ExportRules.dkt" />
+    <None Include="Templates\ExportVariables.dkt" />
+    <None Include="Templates\Filter.cs" />
+    <None Include="Templates\FilterCondition.dkt" />
+    <None Include="Templates\FilterVariables.dkt" />
+    <None Include="Templates\GridConditions.dkt" />
+    <None Include="Templates\GridGxuiSdtStructure.dkt" />
+    <None Include="Templates\GridRules.dkt" />
+    <None Include="Templates\GridSdtStructure.dkt" />
+    <None Include="Templates\GridVariables.dkt" />
+    <None Include="Templates\GridWebForm.dkt" />
+    <None Include="Templates\Gx.Tasks.targets" />
+    <None Include="Templates\LimpaSessaoBC.dkt">
+      <SubType>Form</SubType>
+    </None>
+    <None Include="Templates\ListProgramsProcedure.dkt" />
+    <None Include="Templates\ListProgramsVariables.dkt" />
+    <None Include="Templates\ProcBCProcedure.dkt" />
+    <None Include="Templates\ProcBCRules.dkt" />
+    <None Include="Templates\ProcBCVariables.dkt" />
+    <None Include="Templates\ProcGridProcedure.dkt" />
+    <None Include="Templates\ProcGridRules.dkt" />
+    <None Include="Templates\ProcGridVariables.dkt" />
+    <None Include="Templates\ProcSaveBCProcedure.dkt" />
+    <None Include="Templates\ProcSaveBCRules.dkt" />
+    <None Include="Templates\ProcSaveBCVariables.dkt" />
+    <None Include="Templates\PromptConditions.dkt" />
+    <None Include="Templates\PromptEvents.dkt" />
+    <None Include="Templates\PromptRules.dkt" />
+    <None Include="Templates\PromptVariables.dkt" />
+    <None Include="Templates\PromptWebForm.dkt" />
+    <None Include="Templates\SecurityTabs.dkt" />
+    <None Include="Templates\SelectionConditions.dkt" />
+    <None Include="Templates\SelectionEvents.dkt" />
+    <None Include="Templates\SelectionRules.dkt" />
+    <None Include="Templates\SelectionVariables.dkt" />
+    <None Include="Templates\SelectionWebForm.dkt" />
+    <None Include="Templates\SubCheckSecurity.dkt" />
+    <None Include="Templates\SubLinkAttributes.dkt" />
+    <None Include="Templates\SubLoadContext.dkt" />
+    <None Include="Templates\SubPrepareTransaction.dkt" />
+    <None Include="Templates\SubStandardVariables.dkt" />
+    <None Include="Templates\TabGridConditions.dkt" />
+    <None Include="Templates\TabGridEvents.dkt" />
+    <None Include="Templates\TabGridRules.dkt" />
+    <None Include="Templates\TabGridVariables.dkt" />
+    <None Include="Templates\TabGridWebForm.dkt" />
+    <None Include="Templates\TabTabularEvents.dkt" />
+    <None Include="Templates\TabTabularRules.dkt" />
+    <None Include="Templates\TabTabularVariables.dkt" />
+    <None Include="Templates\TabTabularWebForm.dkt" />
+    <None Include="Templates\TrnParmVariables.dkt" />
+    <None Include="Templates\ViewConditions.dkt" />
+    <None Include="Templates\ViewEvents.dkt" />
+    <None Include="Templates\ViewRules.dkt" />
+    <None Include="Templates\ViewVariables.dkt" />
+    <None Include="Templates\ViewWebForm.dkt" />
+    <None Include="Templates\WebComponentProperties.dkt" />
+    <None Include="Templates\WebPanelProperties.dkt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Definitions\HPatternCustomTypes.xml" />
+    <Content Include="Definitions\HPatternInstance.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Definitions\HPatternSettings.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <None Include="Templates\BCWebForm.dkt" />
+    <None Include="Templates\DPGridModelSource.dkt" />
+    <None Include="Templates\DPGridModelSourceActions.dkt" />
+    <None Include="Templates\GridEvents.dkt" />
+    <None Include="Templates\TabGridTrnConditions.dkt" />
+    <None Include="Templates\TabGridTrnEvents.dkt" />
+    <None Include="Templates\TabGridTrnRules.dkt" />
+    <None Include="Templates\TabGridTrnVariables.dkt" />
+    <None Include="Templates\TabGridTrnWebForm.dkt" />
+    <None Include="Templates\WebBCSave.dkt" />
+    <None Include="Templates\WPConditions.dkt" />
+    <None Include="Templates\WPEvents.dkt" />
+    <None Include="Templates\WPRules.dkt" />
+    <None Include="Templates\WPVariables.dkt" />
+    <None Include="Templates\WPWebForm.dkt" />
+    <EmbeddedResource Include="Resources\Heurys.ico" />
+    <Content Include="HTools\HToolsEv1GRU.iss" />
+    <Content Include="HTools\LICENSE.txt" />
+    <Content Include="HTools\ShellModernSmall08.bmp" />
+    <Content Include="LICENSE.txt" />
+    <Content Include="WWHeurys.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Build\" />
+    <Folder Include="Templates\Build\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PreBuildEvent>"C:\Program Files (x86)\Artech\GeneXus\GeneXusXEv2PlatformSDK\Patterns\CodeGen\PatternCodeGen.exe" "$(ProjectDir)Definitions\HPattern.Pattern" "$(ProjectDir)WorkWithInstance.cs" "$(ProjectDir)WorkWithSettings.cs" $(ProjectDir)WorkWithObjects.cs"</PreBuildEvent>
+    <PostBuildEvent>$(ProjectDir)atualizadebug.bat $(ProjectDir)</PostBuildEvent>
+  </PropertyGroup>
+</Project>

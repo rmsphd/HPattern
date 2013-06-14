@@ -1,0 +1,201 @@
+<%@ Template Language="C#" TargetLanguage="GX" Description="Selection Variables" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Assembly Name="Artech.Architecture.Common" %>
+<%@ Assembly Name="Artech.Common" %>
+<%@ Assembly Name="Artech.Common.Helpers" %>
+<%@ Assembly Name="Artech.Common.Properties" %>
+<%@ Assembly Name="Artech.Genexus.Common" %>
+<%@ Assembly Name="Artech.Packages.Patterns" %>
+<%@ Assembly Name="Artech.Udm.Framework" %>
+<%@ Assembly Name="Artech.Template.Base" %>
+<%@ Assembly Name="System.Xml" %>
+<%@ Assembly Name="StringTemplate" %>
+<%@ Assembly Name="Artech.Architecture.UI.Framework" %>
+<%@ Import Namespace="Artech.Architecture.Common.Services" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Artech.Common.Properties" %>
+<%@ Import Namespace="Artech.Architecture.Common.Collections" %>
+<%@ Import Namespace="Artech.Architecture.Common.Objects" %>
+<%@ Import Namespace="Artech.Udm.Framework" %>
+<%@ Import Namespace="Artech.Genexus.Common" %>
+<%@ Import Namespace="Artech.Genexus.Common.Helpers" %>
+<%@ Import Namespace="Artech.Genexus.Common.Objects" %>
+<%@ Import Namespace="Artech.Genexus.Common.Parts" %>
+<%@ Import Namespace="Artech.Packages.Patterns" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Objects" %>
+<%@ Import Namespace="System" %>
+<%@ Import Namespace="System.Collections.Generic" %>
+<%@ Import Namespace="System.Text" %>
+<%@ Import Namespace="System.Xml" %>
+<%@ Import Namespace="Antlr.StringTemplate" %>
+<%@ Import Namespace="Artech.Genexus.Common.Wiki" %>
+<%@ Property Name="Object" Type="Artech.Architecture.Common.Objects.KBObject" %>
+<%@ Property Name="Part" Type="Artech.Architecture.Common.Objects.KBObjectPart" %>
+<%@ Property Name="Instance" Type="Artech.Packages.Patterns.Objects.PatternInstance" %>
+<%@ Property Name="Element" Type="Artech.Packages.Patterns.Objects.PatternInstanceElement" %>
+<%@ SubTemplate Name="SubStandardVariables" File="SubStandardVariables.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="TrnParmVariables" File="TrnParmVariables.dkt" MergeProperties="True"%>
+
+<%
+	HPatternInstance wwInstance = HPatternInstance.Load(Instance);
+	HPatternSettings settings = wwInstance.Settings;
+	Transaction trn = wwInstance.Transaction.Transaction;
+	
+	LevelElement level = wwInstance.Levels[0];
+	
+	//CommonServices.Output.AddLine(String.Format(">>> BCVariables Begin {0}", DateTime.Now.ToString()));
+	
+	List<string> lista = new List<string>();
+	
+	Heurys.Patterns.HPattern.Helpers.Template.AddStandardVariables(lista,settings);
+	
+	//foreach (SettingsContextVariableElement contextVar in settings.Context)
+	//	lista.Add(contextVar.Name);
+	
+	string tab = "";
+	TabFormElement tabe = null;
+	try 
+	{
+		tabe = wwInstance.GetElement<TabFormElement>(Element);
+	} catch (Exception e) 
+	{}	
+	if (tabe != null) {	
+		tab = tabe.Name;
+	}
+%>
+
+<Part type="<%= PartType.Variables %>">
+	<%-- Context variables --%>
+	<%-- settings.Context.DefineVariables() --%>
+	
+<%
+	if (wwInstance.HasConditionalTabs()) {
+		lista.Add("cok");
+		lista.Add("podeAbrir");
+%>	
+	<%= Variables.Basic("cok","cok",eDBType.NUMERIC,4) %>
+	<%= Variables.Basic("podeAbrir","podeAbrir",eDBType.Boolean) %>
+<%
+	}
+%>	
+	<%
+	// Add variables for primary key.
+	foreach (TransactionAttribute trnAtt in trn.Structure.Root.PrimaryKey) {
+		lista.Add(trnAtt.Name);
+%>	
+	<%= Variables.BasedOnAttribute(trnAtt.Name,trnAtt.Attribute) %>
+<%	}		
+
+	if (tabe == null) {
+		foreach (RowElement row in wwInstance.Transaction.GetRows(""))		
+		{		
+			foreach (ColumnElement col in row.Columns) 
+			{
+				foreach (VariableElement var in col.Variables)
+				{
+					if (var.Domain != null) {
+						lista.Add(var.Name);
+%>
+	<%= Variables.BasedOnDomain(var.Name, var.DomainName) %>
+<%					} else {
+						if (var.Attribute != null) {
+							lista.Add(var.Name);
+%>
+	<%= Variables.BasedOnAttribute(var.Name, var.AttributeName) %>
+<%						}
+
+					}
+				}
+			}
+		}
+	}
+	else 
+	{
+		//foreach (TabFormElement tabf in wwInstance.Transaction.Form.Tabs)
+		//{
+			//if (tabf.Name == tab) 
+			//{
+				foreach (RowElement row in wwInstance.Transaction.GetRows(tab))		
+				{		
+					foreach (ColumnElement col in row.Columns) 
+					{
+						foreach (VariableElement var in col.Variables)
+						{
+							if (var.Domain != null) {
+								lista.Add(var.Name);
+%>
+	<%= Variables.BasedOnDomain(var.Name, var.DomainName) %>
+<%							} else {
+								if (var.Attribute != null) {
+								lista.Add(var.Name);
+%>
+	<%= Variables.BasedOnAttribute(var.Name, var.AttributeName) %>
+<%								}
+
+							}
+						}
+					}
+				}
+			//}
+		//}
+	}
+	
+	if (tabe != null) 
+	{
+		lista.Add("MenuData");
+		lista.Add("MenuDataItem");
+		lista.Add("n");
+	%>	
+	<%= Variables.Sdt("MenuData","MenuData") %>
+	<%= Variables.Sdt("MenuDataItem","MenuData.MenuDataItem") %>	
+	<%= Variables.Basic("n","n",eDBType.NUMERIC,1) %>			
+<%
+	}
+	lista.Add("Session");
+	lista.Add("HTTPRequest");
+	lista.Add("Mode");
+	lista.Add(trn.Name+"SDT");
+	lista.Add("referencia");
+	lista.Add("mensagens");
+	lista.Add("mensagem");
+	lista.Add("linkretorno");
+	lista.Add("window");
+	lista.Add("load");
+%>	
+
+<%
+			if (level != null)
+			{
+				if (level.View != null) {
+					foreach (TabElement tabe2 in level.View.Tabs)
+					{
+						if (tabe2.Type == TabElement.TypeValue.Grid && tabe2.Transaction.Transaction != null)
+						{
+							lista.Add(tabe2.Code+"SDT");
+%>	
+	<%= Variables.Sdt(tabe2.Code+"SDT","SDT"+trn.Name+"BC."+tabe2.Code) %>
+<%
+						}
+					}
+				}
+			}
+
+%>
+	
+	<%= Variables.Extended("Session", null, "WebSession") %>
+	<%= Variables.Extended("HTTPRequest", null, "HttpRequest") %>
+	<%= Variables.BasedOnDomain("Mode","TrnMode") %>
+	<%-- = Variables.BusinessComponent(trn.Name+"BC",trn) --%>
+	<%= Variables.Sdt(trn.Name+"SDT","SDT"+trn.Name+"BC") %>
+	<%= Variables.Basic("referencia","referencia",eDBType.CHARACTER,200) %>	
+	<%= Variables.Sdt("mensagens","Messages") %>
+	<%= Variables.Sdt("mensagem","Messages.Message") %>
+	<%= Variables.Basic("linkretorno","linkretorno",eDBType.CHARACTER,200) %>
+	<%= Variables.Extended("window", null, "Window") %>
+	<%= Variables.Basic("load","load",eDBType.Boolean)%>
+	
+<%@ CallSubTemplate TrnParmVariables wwInstance='wwInstance' lista='lista' %>
+<%@ CallSubTemplate SubStandardVariables Settings='settings' Object='Object' Part='Part' lista='lista' %>	
+</Part>
+

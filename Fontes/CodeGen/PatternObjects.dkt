@@ -1,0 +1,124 @@
+﻿<%@ Template Language="C#" TargetLanguage="C#" Description="Pattern Object Constants"%>
+<%@ Assembly Name="Artech.Common.Properties"%>
+<%@ Assembly Name="Artech.Packages.Patterns"%>
+<%@ Import Namespace="System.Collections.Generic"%>
+<%@ Import Namespace="Artech.Common.Properties" %>
+<%@ Import Namespace="Artech.Packages.Patterns" %>
+<%@ Import Namespace="Artech.Packages.Patterns.CodeGen" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Definition" %>
+<%@ Property Name="Definition" Type="Artech.Packages.Patterns.Definition.PatternDefinition" %>
+<%@ SubTemplate Name="PropertyConstants" File="PatternConstants.dkt" MergeProperties="False" %>
+<%
+
+%>
+// Pattern object constants for pattern <%= Definition.Name %> (<%= Definition.Publisher %>)
+// Generated on <%= DateTime.Now %> by PatternCodeGen
+
+using System;
+using Artech.Packages.Patterns;
+using Artech.Packages.Patterns.Definition;
+using Artech.Packages.Patterns.Engine;
+
+namespace <%= Definition.Publisher %>.Patterns.<%= Definition.Name %>
+{
+<%
+	if (Definition.Objects.Count > 0)
+	{
+%>
+	/// <summary>
+	/// Objects created by the <%= Definition.Description %> pattern.
+	/// </summary>
+	public static class <%= Definition.Name %>Object
+	{
+<%
+		foreach (PatternObject patternObject in Definition.Objects)
+		{
+%>
+		/// <summary>
+		/// <%= patternObject.Id %> object (<%= (patternObject.Global ? "global, " : "") %><%= patternObject.Parts.Count %> part templates).
+		/// </summary>
+		public static PatternObject <%= CodeGeneratorHelper.MakeIdentifier(patternObject.Id) %>
+		{
+			get { return GetPatternObject("<%= patternObject.Id %>"); }
+		}
+
+<%
+		}
+%>
+		private static PatternDefinition PatternDefinition
+		{
+			get
+			{
+				PatternDefinition definition = PatternEngine.GetPatternDefinition("<%= Definition.Name %>");
+				if (definition == null)
+					throw new PatternDefinitionException(String.Format("Pattern definition '{0}' not found.", "<%= Definition.Name %>"));
+
+				return definition;
+			}
+		}
+
+		private static PatternObject GetPatternObject(string id)
+		{
+			PatternObject patternObject = PatternDefinition.GetPatternObject(id);
+			if (patternObject == null)
+				throw new PatternDefinitionException(String.Format("Object '{0}' not found in definition of pattern '{1}'", id, "<%= Definition.Name %>"));
+
+			return patternObject;
+		}
+	}
+<%
+	}
+
+	if (Definition.InstanceSpecification != null && !Definition.InstanceSpecification.IsEmpty)
+	{
+%>
+
+<%@ CallSubTemplate PropertyConstants GenerationType='"Instance"' Definition='Definition' Specification='Definition.InstanceSpecification' %>
+<%
+	}
+
+	if (Definition.SettingsSpecification != null && !Definition.SettingsSpecification.IsEmpty)
+	{
+%>
+
+<%@ CallSubTemplate PropertyConstants GenerationType='"Settings"' Definition='Definition' Specification='Definition.SettingsSpecification' %>
+<%
+	}
+
+	List<string> customTypes = new List<string>();
+	List<SpecificationType> allTypes = new List<SpecificationType>();
+	allTypes.AddRange(Definition.InstanceSpecification.Types);
+	allTypes.AddRange(Definition.SettingsSpecification.Types);
+
+	foreach (SpecificationType type in allTypes)
+	{
+		foreach (SpecificationAttribute att in type.Attributes)
+		{
+			if (att.IsCustomType())
+			{
+				string customTypeId = att.GetCustomTypeInfo().Id;
+				if (!customTypes.Contains(customTypeId))
+					customTypes.Add(customTypeId);
+			}
+		}
+	}
+
+	if (customTypes.Count > 0)
+	{
+%>
+
+	public static class <%= Definition.Name %>CustomType
+	{
+<%
+		foreach (string customTypeId in customTypes)
+		{
+%>
+		public const string <%= CodeGeneratorHelper.Capitalize(customTypeId) %> = "<%= customTypeId %>";
+<%
+		}
+%>
+	}
+<%
+	}
+%>
+}

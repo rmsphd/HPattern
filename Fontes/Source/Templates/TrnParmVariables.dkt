@@ -1,0 +1,70 @@
+﻿<%@ Template Language="C#" TargetLanguage="GX" Description="Selection Variables" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Assembly Name="Artech.Architecture.Common" %>
+<%@ Assembly Name="Artech.Common" %>
+<%@ Assembly Name="Artech.Common.Helpers" %>
+<%@ Assembly Name="Artech.Common.Properties" %>
+<%@ Assembly Name="Artech.Genexus.Common" %>
+<%@ Assembly Name="Artech.Packages.Patterns" %>
+<%@ Assembly Name="Artech.Udm.Framework" %>
+<%@ Assembly Name="Artech.Template.Base" %>
+<%@ Assembly Name="System.Xml" %>
+<%@ Assembly Name="StringTemplate" %>
+<%@ Assembly Name="Artech.Architecture.UI.Framework" %>
+<%@ Import Namespace="Artech.Architecture.Common.Services" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern.Code" %>
+<%@ Import Namespace="Artech.Common.Properties" %>
+<%@ Import Namespace="Artech.Architecture.Common.Collections" %>
+<%@ Import Namespace="Artech.Architecture.Common.Objects" %>
+<%@ Import Namespace="Artech.Udm.Framework" %>
+<%@ Import Namespace="Artech.Genexus.Common" %>
+<%@ Import Namespace="Artech.Genexus.Common.Helpers" %>
+<%@ Import Namespace="Artech.Genexus.Common.Objects" %>
+<%@ Import Namespace="Artech.Genexus.Common.Parts" %>
+<%@ Import Namespace="Artech.Packages.Patterns" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Objects" %>
+<%@ Import Namespace="System" %>
+<%@ Import Namespace="System.Collections.Generic" %>
+<%@ Import Namespace="System.Text" %>
+<%@ Import Namespace="System.Xml" %>
+<%@ Import Namespace="Antlr.StringTemplate" %>
+<%@ Import Namespace="Artech.Genexus.Common.Wiki" %>
+<%@ Property Name="wwInstance" Type="Heurys.Patterns.HPattern.HPatternInstance" %>
+<%@ Property Name="lista" Type="List<string>" %>
+<%@ SubTemplate Name="SubStandardVariables" File="SubStandardVariables.dkt" MergeProperties="True"%>
+
+<%
+	//HPatternInstance wwInstance = HPatternInstance.Load(Instance);
+	HPatternSettings settings = wwInstance.Settings;
+	//KBObject trn = (KBObject)wwInstance.ParentObject;
+	
+	WebObject wobj = wwInstance.WebObject;
+
+	foreach (ParameterElement pare in wobj.Parameters)
+	{		
+		
+		
+		if (!lista.Contains(pare.Name.Replace("&","")))
+		{
+			lista.Add(pare.Name.Replace("&",""));
+			if (!String.IsNullOrEmpty(pare.DomainName)) {
+%>
+	<%= Variables.BasedOnDomain(pare.Name,pare.DomainName) %>
+<%			
+			} else {			
+			
+				if (pare.IsAttribute) {	
+					Artech.Genexus.Common.Objects.Attribute ta = wwInstance.Model.GetObjects<Artech.Genexus.Common.Objects.Attribute>().Get(pare.Name);
+					if (ta!=null) {
+%>
+	<%= Variables.BasedOnAttribute(pare.Name,ta) %>
+<%
+					}
+				}			
+
+			}
+		}
+	}
+%>	

@@ -1,0 +1,133 @@
+<%@ Template Language="C#" TargetLanguage="GX" Description="Grid Selected Objects SDT" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Assembly Name="Artech.Architecture.Common" %>
+<%@ Assembly Name="Artech.Common" %>
+<%@ Assembly Name="Artech.Common.Helpers" %>
+<%@ Assembly Name="Artech.Common.Properties" %>
+<%@ Assembly Name="Artech.Genexus.Common" %>
+<%@ Assembly Name="Artech.Packages.Patterns" %>
+<%@ Assembly Name="Artech.Udm.Framework" %>
+<%@ Assembly Name="Artech.Template.Base" %>
+<%@ Assembly Name="System.Xml" %>
+<%@ Assembly Name="StringTemplate" %>
+<%@ Assembly Name="Artech.Architecture.UI.Framework" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Artech.Common.Properties" %>
+<%@ Import Namespace="Artech.Architecture.Common.Collections" %>
+<%@ Import Namespace="Artech.Architecture.Common.Objects" %>
+<%@ Import Namespace="Artech.Udm.Framework" %>
+<%@ Import Namespace="Artech.Genexus.Common" %>
+<%@ Import Namespace="Artech.Genexus.Common.CustomTypes" %>
+<%@ Import Namespace="Artech.Genexus.Common.Helpers" %>
+<%@ Import Namespace="Artech.Genexus.Common.Objects" %>
+<%@ Import Namespace="Artech.Genexus.Common.Parts" %>
+<%@ Import Namespace="Artech.Packages.Patterns" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Objects" %>
+<%@ Import Namespace="System" %>
+<%@ Import Namespace="System.Collections.Generic" %>
+<%@ Import Namespace="System.Text" %>
+<%@ Import Namespace="System.Xml" %>
+<%@ Import Namespace="Antlr.StringTemplate" %>
+<%@ Import Namespace="Artech.Genexus.Common.Wiki" %>
+<%@ Property Name="Object" Type="Artech.Architecture.Common.Objects.KBObject" %>
+<%@ Property Name="Part" Type="Artech.Architecture.Common.Objects.KBObjectPart" %>
+<%@ Property Name="Instance" Type="Artech.Packages.Patterns.Objects.PatternInstance" %>
+<%@ Property Name="Element" Type="Artech.Packages.Patterns.Objects.PatternInstanceElement" %>
+
+<%
+	HPatternInstance wwInstance = HPatternInstance.Load(Instance);
+	Transaction trn = wwInstance.Transaction.Transaction;
+	SelectionElement selection = wwInstance.GetElement<SelectionElement>(Element);
+	
+	string sdtName = "SDT"+trn.Name+"Grid";
+
+%>
+<Part type="<%= PartType.SDTStructure %>">
+	<Level Name="<%= sdtName %>">
+		<LevelInfo guid="<%= Guid.NewGuid() %>" name="<%= sdtName %>">
+			<Properties />
+		</LevelInfo>
+<%	
+	foreach (IHPatternInstanceElement item in selection.Attributes.Items)
+	{		
+		if (item is AttributeElement) {
+			AttributeElement gridItem = (AttributeElement)item;
+			if (gridItem.Attribute.Type == eDBType.DATE || gridItem.Attribute.Type == eDBType.DATETIME) {
+%>
+		<Item guid="<%= Guid.NewGuid() %>" name="<%= gridItem.AttributeName %>">
+			<Properties>
+				<Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property>
+				<Property><Name>Length</Name><Value>20</Value></Property>
+				<Property><Name>AttMaxLen</Name><Value>20</Value></Property>
+			</Properties>
+		</Item>
+<%			
+			}
+			else
+			{
+			
+				ITypedObject typeInfo = gridItem.Attribute;	
+				bool combo = false;	
+				int maxsize = 0;
+				if (typeInfo != null && typeInfo is Artech.Common.Properties.PropertiesObject)
+				{
+					Artech.Common.Properties.PropertiesObject props = (Artech.Common.Properties.PropertiesObject)typeInfo;
+					int controlType = props.GetPropertyValue<int>(Properties.ATT.ControlType);		
+					if (controlType == Properties.ATT.ControlType_Values.ComboBox)
+					{		
+						combo = true;
+						IList<KeyValuePair<string, string>> lista = props.GetPropertyValue<CT_GXTXVAL_type>(Properties.ATT.Values).Data;						
+						foreach (KeyValuePair<string, string> iteml in lista)
+						{
+							if (iteml.Key.Length > maxsize) maxsize = iteml.Key.Length;		
+						}
+					}
+				}
+				if (combo)
+				{				
+%>
+		<Item guid="<%= Guid.NewGuid() %>" name="<%= gridItem.AttributeName %>">
+			<Properties>
+				<Property><Name>ATTCUSTOMTYPE</Name><Value>bas:Character</Value></Property>
+				<Property><Name>Length</Name><Value><%=maxsize %></Value></Property>
+				<Property><Name>AttMaxLen</Name><Value><%=maxsize %></Value></Property>
+			</Properties>
+		</Item>
+<%				
+				}
+				else
+				{
+%>
+		<Item guid="<%= Guid.NewGuid() %>" name="<%= gridItem.AttributeName %>">
+			<Properties><Property><Name><%= Properties.ATT.BasedOn %></Name><Value>Attribute:<%= gridItem.AttributeName %></Value></Property></Properties>
+		</Item>
+<%
+				}
+			}
+		}
+		else 
+		{
+			VariableElement gridItem = (VariableElement)item;
+			if (gridItem.Domain == null) 
+			{
+%>
+		<Item guid="<%= Guid.NewGuid() %>" name="<%= gridItem.Name %>">
+			<Properties><Property><Name><%= Properties.ATT.BasedOn %></Name><Value>Attribute:<%= gridItem.AttributeName %></Value></Property></Properties>
+		</Item>
+<%			
+			}
+			else
+			{
+%>
+		<Item guid="<%= Guid.NewGuid() %>" name="<%= gridItem.Name %>">
+			<Properties><Property><Name><%= Properties.ATT.BasedOn %></Name><Value>Domain:<%= gridItem.DomainName %></Value></Property></Properties>
+		</Item>
+<%			
+			}
+		}
+	}	
+
+%>	
+	</Level>
+</Part>

@@ -1,0 +1,53 @@
+<%@ Template Language="C#" TargetLanguage="GX" Description="List Programs Procedure" %>
+<%@ Include Name="Constants.cs" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Property Name="Object" Type="Artech.Architecture.Common.Objects.KBObject" %>
+<%@ Property Name="Part" Type="Artech.Architecture.Common.Objects.KBObjectPart" %>
+<%@ SubTemplate Name="SubLoadContext" File="SubLoadContext.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="SubCheckSecurity" File="SubCheckSecurity.dkt" MergeProperties="True"%>
+
+<Part type="<%= PartType.Procedure %>">
+	<Source><![CDATA[
+<%
+	HPatternSettings settings = HPatternSettings.Get(Object.Model);
+%>
+&ProgramNames = new()
+<%@ CallSubTemplate SubLoadContext Settings='settings' tipo='0' %>
+<%
+	// For performance reasons it is unfeasible to actually read the updated versions here.
+	foreach (PatternInstance instance in PatternInstance.GetInstances(Object.Model, HPatternPattern.Definition, PatternInstance.OpenOptions.SkipUpdate))
+	{
+		// Also, don't do the full conversion/adapting. Basic info is enough.
+		HPatternInstance wwInstance = HPatternInstance.FastLoad(instance);
+		foreach (LevelElement level in wwInstance.Levels)
+		{
+			if (level.Selection != null && 
+				level.Selection.Parameters.Count == 0 && 
+				Object.Model.Objects.GetKey(ObjClass.WebPanel, level.Selection.ObjectName) != null)
+			{
+%>
+
+&name = !"<%= level.Selection.ObjectName %>"
+&description = "<%= level.Selection.Description %>"
+&link = <%= level.Selection.ObjectName %>.Link()
+Do 'AddProgram'
+<%
+			}
+		}
+	}
+%>
+
+Sub 'AddProgram'
+	&IsAuthorized = True
+	If (&IsAuthorized)
+		&ProgramName = new ProgramNames.ProgramName()
+		&ProgramName.Name = &name
+		&ProgramName.Description = &description
+		&ProgramName.Link = &link
+		&ProgramNames.Add(&ProgramName)
+	Endif
+EndSub
+]]>
+	</Source>
+</Part>

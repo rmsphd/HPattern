@@ -1,0 +1,116 @@
+﻿<%@ Template Language="C#" TargetLanguage="GX" Description="Selection and Grid Tabs Events" %>
+<%@ Include Name="Constants.cs" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Assembly Name="Artech.Architecture.Common" %>
+<%@ Assembly Name="Artech.Common" %>
+<%@ Assembly Name="Artech.Common.Helpers" %>
+<%@ Assembly Name="Artech.Common.Properties" %>
+<%@ Assembly Name="Artech.Genexus.Common" %>
+<%@ Assembly Name="Artech.Packages.Patterns" %>
+<%@ Assembly Name="Artech.Udm.Framework" %>
+<%@ Assembly Name="Artech.Template.Base" %>
+<%@ Assembly Name="System.Xml" %>
+<%@ Assembly Name="StringTemplate" %>
+<%@ Assembly Name="Artech.Architecture.UI.Framework" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Artech.Common.Properties" %>
+<%@ Import Namespace="Artech.Architecture.Common.Collections" %>
+<%@ Import Namespace="Artech.Architecture.Common.Objects" %>
+<%@ Import Namespace="Artech.Udm.Framework" %>
+<%@ Import Namespace="Artech.Genexus.Common" %>
+<%@ Import Namespace="Artech.Genexus.Common.Helpers" %>
+<%@ Import Namespace="Artech.Genexus.Common.Objects" %>
+<%@ Import Namespace="Artech.Genexus.Common.Parts" %>
+<%@ Import Namespace="Artech.Packages.Patterns" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Objects" %>
+<%@ Import Namespace="System" %>
+<%@ Import Namespace="System.Collections.Generic" %>
+<%@ Import Namespace="System.Text" %>
+<%@ Import Namespace="System.Xml" %>
+<%@ Import Namespace="Antlr.StringTemplate" %>
+<%@ Import Namespace="Artech.Genexus.Common.Wiki" %>
+<%@ Property Name="Object" Type="Artech.Architecture.Common.Objects.KBObject" %>
+<%@ Property Name="Part" Type="Artech.Architecture.Common.Objects.KBObjectPart" %>
+<%@ Property Name="Instance" Type="Heurys.Patterns.HPattern.HPatternInstance" %>
+<%@ Property Name="GridObject" Type="Heurys.Patterns.HPattern.IGridObject" %>
+<%@ Property Name="Selection" Type="Boolean" %>
+<%@ Property Name="lista" Type="List<string>" %>
+
+<%
+
+	HPatternSettings settings = Instance.Settings;
+
+	// Variables for filter.
+	if (GridObject.Filter != null)
+	{
+%>
+	<%= GridObject.Filter.DefineVariables(lista) %>
+<%
+	}
+
+try {
+int ch = settings.DynamicFilters.MaxChoices;
+bool geraDF = false;
+if (GridObject.Filter != null) {
+	if (GridObject.Filter.Dynamicfilters != null)
+		geraDF = (GridObject.Filter.Dynamicfilters.Count > 0 && ch > 0) ? true : false;
+}
+if (geraDF) {
+	for (int i = 1;i<=ch;i++) {
+%>	
+	<%= Variables.Basic("Campo"+i.ToString().Trim(), "Campo", eDBType.CHARACTER, 31) %>
+	<%= Variables.Basic("CondD"+i.ToString().Trim(), "Condição", eDBType.CHARACTER, 31) %>
+	
+<%
+		if (String.IsNullOrEmpty(settings.DynamicFilters.DomainCharName))
+		{
+%>
+	<%= Variables.Basic("Carac"+i.ToString().Trim(), "Caracter", eDBType.CHARACTER, 31) %>	
+<%
+		}
+		else
+		{
+%>	
+	<%= Variables.BasedOnDomain("Carac"+i.ToString().Trim(), settings.DynamicFilters.DomainCharName) %>	
+<%
+		}
+		if (String.IsNullOrEmpty(settings.DynamicFilters.DomainNumberName))
+		{
+%>
+	<%= Variables.Basic("Numer"+i.ToString().Trim(), "Numero", eDBType.NUMERIC, 10,0,false) %>	
+<%
+		}
+		else
+		{
+%>	
+	<%= Variables.BasedOnDomain("Numer"+i.ToString().Trim(), settings.DynamicFilters.DomainNumberName) %>
+<%
+		}
+		if (String.IsNullOrEmpty(settings.DynamicFilters.DomainDateName))
+		{
+%>
+	<%= Variables.Basic("DataD"+i.ToString().Trim(), "Data", eDBType.DATE) %>	
+<%
+		}
+		else
+		{
+%>	
+	<%= Variables.BasedOnDomain("DataD"+i.ToString().Trim(), settings.DynamicFilters.DomainDateName) %>
+<%	
+		}
+	}
+	if (Selection) {
+%>
+	<%= Variables.Sdt("dyn", "WWDynamicFilters") %>
+	<%= Variables.Sdt("att", "WWDynamicFilters.Attribute") %>
+	<%= Variables.Sdt("con", "WWDynamicFilters.Condition") %>
+	<%= Variables.Sdt("fil", "WWDynamicFilters.Filter") %>
+<%
+	}
+}
+} catch(System.Exception e) {		
+	System.Windows.Forms.MessageBox.Show("Erro var: " + e.Message + Environment.NewLine + e.StackTrace);                   
+}
+
+%>

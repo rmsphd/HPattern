@@ -1,0 +1,123 @@
+<%@ Template Language="C#" TargetLanguage="GX" Description="Grid Selected Objects SDT" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Assembly Name="Artech.Architecture.Common" %>
+<%@ Assembly Name="Artech.Common" %>
+<%@ Assembly Name="Artech.Common.Helpers" %>
+<%@ Assembly Name="Artech.Common.Properties" %>
+<%@ Assembly Name="Artech.Genexus.Common" %>
+<%@ Assembly Name="Artech.Packages.Patterns" %>
+<%@ Assembly Name="Artech.Udm.Framework" %>
+<%@ Assembly Name="Artech.Template.Base" %>
+<%@ Assembly Name="System.Xml" %>
+<%@ Assembly Name="StringTemplate" %>
+<%@ Assembly Name="Artech.Architecture.UI.Framework" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Artech.Common.Properties" %>
+<%@ Import Namespace="Artech.Architecture.Common.Collections" %>
+<%@ Import Namespace="Artech.Architecture.Common.Objects" %>
+<%@ Import Namespace="Artech.Udm.Framework" %>
+<%@ Import Namespace="Artech.Genexus.Common" %>
+<%@ Import Namespace="Artech.Genexus.Common.CustomTypes" %>
+<%@ Import Namespace="Artech.Genexus.Common.Helpers" %>
+<%@ Import Namespace="Artech.Genexus.Common.Objects" %>
+<%@ Import Namespace="Artech.Genexus.Common.Parts" %>
+<%@ Import Namespace="Artech.Packages.Patterns" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Objects" %>
+<%@ Import Namespace="System" %>
+<%@ Import Namespace="System.Collections.Generic" %>
+<%@ Import Namespace="System.Text" %>
+<%@ Import Namespace="System.Xml" %>
+<%@ Import Namespace="Antlr.StringTemplate" %>
+<%@ Import Namespace="Artech.Genexus.Common.Wiki" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern.Resources" %>
+<%@ Property Name="Object" Type="Artech.Architecture.Common.Objects.KBObject" %>
+<%@ Property Name="Part" Type="Artech.Architecture.Common.Objects.KBObjectPart" %>
+<%@ Property Name="Instance" Type="Artech.Packages.Patterns.Objects.PatternInstance" %>
+<%@ Property Name="Element" Type="Artech.Packages.Patterns.Objects.PatternInstanceElement" %>
+<%@ SubTemplate Name="FilterCondition" File="FilterCondition.dkt" MergeProperties="True"%>
+
+<%
+	HPatternInstance wwInstance = HPatternInstance.Load(Instance);
+	HPatternSettings settings = wwInstance.Settings;
+	Transaction trn = wwInstance.Transaction.Transaction;
+	SelectionElement selection = wwInstance.GetElement<SelectionElement>(Element);
+	string sdtName = "SDT"+trn.Name+"Grid";
+	
+%>
+<Part type="<%= PartType.DataProviderSource %>">
+	<Source><![CDATA[<%= Messages.VersionHPattern() %>
+<%= sdtName %> [Count = &params.limit] [Skip = (&PageNumber - 1) * &params.limit] 
+<%
+if (selection.Orders != null)
+{
+	string tmpo = selection.Orders.gxuiOrder;
+	if (!String.IsNullOrEmpty(tmpo))
+	{
+%>
+<%= tmpo %> 
+<%	
+	}
+}
+if (settings.Grid.RemoteSort) {
+	foreach (AttributeElement ate in selection.Attributes.Attributes) {	
+		string AttName = ate.AttributeName;
+%>
+order <%=AttName%> when &params.sort = '<%=AttName%>' and &params.dir = "ASC"
+order (<%=AttName%>) when &params.sort = '<%=AttName%>'	and &params.dir = "DESC"
+<%
+	}
+}
+%>
+<%@ CallSubTemplate FilterCondition Object='Object' Part='Part' Instance='wwInstance' GridObject='selection' WhereForEach='true'%>
+{
+<%	foreach (AttributeElement ate in selection.Attributes.Attributes) {	
+		string valor = "";
+		if (ate.Attribute.Type == eDBType.DATE || ate.Attribute.Type == eDBType.DATETIME) {
+			valor = String.Format(" = ToFormattedString({0})",ate.AttributeName);
+		}
+		ITypedObject typeInfo = ate.Attribute;		
+		
+        if (typeInfo != null && typeInfo is Artech.Common.Properties.PropertiesObject)
+        {
+            Artech.Common.Properties.PropertiesObject props = (Artech.Common.Properties.PropertiesObject)typeInfo;
+            int controlType = props.GetPropertyValue<int>(Properties.ATT.ControlType);		
+            if (controlType == Properties.ATT.ControlType_Values.ComboBox)
+            {
+				string aspas = "\"";
+				if (ate.Attribute.Type == eDBType.NUMERIC) aspas = "";
+				IList<KeyValuePair<string, string>> lista = props.GetPropertyValue<CT_GXTXVAL_type>(Properties.ATT.Values).Data;
+				int maxsize = 0;
+				string valorfim = "";
+				valor = " = ";
+				foreach (KeyValuePair<string, string> item in lista)
+				{
+					if (item.Key.Length > maxsize) maxsize = item.Key.Length;
+					valor += String.Format("iif({0}={3}{1}{3},\"{2}\",",ate.AttributeName,item.Value,item.Key,aspas);
+					valorfim += ")";
+				}				
+				valor = valor+"\"\""+valorfim;
+            }
+		}
+%>
+	<%=ate.AttributeName%><%=valor%>
+<%
+	}
+%>
+<%	foreach (VariableElement ate in selection.Attributes.Variables) {	
+		string loadCode = "";
+		VariableElement ate2 = ate;
+		if (!String.IsNullOrEmpty(ate2.LoadCode))
+		{
+			loadCode = " = "+ate2.LoadCode;
+		
+%>
+	<%=ate.Name%><%=loadCode%>
+<%		
+		}
+	}
+%>
+}
+]]>
+	</Source>	
+</Part>

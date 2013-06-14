@@ -1,0 +1,16 @@
+<%@ Template Language="C#" TargetLanguage="GX" Description="Grid Tab Variables" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Property Name="Object" Type="Artech.Architecture.Common.Objects.KBObject" %>
+<%@ Property Name="Part" Type="Artech.Architecture.Common.Objects.KBObjectPart" %>
+<%@ Property Name="Instance" Type="Artech.Packages.Patterns.Objects.PatternInstance" %>
+<%@ Property Name="Element" Type="Artech.Packages.Patterns.Objects.PatternInstanceElement" %>
+<%@ SubTemplate Name="GridVariables" File="GridVariables.dkt" MergeProperties="True"%>
+
+<%
+	HPatternInstance wwInstance = HPatternInstance.Load(Instance);
+	TabElement tab = wwInstance.GetElement<TabElement>(Element);
+	tab.ObjType = (tab.GetCallMethod == TabElement.CallMethodValue.Popup ? TabElement.ObjTypeValue.Grid : TabElement.ObjTypeValue.All);
+%>
+
+<%@ CallSubTemplate GridVariables Instance='wwInstance' GridObject='tab' %>

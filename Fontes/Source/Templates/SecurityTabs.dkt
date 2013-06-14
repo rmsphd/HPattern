@@ -1,0 +1,150 @@
+﻿<%@ Template Language="C#" TargetLanguage="GX" Description="Selection Events" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Assembly Name="Artech.Architecture.Common" %>
+<%@ Assembly Name="Artech.Common" %>
+<%@ Assembly Name="Artech.Common.Helpers" %>
+<%@ Assembly Name="Artech.Common.Properties" %>
+<%@ Assembly Name="Artech.Genexus.Common" %>
+<%@ Assembly Name="Artech.Packages.Patterns" %>
+<%@ Assembly Name="Artech.Udm.Framework" %>
+<%@ Assembly Name="Artech.Template.Base" %>
+<%@ Assembly Name="System.Xml" %>
+<%@ Assembly Name="StringTemplate" %>
+<%@ Assembly Name="Artech.Architecture.UI.Framework" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Artech.Common.Properties" %>
+<%@ Import Namespace="Artech.Architecture.Common.Collections" %>
+<%@ Import Namespace="Artech.Architecture.Common.Objects" %>
+<%@ Import Namespace="Artech.Udm.Framework" %>
+<%@ Import Namespace="Artech.Genexus.Common" %>
+<%@ Import Namespace="Artech.Genexus.Common.Helpers" %>
+<%@ Import Namespace="Artech.Genexus.Common.Objects" %>
+<%@ Import Namespace="Artech.Genexus.Common.Parts" %>
+<%@ Import Namespace="Artech.Packages.Patterns" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Objects" %>
+<%@ Import Namespace="System" %>
+<%@ Import Namespace="System.Collections.Generic" %>
+<%@ Import Namespace="System.Text" %>
+<%@ Import Namespace="System.Xml" %>
+<%@ Import Namespace="Antlr.StringTemplate" %>
+<%@ Import Namespace="Artech.Genexus.Common.Wiki" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern.Resources" %>
+<%@ Import Namespace="Artech.Architecture.Common.Services" %>
+<%@ Property Name="wwInstance" Type="Heurys.Patterns.HPattern.HPatternInstance" %>
+<%@ Property Name="trn" Type="Transaction" %>
+<%@ Property Name="temview" Type="Boolean" %>
+<%@ Property Name="aba" Type="int" %>
+<%
+	LevelElement level = wwInstance.Levels[0];
+%>
+Sub 'SecurityTabs'
+	&podeAbrir = true
+	&cok = <%=(aba-1).ToString()%>	
+<%
+	int ctt = 0;
+	if (temview) {
+		ctt = level.View.Tabs.Count;
+		for (int ct = ctt;ct>=1;ct--)
+		{
+			TabElement tabit = level.View.Tabs[ct-1];
+		//foreach (TabElement tabit in  level.View.Tabs)	
+		//{			
+			if (tabit.IsConditional())
+			{
+%>
+	if &MenuData.Item(<%=ct%>).MenuId = <%=ct%>
+		if not (<%=String.Format(tabit.Condition,"&"+trn.Name+"SDT.")%>)
+<%				if (ct == aba) {
+%>				
+			&podeAbrir = false
+<%				} else { 
+					if (ct < aba) {
+%>
+			&cok -= 1
+<%
+					}
+				}
+%>
+			&MenuData.Remove(<%=ct%>)
+		endif
+	endif
+<%			
+			}
+		}
+	}
+	else 
+	{
+		ctt = wwInstance.Transaction.Form.Tabs.Count;
+		for (int ct = ctt;ct>=1;ct--)
+		{
+			TabFormElement tabit = wwInstance.Transaction.Form.Tabs[ct-1];		
+//		foreach (TabFormElement tabit in  wwInstance.Transaction.Form.Tabs)	
+//		{			
+			if (tabit.IsConditional())
+			{
+%>
+	if &MenuData.Item(<%=ct%>).MenuId = <%=ct%>
+		if not (<%=String.Format(tabit.Condition,"&"+trn.Name+"SDT.")%>)
+<%				if (ct == aba) {
+%>				
+			&podeAbrir = false
+<%				} else { 
+					if (ct < aba) {
+%>
+			&cok -= 1
+<%
+					}
+				}
+%>
+			&MenuData.Remove(<%=ct%>)
+		endif
+	endif
+<%			
+			}
+			//ct--;
+		}	
+	}
+%>
+	if not &podeAbrir and &MenuData.Count > 0
+		&cok = 0
+		&MenuDataItem = &MenuData.Item(1)
+		do case			
+<%	
+	int conta = 0;
+
+	if (level.View == null) 
+	{
+	
+		foreach (TabFormElement tabit in wwInstance.Transaction.Form.Tabs)
+		{
+			conta++;			
+%>			
+			case &MenuDataItem.MenuId = <%= conta.ToString() %>					
+				<%= wwInstance.Transaction.GeraLink(trn.Name+tabit.Name+"BC",true,true,false) %>
+<%
+		}	
+	} 
+	else
+	{
+		foreach (TabElement tabit in  level.View.Tabs)	
+		{		
+			conta++;			
+			if (tabit.Type == "UserDefined") {
+%>
+			case &MenuDataItem.MenuId = <%= conta.ToString() %>		
+				<%= wwInstance.Transaction.GeraLink(trn.Name+tabit.Code+"BC",true,false,false) %>				
+<%			} 
+			else
+			{
+%>
+			case &MenuDataItem.MenuId = <%= conta.ToString() %>	
+				<%= wwInstance.Transaction.GeraLink(tabit.Wcname,true,false,false) %>						
+<%			
+			}
+		}
+	}			
+%>	
+		endcase				
+	endif		
+EndSub

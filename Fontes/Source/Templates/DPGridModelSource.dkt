@@ -1,0 +1,135 @@
+<%@ Template Language="C#" TargetLanguage="GX" Description="Grid Selected Objects SDT" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Assembly Name="Artech.Architecture.Common" %>
+<%@ Assembly Name="Artech.Common" %>
+<%@ Assembly Name="Artech.Common.Helpers" %>
+<%@ Assembly Name="Artech.Common.Properties" %>
+<%@ Assembly Name="Artech.Genexus.Common" %>
+<%@ Assembly Name="Artech.Packages.Patterns" %>
+<%@ Assembly Name="Artech.Udm.Framework" %>
+<%@ Assembly Name="Artech.Template.Base" %>
+<%@ Assembly Name="System.Xml" %>
+<%@ Assembly Name="StringTemplate" %>
+<%@ Assembly Name="Artech.Architecture.UI.Framework" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Artech.Common.Properties" %>
+<%@ Import Namespace="Artech.Architecture.Common.Collections" %>
+<%@ Import Namespace="Artech.Architecture.Common.Objects" %>
+<%@ Import Namespace="Artech.Udm.Framework" %>
+<%@ Import Namespace="Artech.Genexus.Common" %>
+<%@ Import Namespace="Artech.Genexus.Common.Helpers" %>
+<%@ Import Namespace="Artech.Genexus.Common.Objects" %>
+<%@ Import Namespace="Artech.Genexus.Common.Parts" %>
+<%@ Import Namespace="Artech.Packages.Patterns" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Objects" %>
+<%@ Import Namespace="System" %>
+<%@ Import Namespace="System.Collections.Generic" %>
+<%@ Import Namespace="System.Text" %>
+<%@ Import Namespace="System.Xml" %>
+<%@ Import Namespace="Antlr.StringTemplate" %>
+<%@ Import Namespace="Artech.Genexus.Common.Wiki" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern.Resources" %>
+<%@ Property Name="Object" Type="Artech.Architecture.Common.Objects.KBObject" %>
+<%@ Property Name="Part" Type="Artech.Architecture.Common.Objects.KBObjectPart" %>
+<%@ Property Name="Instance" Type="Artech.Packages.Patterns.Objects.PatternInstance" %>
+<%@ Property Name="Element" Type="Artech.Packages.Patterns.Objects.PatternInstanceElement" %>
+<%@ SubTemplate Name="DPGridModelSourceActions" File="DPGridModelSourceActions.dkt" MergeProperties="True"%>
+
+<%
+	HPatternInstance wwInstance = HPatternInstance.Load(Instance);
+	HPatternSettings settings = wwInstance.Settings;
+	Transaction trn = wwInstance.Transaction.Transaction;
+	SelectionElement selection = wwInstance.GetElement<SelectionElement>(Element);
+	string primeiro = null;
+	
+foreach (IHPatternInstanceElement item in selection.Attributes.Items) {
+		if (item is AttributeElement) {
+			AttributeElement ate = (AttributeElement)item;
+			primeiro = ate.AttributeName;	
+			break;
+		}
+}		
+	
+%>
+<Part type="<%= PartType.DataProviderSource %>">
+	<Source><![CDATA[<%= Messages.VersionHPattern() %>
+gxuiGridColumnModel
+{
+	Columns
+	{	
+<%	
+	if (settings.Grid.GridGXUIActionOrientation == SettingsGridElement.GridGXUIActionOrientationValue.Left)
+	{
+%>
+<%@ CallSubTemplate DPGridModelSourceActions selection='selection' primeiro='primeiro' %>
+<%
+	}
+%>		
+<%	foreach (IHPatternInstanceElement item in selection.Attributes.Items) {
+		if (item is AttributeElement) {
+			AttributeElement ate = (AttributeElement)item;
+%>		
+		Item //gxuiGridColumn
+		{
+			header 		= <%=ate.DescriptionAspa%>
+			dataIndex 	= !'<%=ate.AttributeName%>'
+			align 		= !'left'
+<%			if (!ate.Visible) {
+%>
+			hidden		= gxuiBoolean.True
+<%
+			}
+			if (ate.Width.Length > 0)
+			{			
+%>			
+			width		= <%= ate.Width %>
+<%
+			}
+%>
+		}
+<%	
+		}
+		else
+		{
+			VariableElement ate = (VariableElement)item;
+			if (primeiro == null) primeiro = ate.Name;		
+%>		
+		Item //gxuiGridColumn
+		{
+			header 		= <%=ate.DescriptionAspa%>
+			dataIndex 	= !'<%=ate.Name%>'
+			align 		= !'left'
+			sortable 	= gxuiBoolean.False
+<%			if (!ate.Visible) {
+%>
+			hidden		= gxuiBoolean.True
+<%
+			}
+			if (ate.Width.Length > 0)
+			{			
+%>			
+			width		= <%= ate.Width %>
+<%
+			}
+%>
+		}
+<%		
+		}
+	}
+%>
+<%	
+	if (settings.Grid.GridGXUIActionOrientation == SettingsGridElement.GridGXUIActionOrientationValue.Right)
+	{
+%>
+<%@ CallSubTemplate DPGridModelSourceActions selection='selection' primeiro='primeiro' %>
+<%
+	}
+%>	
+		
+	}
+}		
+
+]]>
+	</Source>	
+</Part>

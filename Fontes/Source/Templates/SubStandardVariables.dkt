@@ -1,0 +1,43 @@
+<%@ Template Language="C#" TargetLanguage="GX" Description="Selection and Grid Tab Variables" %>
+<%@ Include Name="Constants.cs" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Property Name="Settings" Type="HPatternSettings" %>
+<%@ Property Name="Object" Type="Artech.Architecture.Common.Objects.KBObject" %>
+<%@ Property Name="Part" Type="Artech.Architecture.Common.Objects.KBObjectPart" %>
+<%@ Property Name="lista" Type="List<string>" %>
+<%
+	List<string> lista2 = new List<string>();
+	if (lista == null) 
+	{
+		Heurys.Patterns.HPattern.Helpers.Template.AddStandardVariables(lista2,Settings);
+	} 
+	else
+	{
+		lista2 = lista;
+	}
+%>
+
+
+	<%-- Security variables --%>
+	<%= Variables.Basic("IsAuthorized", null, eDBType.Boolean) %>
+	
+	<% if(!Settings.Grid.DefaultPagingButtons) {%>
+	<%= Variables.Basic("CurrentPage","Current Page",eDBType.NUMERIC,4,0,true)%>	
+	<%= Variables.Basic("pagec","Current Page",eDBType.NUMERIC,4,0,true)%>		
+	<% }%>
+	
+	<% if(Settings.Grid.MaxPage) {%>
+	<%= Variables.Basic("MaxPage","Max Page",eDBType.NUMERIC,8,0,true)%>		
+	<% }%>
+	
+	<% if(Settings.Grid.MaxRecords) {%>
+	<%= Variables.Basic("MaxRecords","Max Records",eDBType.NUMERIC,8,0,true)%>		
+	<% }%>
+
+	<% if(Settings.Grid.PageRecordsCombo) {%>
+	<%= Variables.BasedOnDomain("RecordPage","RecordPage")%>		
+	<% }%>
+	
+	<%-- Context variables --%>
+	<%= Settings.Context.DefineVariables(lista2) %>

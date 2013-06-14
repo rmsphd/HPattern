@@ -1,0 +1,166 @@
+﻿<%@ Template Language="C#" TargetLanguage="GX" Description="Selection and Grid Tabs Events" %>
+<%@ Include Name="Constants.cs" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Assembly Name="Artech.Architecture.Common" %>
+<%@ Assembly Name="Artech.Common" %>
+<%@ Assembly Name="Artech.Common.Helpers" %>
+<%@ Assembly Name="Artech.Common.Properties" %>
+<%@ Assembly Name="Artech.Genexus.Common" %>
+<%@ Assembly Name="Artech.Packages.Patterns" %>
+<%@ Assembly Name="Artech.Udm.Framework" %>
+<%@ Assembly Name="Artech.Template.Base" %>
+<%@ Assembly Name="System.Xml" %>
+<%@ Assembly Name="StringTemplate" %>
+<%@ Assembly Name="Artech.Architecture.UI.Framework" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Artech.Common.Properties" %>
+<%@ Import Namespace="Artech.Architecture.Common.Collections" %>
+<%@ Import Namespace="Artech.Architecture.Common.Objects" %>
+<%@ Import Namespace="Artech.Udm.Framework" %>
+<%@ Import Namespace="Artech.Genexus.Common" %>
+<%@ Import Namespace="Artech.Genexus.Common.Helpers" %>
+<%@ Import Namespace="Artech.Genexus.Common.Objects" %>
+<%@ Import Namespace="Artech.Genexus.Common.Parts" %>
+<%@ Import Namespace="Artech.Packages.Patterns" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Objects" %>
+<%@ Import Namespace="System" %>
+<%@ Import Namespace="System.Collections.Generic" %>
+<%@ Import Namespace="System.Text" %>
+<%@ Import Namespace="System.Xml" %>
+<%@ Import Namespace="Antlr.StringTemplate" %>
+<%@ Import Namespace="Artech.Genexus.Common.Wiki" %>
+<%@ Property Name="Object" Type="Artech.Architecture.Common.Objects.KBObject" %>
+<%@ Property Name="Part" Type="Artech.Architecture.Common.Objects.KBObjectPart" %>
+<%@ Property Name="Instance" Type="Heurys.Patterns.HPattern.HPatternInstance" %>
+<%@ Property Name="GridObject" Type="Heurys.Patterns.HPattern.IGridObject" %>
+<%@ Property Name="WhereForEach" Type="Boolean" %>
+<%@ Property Name="GridBC" Type="Boolean" %>
+<%
+
+	string sw = "";
+	string sp = ";";
+	bool gridBC = false;
+	string sdtname = "";
+	try {
+		if (GridBC != null) gridBC = GridBC;
+	} catch (System.Exception e) {}
+	if (gridBC)
+	{
+		sw = "and (";
+		sp = ")";
+		if (GridObject is TabElement)
+		{
+			sdtname = String.Format("&{0}Item.",GridObject.Transaction.Name);
+		}
+	}
+	if (WhereForEach) {
+		sw = "where ";
+		sp = "";
+	}
+	foreach (ParameterElement parameter in GridObject.Parameters)
+	{
+		if (GridObject is PromptElement) {
+			if (parameter.IsAttribute && !parameter.Null)
+			{
+%>
+<%= sw+parameter.ParameterCondition+sp %>
+<%
+			}			
+		} else {
+			if (parameter.IsAttribute)
+			{
+				if (Instance.WebObject.WebBC == false || !(GridObject is TabElement)) 
+				{
+%>
+<%= sw+parameter.ParameterConditionPrc+sp %>
+<%
+				}
+			}
+		}
+	}
+
+
+
+
+	if (GridObject.Filter != null)
+	{
+		foreach (FilterAttributeElement fatt in GridObject.Filter.FilterAttributes)
+		{
+			if (fatt.FilterType == FilterAttributeElement.FilterTypeValue.Interval)
+			{ 
+%>
+<%=sw%><%= String.Format("{1}{0} >= &{0} when not &{0}.IsEmpty()", fatt.Name,sdtname) %><%=sp%>
+<%=sw%><%= String.Format("{1}{0} <= &{0}2 when not &{0}2.IsEmpty()", fatt.Name,sdtname) %><%=sp%>
+<%		
+			}
+		}
+	
+		foreach (ConditionElement filterCondition in GridObject.Filter.Conditions)
+		{
+%>
+<%=sw%><%= String.Format(filterCondition.FilterConditionLike.TrimEnd(';'),sdtname) %><%=sp%>
+<%
+		}
+	}
+	
+try {	
+HPatternSettings settings = Instance.Settings;	
+int ch = settings.DynamicFilters.MaxChoices;
+int total = settings.DynamicFilters.MaxAttributes;
+int conta = 0;
+bool gera = false;
+
+if (GridObject.Filter != null) {
+	
+	if (GridObject.Filter.Dynamicfilters != null)
+		gera = (GridObject.Filter.Dynamicfilters.Count > 0 && ch > 0) ? true : false;
+}
+
+if (gera) {
+	for (int i = 1;i<=ch;i++) {
+		
+		conta = 0;
+		
+		Artech.Genexus.Common.Objects.Attribute at = null;
+		
+		foreach (AttributeElement ta in GridObject.Filter.Dynamicfilters) {
+		
+			at = ta.Attribute;
+			//System.Windows.Forms.MessageBox.Show("ATT: " + ta.AttributeName);
+			if (at.Type == eDBType.CHARACTER || at.Type == eDBType.VARCHAR || at.Type == eDBType.NUMERIC || at.Type == eDBType.DATE) {
+				conta++;
+				string var = "";
+				bool car = false;
+				if (at.Type == eDBType.CHARACTER || at.Type == eDBType.VARCHAR) {
+					var = "&Carac"+i.ToString().Trim();
+					car = true;
+				}
+				if (at.Type == eDBType.NUMERIC)
+					var = "&Numer"+i.ToString().Trim();
+				if (at.Type == eDBType.DATE)
+					var = "&DataD"+i.ToString().Trim();		
+					
+				//System.Windows.Forms.MessageBox.Show("ATT: " + ta.AttributeName+" "+(car ? "T" : "F")); 				
+				
+				foreach (SettingsFilterElement sfe in settings.DynamicFilters.Filters) {
+					
+					if ((car && sfe.IsCaracter) || !sfe.IsCaracter) {
+					
+						string campocond = "&Campo"+i.ToString().Trim()+" = '"+at.Name+"' and &CondD"+i.ToString().Trim()+" = '"+sfe.Name.Trim()+"'";
+				
+						string exp = String.Format(sfe.Expression,at.Name,var,campocond);
+%>
+<%=sw%><%= exp.TrimEnd(';')%><%=sp%>
+<%					}
+				}
+				
+			}
+			if (conta >= total) break;			
+		}
+	}
+}
+} catch(System.Exception e) {		
+	System.Windows.Forms.MessageBox.Show("Erro cond: " + e.Message + Environment.NewLine + e.StackTrace+ Environment.NewLine+e.Source);                   
+}
+%>

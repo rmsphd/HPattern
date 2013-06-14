@@ -1,0 +1,573 @@
+<%@ Template Language="C#" TargetLanguage="GX" Description="Selection Events" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Assembly Name="Artech.Architecture.Common" %>
+<%@ Assembly Name="Artech.Common" %>
+<%@ Assembly Name="Artech.Common.Helpers" %>
+<%@ Assembly Name="Artech.Common.Properties" %>
+<%@ Assembly Name="Artech.Genexus.Common" %>
+<%@ Assembly Name="Artech.Packages.Patterns" %>
+<%@ Assembly Name="Artech.Udm.Framework" %>
+<%@ Assembly Name="Artech.Template.Base" %>
+<%@ Assembly Name="System.Xml" %>
+<%@ Assembly Name="StringTemplate" %>
+<%@ Assembly Name="Artech.Architecture.UI.Framework" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Artech.Common.Properties" %>
+<%@ Import Namespace="Artech.Architecture.Common.Collections" %>
+<%@ Import Namespace="Artech.Architecture.Common.Objects" %>
+<%@ Import Namespace="Artech.Common.Helpers.Strings" %>
+<%@ Import Namespace="Artech.Udm.Framework" %>
+<%@ Import Namespace="Artech.Genexus.Common" %>
+<%@ Import Namespace="Artech.Genexus.Common.Helpers" %>
+<%@ Import Namespace="Artech.Genexus.Common.Objects" %>
+<%@ Import Namespace="Artech.Genexus.Common.Parts" %>
+<%@ Import Namespace="Artech.Packages.Patterns" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Objects" %>
+<%@ Import Namespace="System" %>
+<%@ Import Namespace="System.Collections.Generic" %>
+<%@ Import Namespace="System.Text" %>
+<%@ Import Namespace="System.Xml" %>
+<%@ Import Namespace="Antlr.StringTemplate" %>
+<%@ Import Namespace="Artech.Genexus.Common.Wiki" %>
+<%@ Property Name="Object" Type="Artech.Architecture.Common.Objects.KBObject" %>
+<%@ Property Name="Part" Type="Artech.Architecture.Common.Objects.KBObjectPart" %>
+<%@ Property Name="Instance" Type="Artech.Packages.Patterns.Objects.PatternInstance" %>
+<%@ Property Name="Element" Type="Artech.Packages.Patterns.Objects.PatternInstanceElement" %>
+<%@ SubTemplate Name="SecurityTabs" File="SecurityTabs.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="SubCheckSecurity" File="SubCheckSecurity.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="BCValidationAttribute" File="BCValidationAttribute.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="LimpaSessaoBC" File="LimpaSessaoBC.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="EventIsValid" File="EventIsValid.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="WebBCSave" File="WebBCSave.dkt" MergeProperties="True"%>
+<%
+	HPatternInstance wwInstance = HPatternInstance.Load(Instance);
+	HPatternSettings settings = wwInstance.Settings;
+	Transaction trn = wwInstance.Transaction.Transaction;
+	IHPatternInstanceElement form = wwInstance.Transaction.Form;
+	
+	string ObjectName = trn.Name;
+	if (!String.IsNullOrEmpty(wwInstance.Transaction.ObjectName))
+	{
+		ObjectName = wwInstance.Transaction.ObjectName;
+	}
+	
+	SelectionElement selection = null;
+	LevelElement level = wwInstance.Levels[0];
+	string tabini = "";
+	
+	bool hascond = wwInstance.HasConditionalTabs();
+	bool temview = false;
+	
+	int idAba = 0;
+	
+	if (level != null) 
+	{
+		selection = level.Selection;
+		if (level.View != null)
+		{		
+			temview	= true;
+			if (level.View.Tabs != null) 
+			{
+				if (level.View.Tabs.Count > 0)
+				{
+					tabini = level.View.Tabs[0].Code;	
+					if (String.IsNullOrEmpty(level.View.Tabs[0].ObjName))
+					{
+						ObjectName = trn.Name+tabini+"BC";
+					} else {
+						ObjectName = level.View.Tabs[0].ObjectName;
+					}
+					//CommonServices.Output.AddLine(String.Format(">>> View ObjectName {0}, tabini {1}, testes {2}",ObjectName,tabini,level.View.Tabs[0].ObjectName));
+				}		
+			}	
+		}	
+	}
+	if (tabini == String.Empty)
+	{
+		if (wwInstance.Transaction.Form != null)
+		{
+			if (wwInstance.Transaction.Form.Tabs.Count > 0)
+			{
+				tabini = wwInstance.Transaction.Form.Tabs[0].Name;
+				if (String.IsNullOrEmpty(wwInstance.Transaction.Form.Tabs[0].ObjectName))
+				{
+					ObjectName = trn.Name+tabini+"BC";
+				} else {
+					ObjectName = wwInstance.Transaction.Form.Tabs[0].ObjectName;
+				}		
+				//CommonServices.Output.AddLine(String.Format(">>> Trn ObjectName {0}, tabini {1}, testes {2}",ObjectName,tabini,wwInstance.Transaction.Form.Tabs[0].ObjectName));		
+			}
+		}
+	}
+	
+	//CommonServices.Output.AddLine(String.Format(">>> ObjectName {0}, tabini {1}",ObjectName,tabini));		
+	
+	string tab = "";
+	TabFormElement tabe = null;
+	try 
+	{
+		tabe = wwInstance.GetElement<TabFormElement>(Element);
+		form = tabe;
+	} catch (Exception e) 
+	{}
+	if (tabe != null) {	
+		tab = tabe.Name;		
+	}	
+	
+	string varpks = Heurys.Patterns.HPattern.Helpers.Template.GetPKLink(trn.Structure.Root.PrimaryKey);	
+	string varpksT = Heurys.Patterns.HPattern.Helpers.Template.GetPKVar(trn.Structure.Root.PrimaryKey);
+	string varpksM = Heurys.Patterns.HPattern.Helpers.Template.GetPKSDT(trn.Structure.Root.PrimaryKey,trn.Name,settings.Template.BCPrimaryKeyDelimiter);
+
+	
+	List<String> listapk = new List<String>();
+	
+	foreach (TransactionAttribute trnAtt in trn.Structure.Root.PrimaryKey) {		
+		listapk.Add(trnAtt.Name);
+		
+	}	
+
+%>
+<Part type="<%= PartType.Events %>">
+	<Source><![CDATA[<%= Messages.VersionHPattern() %>
+	
+Event Start
+<%@ CallSubTemplate SubCheckSecurity Instance='wwInstance' Settings='settings' IndentLevel='1' IndentLevelChar='"\t"' IsTransaction='true'%>
+<%
+if (settings.Security.EventStart != String.Empty) {
+%>
+<%=settings.Security.EventStart%>
+<%
+}
+%>
+
+	// Carrega registro em sessao
+	if &HTTPRequest.Method = HttpMethod.Get and &load
+		Load<%= trn.Name %>.Call(&Mode<%= varpks %>)	
+	endif
+		
+	// Restaura registro da sessao
+	&referencia = "<%= trn.Name %>SDT"<%= varpksT %>
+	&<%= trn.Name %>SDT.FromXml(&Session.Get(&referencia))		
+
+<%
+
+	Artech.Common.Collections.IBaseCollection<RowElement> rows = wwInstance.Transaction.GetRows(tab);
+	/*
+	if (tabe == null)
+	{	
+		rows = wwInstance.Transaction.Form.Rows;
+	}
+	else
+	{		
+		foreach (TabFormElement tabf in wwInstance.Transaction.Form.Tabs)
+		{
+			if (tabf.Name == tab)
+			{
+				rows = tabf.Rows; 	
+				break;
+			}
+			
+		}
+		
+	}
+	*/
+	
+if (rows != null)
+{
+	foreach (RowElement row in rows)		
+	{		
+		foreach (ColumnElement col in row.Columns) 
+		{
+			foreach (VariableElement var in col.Variables)
+			{
+				if (var.Domain != null || var.Attribute != null) 
+				{
+					if (!var.Visible || !row.Visible) 
+					{
+%>
+	&<%= var.Name %>.Visible = false
+<%					
+					}
+					if (!String.IsNullOrEmpty(var.LoadCode))
+					{
+%>
+	<%= var.LoadCode %>
+<%
+					}
+					if (!String.IsNullOrEmpty(var.LinksEventStart))
+					{
+%>
+<%= Indentation.Indent(var.LinksEventStart,1) %>
+<%
+					}					
+									
+				}
+			}
+			
+			foreach (AttributeElement att in col.Attributes)
+			{
+				if (att.Attribute != null) 
+				{				
+					if (!att.Visible || !row.Visible)
+					{
+%>			
+	ctl<%= att.AttributeName %>.Visible = false
+<%					}
+					if (!String.IsNullOrEmpty(att.LinksEventStart))
+					{
+%>
+<%= Indentation.Indent(att.LinksEventStart,1) %>
+<%
+					}	
+					if (!String.IsNullOrEmpty(att.EventStart))
+					{
+%>
+<%= Indentation.Indent(String.Format(att.EventStart,"&"+trn.Name+"SDT."+att.AttributeName,"ctl"+att.AttributeName),1) %>
+<%
+					}						
+				}
+			}
+			
+			foreach (TextElement text in col.Texts)
+			{
+				
+				if (!text.Visible || !row.Visible)
+				{
+%>			
+	<%= text.Name %>.Visible = false
+<%				}
+		
+			}			
+		}
+	}	
+}
+%>	
+	
+	if &Mode = TrnMode.Delete
+		btn_enter.Caption = "<%= settings.StandardActions.Delete.Caption %>"			
+	endif	
+	
+	if &Mode = TrnMode.Display
+		btn_enter.Enabled = false
+	endif
+	
+	if &Mode = TrnMode.Update
+<%
+if (rows != null)
+{
+	foreach (RowElement row in rows)		
+	{		
+		foreach (ColumnElement col in row.Columns) 
+		{
+			foreach (AttributeElement att in col.Attributes)
+			{
+				if (att.Attribute != null) {
+					if (listapk.Contains(att.AttributeName)) 
+					{
+%>			
+		ctl<%= att.AttributeName %>.Enabled = false
+<%				
+					}
+				}
+			}
+		}
+	}
+}
+%>	
+	endif	
+	
+	if &Mode = TrnMode.Display or &Mode = TrnMode.Delete
+<%
+if (rows != null)
+{
+	foreach (RowElement row in rows)		
+	{		
+		foreach (ColumnElement col in row.Columns) 
+		{
+			foreach (VariableElement var in col.Variables)
+			{
+				if (var.Domain != null) 
+				{
+%>
+		&<%= var.Name %>.Enabled = false
+<%					
+				}
+			}
+			
+			foreach (AttributeElement att in col.Attributes)
+			{
+				if (att.Attribute != null) {
+%>			
+		ctl<%= att.AttributeName %>.Enabled = false
+<%				
+				}
+			}
+		}
+	}
+}
+%>	
+	endif
+<%	
+            if (settings.Template.EventStart != String.Empty) {
+%>
+<%= settings.Template.EventStart %>
+<%
+            }
+
+            bool setFocus = wwInstance.Transaction.GetSetFocus;
+            /*
+            settings.Template.TransactionSetFocus;
+            if (wwInstance.Transaction.SetFocus.ToLower() == "true")
+                setFocus = true;
+            if (wwInstance.Transaction.SetFocus.ToLower() == "true")
+                setFocus = false;
+			*/
+			
+            Artech.Genexus.Common.Objects.Attribute setFocusAtt = wwInstance.Transaction.SetFocusAttribute;
+            if (setFocusAtt == null) 
+            {
+				if (trn.Structure.Root.DescriptionAttribute != null) 
+				{
+					setFocusAtt = trn.Structure.Root.DescriptionAttribute.Attribute;
+                }
+            }
+            
+            if (setFocusAtt != null)
+            {
+				if (!wwInstance.Transaction.InScreen(setFocusAtt.Name,tab)) 
+				{
+					setFocusAtt = null;
+				}
+            }
+            
+            if (setFocusAtt != null)
+            {
+				if (rows != null)
+				{
+					foreach (RowElement row in rows)		
+					{		
+						foreach (ColumnElement col in row.Columns) 
+						{						
+							foreach (AttributeElement att in col.Attributes)
+							{       
+								if (att.Attribute == setFocusAtt && att.Visible == false) {
+									setFocusAtt = null;
+								}   
+							}
+						}
+					}
+				}
+				
+            }
+            
+            if (setFocusAtt == null)
+            {
+				bool saida = false;
+				if (rows != null)
+				{
+					foreach (RowElement row in rows)		
+					{		
+						foreach (ColumnElement col in row.Columns) 
+						{						
+							foreach (AttributeElement att in col.Attributes)
+							{       
+								if (att.Attribute != null && att.Visible) {
+									setFocusAtt = att.Attribute;
+									saida = true;
+									break;
+								}   
+							}
+							
+							if (saida)
+							{
+								break;
+							}
+						}
+						
+						if (saida)
+						{
+							break;
+						}
+					}     
+				}       
+            }
+
+            if (setFocus && setFocusAtt != null) 
+            {
+%>            
+
+	ctl<%= setFocusAtt.Name%>.SetFocus()
+<%
+            }	
+	if (tabe != null) {	
+	
+		int idTab = 0;
+
+		LevelElement level2 = wwInstance.Levels[0];
+		if (level2.View == null) 
+		{
+		
+			foreach (TabFormElement tabit in wwInstance.Transaction.Form.Tabs)
+			{
+				idTab++;
+				if (tabit.Name == tab)
+				{
+					idTab--;
+					break;
+			
+				}		
+			}
+		
+		} 
+		else
+		{		
+			foreach (TabElement tabit in  level2.View.Tabs)	
+			{		
+				idTab++;		
+				if (tabe.Name == tabit.Code) 
+				{
+					idTab--;
+					break;
+				}
+			}
+		}	
+		idAba = idTab + 1;		           
+%>	
+	&MenuData = DPDSM<%= trn.Name %>()
+<%
+		if (hascond) {
+%>
+	do 'SecurityTabs'
+	&n = SetCookie('"Tabs'+Trim(str(&MenuData.Count,2,0))+'"',&cok.ToString().Trim(),"/")	
+<%
+		} else {
+%>
+	&n = SetCookie('"Tabs'+Trim(str(&MenuData.Count,2,0))+'"',"<%= idTab %>","/")	
+<%	
+		}
+	}
+%>
+<%= Indentation.Indent(Heurys.Patterns.HPattern.Helpers.Template.HMaskEventStart(wwInstance.Transaction,tab),1)%>
+<%
+    if (!String.IsNullOrEmpty(wwInstance.Transaction.EventStart))
+    {
+%>            
+<%= Indentation.Indent(wwInstance.Transaction.EventStart, 1)%>
+<%                
+    }
+%>            
+EndEvent // Start
+
+<%
+	if (form !=null) 
+	{
+%>
+<%=Heurys.Patterns.HPattern.Helpers.Template.PromptEvents(form, settings,String.Format("&{0}SDT.",trn.Name))%>
+<%
+	}
+%>
+
+Event 'Fechar'
+<%@ CallSubTemplate LimpaSessaoBC varpksT='varpksT' trn='trn' level='level' %>
+<% if (selection != null) {%>
+
+	<%= selection.ObjectName %>.Link(<%= selection.Parameters.ListSelection() %>)
+<% } %>	
+EndEvent
+
+<%
+	if (tabe != null) {	            
+%>	
+Event Tabs.DolphinItemClicked 
+<%= Indentation.Indent(Heurys.Patterns.HPattern.Helpers.Template.HMaskEventSave(wwInstance.Transaction,tab,trn.Name+"SDT"),1)%>	
+
+	// Grava registro na sessao
+	&referencia = "<%= trn.Name %>SDT"<%= varpksT %>
+	&Session.Set(&referencia,&<%= trn.Name %>SDT.ToXml())	
+<%
+if (wwInstance.HasTabs)
+{
+%>
+	
+	do case			
+<%	
+	int conta = 0;
+
+	if (level.View == null) 
+	{
+	
+		foreach (TabFormElement tabit in wwInstance.Transaction.Form.Tabs)
+		{
+			conta++;
+			if (tabit.Name != tab)
+			{
+			
+%>			
+		case &MenuDataItem.MenuId = <%= conta.ToString() %>		
+			
+			<%= wwInstance.Transaction.GeraLink(trn.Name+tabit.Name+"BC",true,true,false) %>
+<%			
+			}		
+		}
+	
+	} 
+	else
+	{
+		foreach (TabElement tabit in  level.View.Tabs)	
+		{		
+			conta++;		
+			if (tabe.Name != tabit.Code) 
+			{
+			
+				if (tabit.Type == "UserDefined") {
+%>
+		case &MenuDataItem.MenuId = <%= conta.ToString() %>		
+			<%= wwInstance.Transaction.GeraLink(trn.Name+tabit.Code+"BC",true,false,false) %>				
+<%				} 
+				else
+				{
+%>
+		case &MenuDataItem.MenuId = <%= conta.ToString() %>	
+			<%= wwInstance.Transaction.GeraLink(tabit.Wcname,true,false,false) %>						
+<%			
+				}
+
+
+			}
+		}
+	}			
+%>	
+	endcase			
+<%
+}
+%>
+EndEvent   
+<%	}
+%>
+  
+<%@ CallSubTemplate EventIsValid rows='rows'%>
+<%= Heurys.Patterns.HPattern.Helpers.Template.TransactionActions(wwInstance.Transaction) %>
+
+<%@ CallSubTemplate WebBCSave wwInstance='wwInstance' settings='settings' IsGrid='false' ObjectName='ObjectName' TabName='tab' %>
+
+<%
+if (hascond) {
+%>
+<%@ CallSubTemplate SecurityTabs wwInstance='wwInstance' trn='trn' temview='temview' aba='idAba' %>
+<%
+}
+
+	string codes = Heurys.Patterns.HPattern.Helpers.TemplateInternal.EventCodes(Heurys.Patterns.HPattern.Helpers.TemplateInternal.CodeType.WebPanel, settings);
+	if (!String.IsNullOrEmpty(codes))
+	{
+%>
+<%= codes%>
+<%    
+	}
+
+%>
+]]>
+	</Source>
+</Part>	
+

@@ -1,0 +1,80 @@
+<%@ Template Language="C#" TargetLanguage="GX" Description="Selection Variables" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Assembly Name="Artech.Architecture.Common" %>
+<%@ Assembly Name="Artech.Common" %>
+<%@ Assembly Name="Artech.Common.Helpers" %>
+<%@ Assembly Name="Artech.Common.Properties" %>
+<%@ Assembly Name="Artech.Genexus.Common" %>
+<%@ Assembly Name="Artech.Packages.Patterns" %>
+<%@ Assembly Name="Artech.Udm.Framework" %>
+<%@ Assembly Name="Artech.Template.Base" %>
+<%@ Assembly Name="System.Xml" %>
+<%@ Assembly Name="StringTemplate" %>
+<%@ Assembly Name="Artech.Architecture.UI.Framework" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Artech.Common.Properties" %>
+<%@ Import Namespace="Artech.Architecture.Common.Collections" %>
+<%@ Import Namespace="Artech.Architecture.Common.Objects" %>
+<%@ Import Namespace="Artech.Udm.Framework" %>
+<%@ Import Namespace="Artech.Genexus.Common" %>
+<%@ Import Namespace="Artech.Genexus.Common.Helpers" %>
+<%@ Import Namespace="Artech.Genexus.Common.Objects" %>
+<%@ Import Namespace="Artech.Genexus.Common.Parts" %>
+<%@ Import Namespace="Artech.Packages.Patterns" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Objects" %>
+<%@ Import Namespace="System" %>
+<%@ Import Namespace="System.Collections.Generic" %>
+<%@ Import Namespace="System.Text" %>
+<%@ Import Namespace="System.Xml" %>
+<%@ Import Namespace="Antlr.StringTemplate" %>
+<%@ Import Namespace="Artech.Genexus.Common.Wiki" %>
+<%@ Property Name="Object" Type="Artech.Architecture.Common.Objects.KBObject" %>
+<%@ Property Name="Part" Type="Artech.Architecture.Common.Objects.KBObjectPart" %>
+<%@ Property Name="Instance" Type="Artech.Packages.Patterns.Objects.PatternInstance" %>
+<%@ Property Name="Element" Type="Artech.Packages.Patterns.Objects.PatternInstanceElement" %>
+<%@ SubTemplate Name="SubStandardVariables" File="SubStandardVariables.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="FilterVariables" File="FilterVariables.dkt" MergeProperties="True"%>
+<%
+	HPatternInstance wwInstance = HPatternInstance.Load(Instance);
+	HPatternSettings settings = wwInstance.Settings;
+	SelectionElement selection = wwInstance.GetElement<SelectionElement>(Element);
+	
+	List<string> lista = new List<string>();
+	lista.Add("PageNumber");
+	lista.Add("params");	
+%>
+
+<Part type="<%= PartType.Variables %>">
+	<%= Variables.Basic("PageNumber","PageNumber",eDBType.NUMERIC,4) %>
+	<%= Variables.Sdt("params","gxuiGridParams") %>
+<%	
+	// Variables for parameters.
+	foreach (ParameterElement parameter in selection.Parameters)
+	{		
+		if (parameter.IsAttribute) {
+			lista.Add(parameter.Name.Replace("&",""));
+%>
+	<%= Variables.BasedOnAttribute(parameter.Name, parameter.Name) %>
+<%			
+		} else {
+			lista.Add(parameter.Name.Replace("&",""));
+			if (parameter.Domain == null)
+			{
+%>
+	<%= Variables.BasedOnAttribute(parameter.Name, parameter.Name) %>
+<%		
+			} else {
+%>
+	<%= Variables.BasedOnDomain(parameter.Name, parameter.DomainName) %>
+<%		
+			
+			}
+		}
+
+	}
+%>			
+	<%= settings.Context.DefineVariables(lista) %>
+	<%@ CallSubTemplate FilterVariables Object='Object' Part='Part' Instance='wwInstance' GridObject='selection' Selection='false' lista='lista' %>	
+</Part>
+

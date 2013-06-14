@@ -1,0 +1,81 @@
+<%@ Template Language="C#" TargetLanguage="GX" Description="Selection Variables" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Assembly Name="Artech.Architecture.Common" %>
+<%@ Assembly Name="Artech.Common" %>
+<%@ Assembly Name="Artech.Common.Helpers" %>
+<%@ Assembly Name="Artech.Common.Properties" %>
+<%@ Assembly Name="Artech.Genexus.Common" %>
+<%@ Assembly Name="Artech.Packages.Patterns" %>
+<%@ Assembly Name="Artech.Udm.Framework" %>
+<%@ Assembly Name="Artech.Template.Base" %>
+<%@ Assembly Name="System.Xml" %>
+<%@ Assembly Name="StringTemplate" %>
+<%@ Assembly Name="Artech.Architecture.UI.Framework" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Artech.Common.Properties" %>
+<%@ Import Namespace="Artech.Architecture.Common.Collections" %>
+<%@ Import Namespace="Artech.Architecture.Common.Objects" %>
+<%@ Import Namespace="Artech.Udm.Framework" %>
+<%@ Import Namespace="Artech.Genexus.Common" %>
+<%@ Import Namespace="Artech.Genexus.Common.Helpers" %>
+<%@ Import Namespace="Artech.Genexus.Common.Objects" %>
+<%@ Import Namespace="Artech.Genexus.Common.Parts" %>
+<%@ Import Namespace="Artech.Packages.Patterns" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Objects" %>
+<%@ Import Namespace="System" %>
+<%@ Import Namespace="System.Collections.Generic" %>
+<%@ Import Namespace="System.Text" %>
+<%@ Import Namespace="System.Xml" %>
+<%@ Import Namespace="Antlr.StringTemplate" %>
+<%@ Import Namespace="Artech.Genexus.Common.Wiki" %>
+<%@ Property Name="Object" Type="Artech.Architecture.Common.Objects.KBObject" %>
+<%@ Property Name="Part" Type="Artech.Architecture.Common.Objects.KBObjectPart" %>
+<%@ Property Name="Instance" Type="Artech.Packages.Patterns.Objects.PatternInstance" %>
+<%@ Property Name="Element" Type="Artech.Packages.Patterns.Objects.PatternInstanceElement" %>
+<%@ SubTemplate Name="SubStandardVariables" File="SubStandardVariables.dkt" MergeProperties="True"%>
+
+<%
+	HPatternInstance wwInstance = HPatternInstance.Load(Instance);
+	HPatternSettings settings = wwInstance.Settings;
+	Transaction trn = wwInstance.Transaction.Transaction;
+%>
+
+<Part type="<%= PartType.Variables %>">
+	<%-- Context variables --%>
+	<%= settings.Context.DefineVariables() %>
+	
+	<%
+	// Add variables for primary key.
+	foreach (TransactionAttribute trnAtt in trn.Structure.Root.PrimaryKey) {
+%>	
+	<%= Variables.BasedOnAttribute(trnAtt.Name,trnAtt.Attribute) %>
+<%	}		
+	%>	
+	
+	<%= Variables.Extended("Session", null, "WebSession") %>
+	<%= Variables.BasedOnDomain("Mode","TrnMode") %>
+	<%= Variables.BusinessComponent(trn.Name+"BC",trn)%>
+	<%= Variables.Sdt(trn.Name+"SDT","SDT"+trn.Name+"BC") %>
+	<%= Variables.Basic("referencia","referencia",eDBType.CHARACTER,200) %>
+<%
+	LevelElement level = wwInstance.Levels[0];
+	if (level != null)
+	{
+		if (level.View != null)
+		{
+			foreach (TabElement tabe in level.View.Tabs)
+			{
+				if (tabe.Type == TabElement.TypeValue.Grid && tabe.Transaction.Transaction != null)
+				{
+%>	
+	<%= Variables.Sdt(tabe.Code+"SDT","SDT"+trn.Name+"BC."+tabe.Code) %>
+	<%= Variables.BusinessComponent(tabe.Code+"BC",tabe.Transaction.Transaction)%>
+<%
+				}
+			}
+		}
+	}
+%>	
+</Part>
+

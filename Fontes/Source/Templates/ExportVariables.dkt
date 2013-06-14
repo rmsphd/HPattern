@@ -1,0 +1,115 @@
+<%@ Template Language="C#" TargetLanguage="GX" Description="Export Procedure Variables" %>
+<%@ Include Name="Constants.cs" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Property Name="Object" Type="Artech.Architecture.Common.Objects.KBObject" %>
+<%@ Property Name="Part" Type="Artech.Architecture.Common.Objects.KBObjectPart" %>
+<%@ Property Name="Instance" Type="Artech.Packages.Patterns.Objects.PatternInstance" %>
+<%@ Property Name="Element" Type="Artech.Packages.Patterns.Objects.PatternInstanceElement" %>
+<%@ SubTemplate Name="SubStandardVariables" File="SubStandardVariables.dkt" MergeProperties="True"%>
+
+<Part type="<%= PartType.Variables %>">
+<%
+	List<string> lista = new List<string>();
+	HPatternInstance wwInstance = HPatternInstance.Load(Instance);
+	HPatternSettings settings = wwInstance.Settings;
+	IGridObject gridObject = wwInstance.GetElement<IGridObject>(Element);
+	IGridObject GridObject = gridObject;
+	
+	lista.Add("ExcelDocument");
+	lista.Add("Filename");
+	lista.Add("ErrorMessage");
+	lista.Add("CellRow");
+	lista.Add("FirstColumn");
+	lista.Add("Random");
+%>
+
+<%@ CallSubTemplate SubStandardVariables Settings='wwInstance.Settings' %>
+
+	<%= Variables.Extended("ExcelDocument", null, "ExcelDocument") %>
+	<%= Variables.BasedOnDomain("Filename", "URLString") %>
+	<%= Variables.Basic("ErrorMessage", null, eDBType.VARCHAR, 512) %>
+	<%= Variables.Basic("CellRow", null, eDBType.NUMERIC, 8, 0, false) %>
+	<%= Variables.Basic("FirstColumn", null, eDBType.NUMERIC, 8, 0, false) %>
+	<%= Variables.Basic("Random", null, eDBType.NUMERIC, 8, 0, false) %>
+
+<%
+	// Variables for parameters.
+	foreach (ParameterElement parameter in gridObject.Parameters)
+	{
+		if (wwInstance.Settings.Template.GenerateCallBackLink==false || parameter.Name.Replace("&","") != HPatternInstance.PARMCALLBACK ) 
+		{
+		lista.Add(parameter.Name.Replace("&",""));
+%>
+	<%= Variables.BasedOnAttribute(parameter.Name, parameter.Name) %>
+<%
+		}
+	}
+
+	// Custom variables.
+	foreach (VariableElement var in gridObject.Attributes.Variables)
+	{
+		if (!lista.Contains(var.Name.Replace("&","")))
+		{
+			lista.Add(var.Name.Replace("&",""));
+			if (var.Domain == null)
+			{
+%>
+	<%= Variables.BasedOnAttribute(var.Name, var.AttributeName) %>
+<%
+			}
+			else
+			{
+%>
+	<%= Variables.BasedOnDomain(var.Name, var.DomainName) %>
+<%
+			}
+		}
+	}
+
+	// Variable for order choice.
+	if (gridObject.Orders.NeedsChoice)
+	{
+		lista.Add(OrdersElement.OrderVariable.Replace("&",""));
+%>
+	<%= Variables.Basic(OrdersElement.OrderVariable, null, eDBType.NUMERIC, 4, 0, false) %>
+<%	
+	}
+
+	// Variables for filter.
+	if (gridObject.Filter != null)
+	{
+%>
+	<%= gridObject.Filter.DefineVariables(lista) %>
+<%
+	}
+	
+try {
+int ch = settings.DynamicFilters.MaxChoices;
+bool geraDF = false;
+if (GridObject.Filter != null) {
+	if (GridObject.Filter.Dynamicfilters != null)
+		geraDF = (GridObject.Filter.Dynamicfilters.Count > 0 && ch > 0) ? true : false;
+}
+if (geraDF) {
+	for (int i = 1;i<=ch;i++) {
+%>
+	<%= Variables.Basic("Campo"+i.ToString().Trim(), "Campo", eDBType.CHARACTER, 31) %>
+	<%= Variables.Basic("CondD"+i.ToString().Trim(), "Condição", eDBType.CHARACTER, 31) %>
+	<%= Variables.Basic("Carac"+i.ToString().Trim(), "Caracter", eDBType.CHARACTER, 31) %>	
+	<%= Variables.Basic("Numer"+i.ToString().Trim(), "Numero", eDBType.NUMERIC, 10,0,false) %>
+	<%= Variables.Basic("DataD"+i.ToString().Trim(), "Data", eDBType.DATE) %>
+<%	}
+%>
+	<%= Variables.Sdt("dyn", "WWDynamicFilters") %>
+	<%= Variables.Sdt("att", "WWDynamicFilters.Attribute") %>
+	<%= Variables.Sdt("con", "WWDynamicFilters.Condition") %>
+	<%= Variables.Sdt("fil", "WWDynamicFilters.Filter") %>
+<%}
+} catch(System.Exception e) {		
+	System.Windows.Forms.MessageBox.Show("Erro var: " + e.Message + Environment.NewLine + e.StackTrace);                   
+}
+	
+	
+%>
+</Part>

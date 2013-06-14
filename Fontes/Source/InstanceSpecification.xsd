@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema
+	elementFormDefault="qualified" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://schemas.genexus.com/Patterns/InstanceSpecification/v1.0"
+	xmlns:is="http://schemas.genexus.com/Patterns/InstanceSpecification/v1.0"
+	>
+	<xs:annotation>
+		<xs:documentation xml:lang="en">Schema for Pattern Instance or Setting files.</xs:documentation>
+	</xs:annotation>
+	
+	<xs:element name="Pattern">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="ElementTypes">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element minOccurs="0" maxOccurs="unbounded" name="ElementType" type="is:SpecificationType" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="Name" type="xs:string" use="required" />
+			<xs:attribute name="Version" type="is:Version" use="required" />
+			<xs:attribute name="RootElement" type="xs:string" use="required" />
+			<xs:attribute name="RootType" type="xs:string" use="required" />
+		</xs:complexType>
+
+		<xs:key name="ElementTypeName">
+			<xs:selector xpath="is:ElementTypes/is:ElementType" />
+			<xs:field xpath="@Name" />
+		</xs:key>
+		
+		<xs:keyref name="ChildTypeName" refer="is:ElementTypeName">
+			<xs:selector xpath="is:ElementTypes/is:ElementType/is:ChildrenElements/is:ChildElement" />
+			<xs:field xpath="@ElementType" />
+		</xs:keyref>
+		
+		<xs:keyref name="RootTypeName" refer="is:ElementTypeName">
+			<xs:selector xpath="." />
+			<xs:field xpath="@RootType" />
+		</xs:keyref>
+	</xs:element>
+	
+	<xs:complexType name="SpecificationType">
+		<xs:sequence>
+			<xs:element name="Attributes">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" maxOccurs="unbounded" name="Attribute" type="is:SpecificationAttribute" />
+					</xs:sequence>
+				</xs:complexType>
+				<xs:key name="AttributeName">
+					<xs:selector xpath="is:Attribute" />
+					<xs:field xpath="@Name" />
+				</xs:key>
+			</xs:element>
+			<xs:element name="ChildrenElements">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" maxOccurs="unbounded" name="ChildElement" type="is:SpecificationChildElement" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element minOccurs="0" name="Initialization">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" maxOccurs="unbounded" name="InitializationFrom" type="is:SpecificationTypeInitialization" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="Name" type="xs:string" use="required" />
+		<xs:attribute name="BaseType" type="xs:string" />
+		<xs:attribute name="CustomAttributes" type="xs:boolean" />
+		<xs:attribute name="Caption" type="xs:string" use="required" />
+		<xs:attribute name="CaptionParameters" type="xs:string" />
+		<xs:attribute name="KeyAttribute" type="xs:string" />
+		<xs:attribute name="Icon" type="xs:string" />
+		<xs:attribute name="ChildrenType" type="is:ChildrenType" />
+		<!-- Obsolete: use ChildrenType instead
+		<xs:attribute name="ChildrenOrdered" type="is:ExtendedBoolean" default="Default" />
+		-->
+	</xs:complexType>
+
+	<xs:complexType name="SpecificationAttribute">
+		<xs:attribute name="Name" type="xs:string" use="required" />
+		<xs:attribute name="Type" type="xs:string" use="required" />
+		<xs:attribute name="Category" type="xs:string" />
+		<xs:attribute name="Description" type="xs:string" />
+		<xs:attribute name="Serialization" type="is:AttributeSerialization" default="Attribute" />
+		<xs:attribute name="DefaultValue" type="xs:string" />
+		<xs:attribute name="DefaultValueFrom" type="xs:string" />
+		<xs:attribute name="PrettyName" type="xs:string" />
+		<xs:attribute name="ReadOnly" type="xs:boolean" default="false" />
+		<xs:attribute name="ReadOnlyIf" type="xs:string" />
+		<xs:attribute name="Visible" type="xs:boolean" default="true" />
+		<xs:attribute name="VisibleIf" type="xs:string" />
+		<xs:attribute name="NotNull" type="xs:boolean" default="false" />
+		<xs:attribute name="Resolver" type="xs:string" />
+		<xs:attribute name="Flag" type="xs:string" />
+		<xs:attribute name="Tag" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="SpecificationChildElement">
+		<xs:attribute name="Name" type="xs:string" use="required" />
+		<xs:attribute name="Description" type="xs:string" />
+		<xs:attribute name="ElementType" type="xs:string" use="required" />
+		<xs:attribute name="Multiple" type="xs:boolean" use="optional" default="false" />
+		<xs:attribute name="Optional" type="xs:boolean" use="optional" default="false" />
+		<xs:attribute name="CanAddIf" type="xs:string" use="optional" />
+		<xs:attribute name="CanDeleteIf" type="xs:string" use="optional" />
+		<xs:attribute name="CanModifyCollection" type="xs:boolean" default="true" />
+	</xs:complexType>
+
+	<xs:complexType name="SpecificationTypeInitialization">
+		<xs:attribute name="Type" type="xs:string" use="required" />
+		<xs:attribute name="ReferenceProperty" type="xs:string" />
+		<xs:attribute name="PropertyValues" type="xs:string" />
+	</xs:complexType>
+
+	<xs:simpleType name="AttributeSerialization">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Attribute" />
+			<xs:enumeration value="Element" />
+			<xs:enumeration value="InnerText" />
+			<xs:enumeration value="CData" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="ChildrenType">
+		<xs:restriction base="xs:string">
+			<!-- <xs:enumeration value="Default" /> Not supported in schema. Either a specific value, or not present. -->
+			<xs:enumeration value="Choice" />
+			<xs:enumeration value="Sequence" />
+			<xs:enumeration value="Mixed" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="Version">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0-9]+(\.[0-9]+){0,3}" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!-- Not used anymore
+	<xs:simpleType name="ExtendedBoolean">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Default" />
+			<xs:enumeration value="True" />
+			<xs:enumeration value="False" />
+		</xs:restriction>
+	</xs:simpleType>
+	-->
+</xs:schema>

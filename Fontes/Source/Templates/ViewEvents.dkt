@@ -1,0 +1,109 @@
+<%@ Template Language="C#" TargetLanguage="GX" Description="View Events" %>
+<%@ Include Name="Constants.cs" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Property Name="Object" Type="Artech.Architecture.Common.Objects.KBObject" %>
+<%@ Property Name="Part" Type="Artech.Architecture.Common.Objects.KBObjectPart" %>
+<%@ Property Name="Instance" Type="Artech.Packages.Patterns.Objects.PatternInstance" %>
+<%@ Property Name="Element" Type="Artech.Packages.Patterns.Objects.PatternInstanceElement" %>
+<%@ SubTemplate Name="SubLoadContext" File="SubLoadContext.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="SubCheckSecurity" File="SubCheckSecurity.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="SubLinkAttributes" File="SubLinkAttributes.dkt" MergeProperties="True"%>
+
+<Part type="<%= PartType.Events %>">
+	<Source><![CDATA[<%
+
+	HPatternInstance wwInstance = HPatternInstance.Load(Instance);
+	ViewElement view = wwInstance.GetElement<ViewElement>(Element);
+	HPatternSettings settings = wwInstance.Settings;
+
+%>
+<%= Messages.VersionHPattern() %>
+
+Event Start
+<%@ CallSubTemplate SubLoadContext Settings='settings' tipo='0' IndentLevel='1' IndentLevelChar='"\t"' %>
+<%@ CallSubTemplate SubCheckSecurity Instance='wwInstance' Settings='settings' IndentLevel='1' IndentLevelChar='"\t"' IsTransaction='false' %>
+<%
+    if (settings.Template.GenerateCallBackLink)
+    {
+%>		
+	ViewAll.Link = PrGetLinkCallBack.Udp(&<%= HPatternInstance.PARMCALLBACK %>)
+<%
+    } else if (view.BackToSelection && view.Parent.Selection != null)
+	{
+%>		
+	ViewAll.Link = <%= view.Parent.Selection.ObjectName %>.Link()
+<%
+	}
+	
+	if (true /*viewParms.IncludesAttributes()*/)
+	{
+%>
+
+	For each
+		where <%= view.Parameters.WhereCondition() %>
+<%
+		if (view.Caption != String.Empty)
+		{
+%>
+		Form.Caption = <%= view.Caption %>
+<%
+		}
+%>
+		&Exists = True
+<%
+		if (view.FixedData != null && view.FixedData.Attributes != null)
+		{
+%>
+<%@  CallSubTemplate SubLinkAttributes Level='view.Parent' Element='view' Attributes='view.FixedData.Attributes' IndentLevel='2' IndentLevelChar='"\t"' %>
+<%
+		}
+%>
+	When none
+		Form.Caption = "<%= settings.Labels.RecordNotFound %>"
+		&Exists = False
+	Endfor
+<%
+	}
+	else /* !viewParms.IncludesAttributes() -> cannot use for each */
+	{
+		if (view.Caption != String.Empty)
+		{
+%>
+	Form.Caption = <%= view.Caption %>
+<%
+		}
+%>
+	&Exists = True
+<%		
+	}
+
+%>
+
+<%= Heurys.Patterns.HPattern.Helpers.Tab.getTab(view,Object).Events() %>
+<%
+	if (settings.Template.GenerateCallBackLink)
+	{
+%>
+PrSaveLinkCallBack.Call(&<%= HPatternInstance.PARMCALLBACK %>,<%= view.ObjectName %>.Link(<%= view.Parameters.ListWithVariables() %>))
+<%
+	}
+%>
+EndEvent
+
+<%= Heurys.Patterns.HPattern.Helpers.Tab.getTab(view,Object).Subs() %>
+
+<%
+	
+	string codes = Heurys.Patterns.HPattern.Helpers.TemplateInternal.EventCodes(Heurys.Patterns.HPattern.Helpers.TemplateInternal.CodeType.WebPanel, settings);
+	if (!String.IsNullOrEmpty(codes))
+	{
+%>
+<%= codes%>
+<%    
+	}	
+	
+%>
+]]>
+	</Source>
+</Part>

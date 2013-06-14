@@ -1,0 +1,149 @@
+﻿<%@ Template Language="C#" TargetLanguage="GX" Description="Selection Events" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Assembly Name="Artech.Architecture.Common" %>
+<%@ Assembly Name="Artech.Common" %>
+<%@ Assembly Name="Artech.Common.Helpers" %>
+<%@ Assembly Name="Artech.Common.Properties" %>
+<%@ Assembly Name="Artech.Genexus.Common" %>
+<%@ Assembly Name="Artech.Packages.Patterns" %>
+<%@ Assembly Name="Artech.Udm.Framework" %>
+<%@ Assembly Name="Artech.Template.Base" %>
+<%@ Assembly Name="System.Xml" %>
+<%@ Assembly Name="StringTemplate" %>
+<%@ Assembly Name="Artech.Architecture.UI.Framework" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Artech.Common.Properties" %>
+<%@ Import Namespace="Artech.Architecture.Common.Collections" %>
+<%@ Import Namespace="Artech.Architecture.Common.Objects" %>
+<%@ Import Namespace="Artech.Common.Helpers.Strings" %>
+<%@ Import Namespace="Artech.Udm.Framework" %>
+<%@ Import Namespace="Artech.Genexus.Common" %>
+<%@ Import Namespace="Artech.Genexus.Common.Helpers" %>
+<%@ Import Namespace="Artech.Genexus.Common.Objects" %>
+<%@ Import Namespace="Artech.Genexus.Common.Parts" %>
+<%@ Import Namespace="Artech.Packages.Patterns" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Objects" %>
+<%@ Import Namespace="System" %>
+<%@ Import Namespace="System.Collections.Generic" %>
+<%@ Import Namespace="System.Text" %>
+<%@ Import Namespace="System.Xml" %>
+<%@ Import Namespace="Antlr.StringTemplate" %>
+<%@ Import Namespace="Artech.Genexus.Common.Wiki" %>
+<%@ Property Name="TabName" Type="String" %>
+<%@ Property Name="ObjectName" Type="String" %>
+<%@ Property Name="IsGrid" Type="Boolean" %>
+<%@ Property Name="wwInstance" Type="Heurys.Patterns.HPattern.HPatternInstance" %>
+<%@ Property Name="settings" Type="Heurys.Patterns.HPattern.HPatternSettings" %>
+<%@ SubTemplate Name="SecurityTabs" File="SecurityTabs.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="SubCheckSecurity" File="SubCheckSecurity.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="BCValidationAttribute" File="BCValidationAttribute.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="LimpaSessaoBC" File="LimpaSessaoBC.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="EventIsValid" File="EventIsValid.dkt" MergeProperties="True"%>
+<%
+Transaction trn = wwInstance.Transaction.Transaction;
+
+string varpks = Heurys.Patterns.HPattern.Helpers.Template.GetPKLink(trn.Structure.Root.PrimaryKey);	
+string varpksT = Heurys.Patterns.HPattern.Helpers.Template.GetPKVar(trn.Structure.Root.PrimaryKey);
+string varpksM = Heurys.Patterns.HPattern.Helpers.Template.GetPKSDT(trn.Structure.Root.PrimaryKey,trn.Name,settings.Template.BCPrimaryKeyDelimiter);
+	
+SelectionElement selection = null;
+
+if (wwInstance.Levels[0] != null) 
+{
+	selection = wwInstance.Levels[0].Selection;
+}
+
+string tab = TabName;
+
+%>
+Event 'Salvar'
+
+	if &Mode <> TrnMode.Display
+
+		&ErrorValidation = false
+
+<%
+	if (!IsGrid) 
+	{
+%>
+<%= Indentation.Indent(Heurys.Patterns.HPattern.Helpers.Template.HMaskEventSave(wwInstance.Transaction,tab,trn.Name+"SDT"),2)%>		
+<%@ CallSubTemplate BCValidationAttribute Instance='wwInstance.Transaction' Settings='settings' BCName='"&"+trn.Name+"SDT"' TabName='tab' Mode='"&Mode"' ListaSDT='""' %>
+<%
+	}
+%>
+
+		If &ErrorValidation = false
+	
+			// Grava registro na sessao
+			&referencia = "<%= trn.Name %>SDT"<%= varpksT %>
+			&Session.Set(&referencia,&<%= trn.Name %>SDT.ToXml())
+			
+			// Valida e Grava registro
+			&mensagens = Save<%= trn.Name %>.Udp(&<%= trn.Name %>SDT,&Mode<%= varpks %>)
+			
+			// Se tem algum erro
+			if &mensagens.Count > 0
+					
+<%= Indentation.Indent(String.Format(wwInstance.Transaction.BCErrorCode,varpksM.ToString()),4) %>			
+			
+				// Vamos mostrar os erros	
+	<%
+	bool popup = settings.Template.PopupMessage == null ? false : true;
+	if (popup) {	
+
+	%>
+				&referencia = "<%= trn.Name %>BCMessages"
+				&Session.Set(&referencia,&mensagens.ToXml())	
+				
+				&linkretorno = <%= wwInstance.Transaction.GeraLink(ObjectName,true,true,false) %>			
+				&window.Object = <%= settings.Template.PopupMessageName %>.Create(&referencia,&linkretorno)
+				&window.Width = <%= settings.Template.PopupMessageWidth %>
+				&window.Height = <%= settings.Template.PopupMessageHeight %>		
+				&window.Open()	
+	<%
+	} else {
+	%>		
+				for &mensagem in &mensagens
+					msg(iif(&mensagem.Type = MessageTypes.Warning,"<%= settings.Template.ValidationWarningMessage %>","<%= settings.Template.ValidationErrorMessage %>")+&mensagem.Description)
+				endfor
+	<%
+	}	
+	%>		
+			else
+
+<%= Indentation.Indent(String.Format(wwInstance.Transaction.BCSucessCode,varpksM.ToString(),ObjectName,wwInstance.Transaction.GeraChamada(true,true,false)),4) %>			
+		
+<%
+	if (wwInstance.AfterInsert == HPatternInstance.AfterInsertValue.EnterInUpdate)
+	{
+%>	
+				if &Mode = TrnMode.Insert
+					<%= wwInstance.Transaction.GeraLink(ObjectName,true,true,false,"TrnMode.Update","&"+trn.Name+"SDT.") %>
+				else
+<%
+	}
+%>		
+<% 
+	if (selection != null) {
+%>
+					// Se nao tem erro volta para a selecao		
+					<%= selection.ObjectName %>.Link(<%= selection.Parameters.ListSelection() %>)	
+<% 
+				}
+%>
+<%
+	if (wwInstance.AfterInsert == HPatternInstance.AfterInsertValue.EnterInUpdate)
+	{
+%>	
+				endif
+<%
+	}
+%>					
+			EndIf
+		
+		EndIf
+		
+	EndIf
+			
+EndEvent

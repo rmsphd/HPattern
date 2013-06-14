@@ -1,0 +1,83 @@
+﻿<%@ Template Language="C#" TargetLanguage="GX" Description="Selection Events" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Assembly Name="Artech.Architecture.Common" %>
+<%@ Assembly Name="Artech.Common" %>
+<%@ Assembly Name="Artech.Common.Helpers" %>
+<%@ Assembly Name="Artech.Common.Properties" %>
+<%@ Assembly Name="Artech.Genexus.Common" %>
+<%@ Assembly Name="Artech.Packages.Patterns" %>
+<%@ Assembly Name="Artech.Udm.Framework" %>
+<%@ Assembly Name="Artech.Template.Base" %>
+<%@ Assembly Name="System.Xml" %>
+<%@ Assembly Name="StringTemplate" %>
+<%@ Assembly Name="Artech.Architecture.UI.Framework" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Artech.Common.Properties" %>
+<%@ Import Namespace="Artech.Architecture.Common.Collections" %>
+<%@ Import Namespace="Artech.Architecture.Common.Objects" %>
+<%@ Import Namespace="Artech.Common.Helpers.Strings" %>
+<%@ Import Namespace="Artech.Udm.Framework" %>
+<%@ Import Namespace="Artech.Genexus.Common" %>
+<%@ Import Namespace="Artech.Genexus.Common.Helpers" %>
+<%@ Import Namespace="Artech.Genexus.Common.Objects" %>
+<%@ Import Namespace="Artech.Genexus.Common.Parts" %>
+<%@ Import Namespace="Artech.Packages.Patterns" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Objects" %>
+<%@ Import Namespace="System" %>
+<%@ Import Namespace="System.Collections.Generic" %>
+<%@ Import Namespace="System.Text" %>
+<%@ Import Namespace="System.Xml" %>
+<%@ Import Namespace="Antlr.StringTemplate" %>
+<%@ Import Namespace="Artech.Genexus.Common.Wiki" %>
+<%@ Property Name="Instance" Type="Heurys.Patterns.HPattern.TransactionElement" %>
+<%@ Property Name="Settings" Type="Heurys.Patterns.HPattern.HPatternSettings" %>
+<%@ Property Name="BCName" Type="String" %>
+<%@ Property Name="TabName" Type="String" %>
+<%@ Property Name="Mode" Type="String" %>
+<%@ Property Name="ListaSDT" Type="String" %>
+<%
+	Transaction trn = Instance.Transaction;
+	
+	Artech.Common.Collections.IBaseCollection<RowElement> rows = null;
+	
+	if (Instance.Form != null)
+	{
+		rows = Instance.GetRows(TabName);
+		/*
+		if (String.IsNullOrEmpty(TabName)) {
+			rows = Instance.Form.Rows;
+		}
+		if (Instance.Form.Tabs.Count > 0)
+		{
+			foreach (TabFormElement tabe in Instance.Form.Tabs)
+			{
+				if (tabe.Name == TabName)
+				{
+					rows = tabe.Rows;
+					break;
+				}
+			}
+		}
+		*/
+	}
+	if (rows != null)
+	{
+		foreach (RowElement row in rows)		
+		{		
+			foreach (ColumnElement col in row.Columns) 
+			{				
+				foreach (AttributeElement att in col.Attributes)
+				{
+					if (!String.IsNullOrEmpty(att.EventValidation))
+					{
+%>
+<%= Indentation.Indent(String.Format(att.EventValidation,BCName+"."+att.AttributeName,att.AttributeName,Mode,ListaSDT),2) %>								
+<%				
+					}				
+				}
+			}
+		}
+	}
+	
+%>

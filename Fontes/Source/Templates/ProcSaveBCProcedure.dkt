@@ -1,0 +1,266 @@
+<%@ Template Language="C#" TargetLanguage="GX" Description="Export Procedure" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Assembly Name="Artech.Architecture.Common" %>
+<%@ Assembly Name="Artech.Common" %>
+<%@ Assembly Name="Artech.Common.Helpers" %>
+<%@ Assembly Name="Artech.Common.Properties" %>
+<%@ Assembly Name="Artech.Genexus.Common" %>
+<%@ Assembly Name="Artech.Packages.Patterns" %>
+<%@ Assembly Name="Artech.Udm.Framework" %>
+<%@ Assembly Name="Artech.Template.Base" %>
+<%@ Assembly Name="System.Xml" %>
+<%@ Assembly Name="StringTemplate" %>
+<%@ Assembly Name="Artech.Architecture.UI.Framework" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Artech.Common.Properties" %>
+<%@ Import Namespace="Artech.Architecture.Common.Collections" %>
+<%@ Import Namespace="Artech.Architecture.Common.Objects" %>
+<%@ Import Namespace="Artech.Udm.Framework" %>
+<%@ Import Namespace="Artech.Genexus.Common" %>
+<%@ Import Namespace="Artech.Genexus.Common.Helpers" %>
+<%@ Import Namespace="Artech.Genexus.Common.Objects" %>
+<%@ Import Namespace="Artech.Genexus.Common.Parts" %>
+<%@ Import Namespace="Artech.Packages.Patterns" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Objects" %>
+<%@ Import Namespace="System" %>
+<%@ Import Namespace="System.Collections.Generic" %>
+<%@ Import Namespace="System.Text" %>
+<%@ Import Namespace="System.Xml" %>
+<%@ Import Namespace="Antlr.StringTemplate" %>
+<%@ Import Namespace="Artech.Genexus.Common.Wiki" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern.Resources" %>
+<%@ Property Name="Object" Type="Artech.Architecture.Common.Objects.KBObject" %>
+<%@ Property Name="Part" Type="Artech.Architecture.Common.Objects.KBObjectPart" %>
+<%@ Property Name="Instance" Type="Artech.Packages.Patterns.Objects.PatternInstance" %>
+<%@ Property Name="Element" Type="Artech.Packages.Patterns.Objects.PatternInstanceElement" %>
+<%@ SubTemplate Name="LimpaSessaoBC" File="LimpaSessaoBC.dkt" MergeProperties="True"%>
+<%
+	HPatternInstance wwInstance = HPatternInstance.Load(Instance);
+	HPatternSettings settings = wwInstance.Settings;
+	Transaction trn = wwInstance.Transaction.Transaction;
+	
+	string varpksT = Heurys.Patterns.HPattern.Helpers.Template.GetPKVar(trn.Structure.Root.PrimaryKey);
+	ArrayList lista = new ArrayList();
+	
+	int contai = 0;
+	foreach (TransactionAttribute trnAtt in trn.Structure.Root.PrimaryKey) {		
+		lista.Add(trnAtt.Attribute);		
+	}
+	
+
+%>
+<Part type="<%= PartType.Procedure %>">
+	<Source><![CDATA[<%= Messages.VersionHPattern() %>
+
+// Restaura Load do registro BC
+if not &<%= trn.Name %>SDT.ReferenciaBC.IsEmpty()
+	&<%= trn.Name %>BC.FromXml(&Session.Get(&<%= trn.Name %>SDT.ReferenciaBC))
+endif
+
+if &Mode = TrnMode.Delete
+<%
+LevelElement level = wwInstance.Levels[0];
+if (level != null)
+{
+	if (level.View != null)
+	{
+		foreach (TabElement tabe in level.View.Tabs)
+		{
+			if (tabe.Type == TabElement.TypeValue.Grid && tabe.Transaction.Transaction != null)
+			{		
+	
+%>
+	for &<%= tabe.Code %>SDT in &<%= trn.Name %>SDT.<%= tabe.Code %>
+		
+		// Restaura Load do registro BC
+		if not &<%= tabe.Code %>SDT.ReferenciaBC.IsEmpty()
+		
+			if &mensagens.Count = 0
+			
+				&<%= tabe.Code %>BC.FromXml(&Session.Get(&<%= tabe.Code %>SDT.ReferenciaBC))
+				
+				&<%= tabe.Code %>BC.Delete()
+				
+				if &<%= tabe.Code %>BC.Fail()
+					&mensagens = &<%= tabe.Code %>BC.GetMessages()
+				endif			
+			endif
+							
+		endif				
+	
+	endfor
+<%		
+			}
+		}
+	}	
+}
+%>	
+
+	if &mensagens.Count = 0
+	
+		// Exclui os dados	
+		&<%= trn.Name %>BC.Delete()
+		
+		if &<%= trn.Name %>BC.Fail()
+			&mensagens = &<%= trn.Name %>BC.GetMessages()
+		endif			
+		
+	endif				
+	
+else	
+
+	// Retorna os Dados da SDT para o BC
+<%
+foreach (TransactionAttribute trnAtt in trn.Structure.Root.Attributes) {
+	
+	if (!trnAtt.IsInferred && trnAtt.Attribute.Formula == null) {
+%>
+	&<%= trn.Name %>BC.<%= trnAtt.Name %> = &<%= trn.Name %>SDT.<%= trnAtt.Name %>
+<%
+	}
+}	
+%>
+
+	&<%= trn.Name %>BC.Save()
+	
+	if &<%= trn.Name %>BC.Fail()
+		&mensagens = &<%= trn.Name %>BC.GetMessages()
+	else
+		if &Mode = TrnMode.Insert
+<%
+foreach (TransactionAttribute trnAtt in trn.Structure.Root.PrimaryKey) {
+%>
+			&<%= trn.Name %>SDT.<%= trnAtt.Name %> = &<%= trn.Name %>BC.<%= trnAtt.Name %>
+<%
+}	
+%>			
+		endif		
+	endif		
+	
+<%
+if (level != null)
+{
+	if (level.View != null)
+	{
+		foreach (TabElement tabe in level.View.Tabs)
+		{
+			if (tabe.Type == TabElement.TypeValue.Grid && tabe.Transaction.Transaction != null)
+			{		
+				Transaction trn2 = tabe.Transaction.Transaction;	
+				if (tabe.ListNotNull) {			
+%>
+	&temItens = false
+<%
+				}
+%>	
+	for &<%= tabe.Code %>SDT in &<%= trn.Name %>SDT.<%= tabe.Code %>
+		
+		if &mensagens.Count = 0
+		
+			// Restaura Load do registro BC
+			if &<%= tabe.Code %>SDT.ReferenciaBC.IsEmpty()	
+			
+				&<%= tabe.Code %>BC = new()						
+<%
+				foreach (TransactionAttribute trnAtt in trn2.Structure.Root.PrimaryKey) {	
+					if (lista.Contains(trnAtt.Attribute)) {
+%>
+				&<%= tabe.Code %>BC.<%= trnAtt.Name %> = &<%= trn.Name %>SDT.<%= trnAtt.Name %>
+<%		
+					}
+	
+				}	
+%>				
+			else
+			
+				&<%= tabe.Code %>BC.FromXml(&Session.Get(&<%= tabe.Code %>SDT.ReferenciaBC))	
+				
+				if &<%= tabe.Code %>SDT.Apagar
+				
+					&<%= tabe.Code %>BC.Delete()	
+					
+				endif											
+
+			endif				
+				
+			if not &<%= tabe.Code %>SDT.Apagar	
+			
+				if &<%= tabe.Code %>SDT.Atualizado
+					// Retorna os Dados da SDT para o BC
+<%
+				foreach (TransactionAttribute trnAtt in trn2.Structure.Root.Attributes) {					
+					if (!trnAtt.IsInferred && trnAtt.Attribute.Formula == null) {
+						if (!lista.Contains(trnAtt.Attribute)) {
+%>
+					&<%= tabe.Code %>BC.<%= trnAtt.Name %> = &<%= tabe.Code %>SDT.<%= trnAtt.Name %>
+<%		
+						}
+					}
+				}	
+%>
+					&<%= tabe.Code %>BC.Save()
+				endif
+				
+<%
+				if (tabe.ListNotNull) {
+%>				
+				&temItens = true
+<%
+				}
+%>				
+				
+			endif	
+				
+			if &<%= tabe.Code %>BC.Fail()
+				&mensagens = &<%= tabe.Code %>BC.GetMessages()
+			endif
+							
+		endif				
+	
+	endfor
+<%
+	if (tabe.ListNotNull) {
+		string condlist = "not &temItens";
+		if (!String.IsNullOrEmpty(tabe.ListNotNullCondition))
+		{
+			condlist = "( "+String.Format(tabe.ListNotNullCondition,"&"+trn.Name+"SDT")+" ) and "+condlist;
+		}
+%>		
+	if <%=condlist%>
+		&msgi = new()
+		&msgi.Description = '<%=tabe.ListNotNMessage%>'
+		&msgi.Type = MessageTypes.Error
+		&mensagens.Add(&msgi)
+	endif	
+<%
+	}
+%>	
+<%		
+			}
+		}	
+	}
+}
+%>		
+	
+endif
+
+if &mensagens.Count = 0
+
+	commit
+	
+<%@ CallSubTemplate LimpaSessaoBC varpksT='varpksT' trn='trn' level='level' %>	
+
+endif
+<%
+	string codes = Heurys.Patterns.HPattern.Helpers.TemplateInternal.EventCodes(Heurys.Patterns.HPattern.Helpers.TemplateInternal.CodeType.Procedure, settings);
+	if (!String.IsNullOrEmpty(codes))
+	{
+%>
+<%= codes%>
+<%    
+	}
+%>
+]]>
+	</Source>
+</Part>

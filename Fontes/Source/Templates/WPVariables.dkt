@@ -1,0 +1,168 @@
+<%@ Template Language="C#" TargetLanguage="GX" Description="Selection Variables" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Assembly Name="Artech.Architecture.Common" %>
+<%@ Assembly Name="Artech.Common" %>
+<%@ Assembly Name="Artech.Common.Helpers" %>
+<%@ Assembly Name="Artech.Common.Properties" %>
+<%@ Assembly Name="Artech.Genexus.Common" %>
+<%@ Assembly Name="Artech.Packages.Patterns" %>
+<%@ Assembly Name="Artech.Udm.Framework" %>
+<%@ Assembly Name="Artech.Template.Base" %>
+<%@ Assembly Name="System.Xml" %>
+<%@ Assembly Name="StringTemplate" %>
+<%@ Assembly Name="Artech.Architecture.UI.Framework" %>
+<%@ Import Namespace="Artech.Architecture.Common.Services" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern.Code" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern.Helpers" %>
+<%@ Import Namespace="Artech.Common.Properties" %>
+<%@ Import Namespace="Artech.Architecture.Common.Collections" %>
+<%@ Import Namespace="Artech.Architecture.Common.Objects" %>
+<%@ Import Namespace="Artech.Udm.Framework" %>
+<%@ Import Namespace="Artech.Genexus.Common" %>
+<%@ Import Namespace="Artech.Genexus.Common.Helpers" %>
+<%@ Import Namespace="Artech.Genexus.Common.Objects" %>
+<%@ Import Namespace="Artech.Genexus.Common.Parts" %>
+<%@ Import Namespace="Artech.Packages.Patterns" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Objects" %>
+<%@ Import Namespace="System" %>
+<%@ Import Namespace="System.Collections.Generic" %>
+<%@ Import Namespace="System.Text" %>
+<%@ Import Namespace="System.Xml" %>
+<%@ Import Namespace="Antlr.StringTemplate" %>
+<%@ Import Namespace="Artech.Genexus.Common.Wiki" %>
+<%@ Property Name="Object" Type="Artech.Architecture.Common.Objects.KBObject" %>
+<%@ Property Name="Part" Type="Artech.Architecture.Common.Objects.KBObjectPart" %>
+<%@ Property Name="Instance" Type="Artech.Packages.Patterns.Objects.PatternInstance" %>
+<%@ Property Name="Element" Type="Artech.Packages.Patterns.Objects.PatternInstanceElement" %>
+<%@ SubTemplate Name="SubStandardVariables" File="SubStandardVariables.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="TrnParmVariables" File="TrnParmVariables.dkt" MergeProperties="True"%>
+
+<%
+	HPatternInstance wwInstance = HPatternInstance.Load(Instance);
+	HPatternSettings settings = wwInstance.Settings;
+	WebPanel trn = (WebPanel)wwInstance.ParentObject;
+	
+	WebObject wobj = wwInstance.WebPanelRoot;
+	
+	List<string> lista = new List<string>();
+	
+	Heurys.Patterns.HPattern.Helpers.Template.AddStandardVariables(lista,settings);
+	
+	string tab = "";
+	TabFormElement tabe = null;
+	try 
+	{
+		tabe = wwInstance.GetElement<TabFormElement>(Element);
+	} catch (Exception e) 
+	{}	
+	if (tabe != null) {	
+		tab = tabe.Name;
+	}
+%>
+
+<Part type="<%= PartType.Variables %>">
+	<%-- Context variables --%>
+	<%-- settings.Context.DefineVariables() --%>
+	
+<%
+	if (wwInstance.HasConditionalTabs()) {
+		lista.Add("cok");
+		lista.Add("podeAbrir");
+%>	
+	<%= Variables.Basic("cok","cok",eDBType.NUMERIC,4) %>
+	<%= Variables.Basic("podeAbrir","podeAbrir",eDBType.Boolean) %>
+<%
+	}
+
+	if (tabe == null) {
+		foreach (RowElement row in wobj.GetRows(""))		
+		{		
+			foreach (ColumnElement col in row.Columns) 
+			{
+				foreach (VariableElement var in col.Variables)
+				{
+					if (var.Domain != null) {
+						lista.Add(var.Name);
+%>
+	<%= Variables.BasedOnDomain(var.Name, var.DomainName) %>
+<%					} else {
+						if (var.Attribute != null) {
+							lista.Add(var.Name);
+%>
+	<%= Variables.BasedOnAttribute(var.Name, var.AttributeName) %>
+<%						}
+
+					}
+				}
+			}
+		}
+	}
+	else 
+	{
+		foreach (RowElement row in wobj.GetRows(tab))		
+		{		
+			foreach (ColumnElement col in row.Columns) 
+			{
+				foreach (VariableElement var in col.Variables)
+				{
+					if (var.Domain != null) {
+						lista.Add(var.Name);
+%>
+<%= Variables.BasedOnDomain(var.Name, var.DomainName) %>
+<%							} else {
+						if (var.Attribute != null) {
+						lista.Add(var.Name);
+%>
+<%= Variables.BasedOnAttribute(var.Name, var.AttributeName) %>
+<%								}
+
+					}
+				}
+			}
+		}
+	}
+	
+	if (wwInstance.HasTabs) 
+	{
+		lista.Add("MenuData");
+		lista.Add("MenuDataItem");
+		lista.Add("n");
+	%>	
+	<%= Variables.Sdt("MenuData","MenuData") %>
+	<%= Variables.Sdt("MenuDataItem","MenuData.MenuDataItem") %>	
+	<%= Variables.Basic("n","n",eDBType.NUMERIC,1) %>			
+<%
+	}
+	lista.Add("Session");
+	lista.Add("HTTPRequest");
+	lista.Add("Mode");
+	lista.Add(trn.Name+"SDT");
+	lista.Add("referencia");
+	lista.Add("mensagens");
+	lista.Add("mensagem");
+	lista.Add("linkretorno");
+	lista.Add("window");
+	lista.Add("load");
+%>	
+
+<%
+
+%>
+	
+	<%= Variables.Extended("Session", null, "WebSession") %>
+	<%= Variables.Extended("HTTPRequest", null, "HttpRequest") %>
+	<%= Variables.BasedOnDomain("Mode","TrnMode") %>
+	<%= Variables.Basic("referencia","referencia",eDBType.CHARACTER,200) %>	
+	<%= Variables.Sdt("mensagens","Messages") %>
+	<%= Variables.Sdt("mensagem","Messages.Message") %>
+	<%= Variables.Basic("linkretorno","linkretorno",eDBType.CHARACTER,200) %>
+	<%= Variables.Extended("window", null, "Window") %>
+	<%= Variables.Basic("load","load",eDBType.Boolean)%>
+	
+<%@ CallSubTemplate TrnParmVariables wwInstance='wwInstance' lista='lista' %>
+<%@ CallSubTemplate SubStandardVariables Settings='settings' Object='Object' Part='Part' lista='lista' %>	
+<%=MenuContext.get(wobj.Actions).Events()%>
+</Part>
+

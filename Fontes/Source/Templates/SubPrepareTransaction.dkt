@@ -1,0 +1,30 @@
+<%@ Template Language="C#" TargetLanguage="GX" Description="Prepare Transaction event code" %>
+<%@ Include Name="Constants.cs" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Property Name="Transaction" Type="Artech.Genexus.Common.Objects.Transaction" %>
+<%@ Property Name="CallerIsRecord" Type="System.Boolean" %>
+<%@ Property Name="Parameters" Type="ParametersElement" %>
+<%@ Property Name="GridObject" Type="Heurys.Patterns.HPattern.IGridObject" %>
+	&TrnContext = new()
+	&TrnContext.CallerObject = &Pgmname
+	&TrnContext.CallerOnDelete = <%= (CallerIsRecord ? "False" : "True") %>
+	&TrnContext.CallerURL = &HTTPRequest.ScriptName + !"?" + &HTTPRequest.QueryString
+	&TrnContext.TransactionName = !"<%= Transaction.Name %>"
+<%
+	foreach (ParameterElement parameter in Parameters)
+	{
+		if (parameter.IsAttribute)
+		{
+%>
+
+	&TrnContextAtt = new()
+	&TrnContextAtt.AttributeName = !"<%= parameter.Name %>"
+	&TrnContextAtt.AttributeValue = &<%= (GridObject is TabElement || GridObject is SelectionElement) ? "" : "p" %><%= parameter.Name %>.ToString()
+	&TrnContext.Attributes.Add(&TrnContextAtt)
+<%
+		}
+	}
+%>
+
+	&Session.Set(!"<%= Constants.SessionKeys.TrnContext %>", &TrnContext.ToXml())

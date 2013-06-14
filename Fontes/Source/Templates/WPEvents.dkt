@@ -1,0 +1,306 @@
+<%@ Template Language="C#" TargetLanguage="GX" Description="Selection Events" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Assembly Name="Artech.Architecture.Common" %>
+<%@ Assembly Name="Artech.Common" %>
+<%@ Assembly Name="Artech.Common.Helpers" %>
+<%@ Assembly Name="Artech.Common.Properties" %>
+<%@ Assembly Name="Artech.Genexus.Common" %>
+<%@ Assembly Name="Artech.Packages.Patterns" %>
+<%@ Assembly Name="Artech.Udm.Framework" %>
+<%@ Assembly Name="Artech.Template.Base" %>
+<%@ Assembly Name="System.Xml" %>
+<%@ Assembly Name="StringTemplate" %>
+<%@ Assembly Name="Artech.Architecture.UI.Framework" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern.Code" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern.Helpers" %>
+<%@ Import Namespace="Artech.Common.Properties" %>
+<%@ Import Namespace="Artech.Architecture.Common.Collections" %>
+<%@ Import Namespace="Artech.Architecture.Common.Objects" %>
+<%@ Import Namespace="Artech.Common.Helpers.Strings" %>
+<%@ Import Namespace="Artech.Udm.Framework" %>
+<%@ Import Namespace="Artech.Genexus.Common" %>
+<%@ Import Namespace="Artech.Genexus.Common.Helpers" %>
+<%@ Import Namespace="Artech.Genexus.Common.Objects" %>
+<%@ Import Namespace="Artech.Genexus.Common.Parts" %>
+<%@ Import Namespace="Artech.Packages.Patterns" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Objects" %>
+<%@ Import Namespace="System" %>
+<%@ Import Namespace="System.Collections.Generic" %>
+<%@ Import Namespace="System.Text" %>
+<%@ Import Namespace="System.Xml" %>
+<%@ Import Namespace="Antlr.StringTemplate" %>
+<%@ Import Namespace="Artech.Genexus.Common.Wiki" %>
+<%@ Property Name="Object" Type="Artech.Architecture.Common.Objects.KBObject" %>
+<%@ Property Name="Part" Type="Artech.Architecture.Common.Objects.KBObjectPart" %>
+<%@ Property Name="Instance" Type="Artech.Packages.Patterns.Objects.PatternInstance" %>
+<%@ Property Name="Element" Type="Artech.Packages.Patterns.Objects.PatternInstanceElement" %>
+<%@ SubTemplate Name="SecurityTabs" File="SecurityTabs.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="SubCheckSecurity" File="SubCheckSecurity.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="BCValidationAttribute" File="BCValidationAttribute.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="LimpaSessaoBC" File="LimpaSessaoBC.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="EventIsValid" File="EventIsValid.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="WebBCSave" File="WebBCSave.dkt" MergeProperties="True"%>
+<%
+	HPatternInstance wwInstance = HPatternInstance.Load(Instance);
+	HPatternSettings settings = wwInstance.Settings;
+	WebPanel trn = (WebPanel)wwInstance.ParentObject;
+	
+	WebObject wobj = wwInstance.WebPanelRoot;
+	
+	IHPatternInstanceElement form = wobj.Form;
+	
+	string tabini = "";
+	
+	bool hascond = wwInstance.HasConditionalTabs();
+	bool temview = false;
+	
+	int idAba = 0;
+	
+	if (tabini == String.Empty)
+	{
+		if (wobj.Form != null)
+		{
+			if (wobj.Form.Tabs.Count > 0)
+			{
+				tabini = wobj.Form.Tabs[0].Name;
+			}
+		}
+	}
+	
+	
+	string tab = "";
+	TabFormElement tabe = null;
+	try 
+	{
+		tabe = wwInstance.GetElement<TabFormElement>(Element);
+		form = tabe;
+	} catch (Exception e) 
+	{}
+	if (tabe != null) {	
+		tab = tabe.Name;		
+	}	
+	
+
+%>
+<Part type="<%= PartType.Events %>">
+	<Source><![CDATA[<%= Messages.VersionHPattern() %>
+	
+Event Start
+<%@ CallSubTemplate SubCheckSecurity Instance='wwInstance' Settings='settings' IndentLevel='1' IndentLevelChar='"\t"' IsTransaction='true'%>
+<%
+if (settings.Security.EventStart != String.Empty) {
+%>
+<%=settings.Security.EventStart%>
+<%
+}
+%>
+
+<%
+
+	Artech.Common.Collections.IBaseCollection<RowElement> rows = wobj.GetRows(tab);
+	
+if (rows != null)
+{
+	foreach (RowElement row in rows)		
+	{		
+		foreach (ColumnElement col in row.Columns) 
+		{
+			foreach (VariableElement var in col.Variables)
+			{
+				if (var.Domain != null || var.Attribute != null) 
+				{
+					if (!var.Visible || !row.Visible) 
+					{
+%>
+	&<%= var.Name %>.Visible = false
+<%					
+					}
+					if (!String.IsNullOrEmpty(var.LoadCode))
+					{
+%>
+	<%= var.LoadCode %>
+<%
+					}
+					if (!String.IsNullOrEmpty(var.LinksEventStart))
+					{
+%>
+<%= Indentation.Indent(var.LinksEventStart,1) %>
+<%
+					}					
+									
+				}
+			}
+			
+			foreach (AttributeElement att in col.Attributes)
+			{
+				if (att.Attribute != null) 
+				{				
+					if (!att.Visible || !row.Visible)
+					{
+%>			
+	ctl<%= att.AttributeName %>.Visible = false
+<%					}
+					if (!String.IsNullOrEmpty(att.LinksEventStart))
+					{
+%>
+<%= Indentation.Indent(att.LinksEventStart,1) %>
+<%
+					}	
+					if (!String.IsNullOrEmpty(att.EventStart))
+					{
+%>
+<%= Indentation.Indent(String.Format(att.EventStart,att.AttributeName,att.AttributeName),1) %>
+<%
+					}						
+				}
+			}
+			
+			foreach (TextElement text in col.Texts)
+			{
+				
+				if (!text.Visible || !row.Visible)
+				{
+%>			
+	<%= text.Name %>.Visible = false
+<%				}
+		
+			}			
+		}
+	}	
+}
+%>	
+
+<%	
+            if (settings.Template.EventStart != String.Empty) {
+%>
+<%= settings.Template.EventStart %>
+<%
+            }
+
+	if (tabe == null) {	
+
+		if (wobj.Form.Tabs.Count > 0)
+		{
+			Tab tabs = Tab.getTab(wobj.Form, trn);
+%>
+<%=Indentation.Indent(tabs.Events(),1)%>
+<%	      
+		}
+	} else {
+	
+		int idTab = 0;
+
+		foreach (TabFormElement tabit in wobj.Form.Tabs)
+		{
+			idTab++;
+			if (tabit.Name == tab)
+			{
+				idTab--;
+				break;
+		
+			}		
+		}		
+
+		idAba = idTab + 1;		           
+%>	
+	//&MenuData = DPDSM()
+<%
+		if (hascond) {
+%>
+	do 'SecurityTabs'
+	&n = SetCookie('"Tabs'+Trim(str(&MenuData.Count,2,0))+'"',&cok.ToString().Trim(),"/")	
+<%
+		} else {
+%>
+	&n = SetCookie('"Tabs'+Trim(str(&MenuData.Count,2,0))+'"',"<%= idTab %>","/")	
+<%	
+		}
+	}
+%>
+<%= Indentation.Indent(Heurys.Patterns.HPattern.Helpers.Template.HMaskEventStart(wobj,tab),1)%>
+
+EndEvent // Start
+
+<%=MenuContext.get(wobj.Actions).Events()%>
+
+<%
+	if (form !=null) 
+	{
+%>
+<%=Heurys.Patterns.HPattern.Helpers.Template.PromptEvents(form, settings,"")%>
+<%
+	}
+%>
+
+<%
+	if (tabe == null) {	      
+	
+            if (wobj.Form.Tabs.Count > 0)
+            {
+                Tab tabs = Tab.getTab(wobj.Form, trn);
+%>
+<%=Indentation.Indent(tabs.Subs(),1)%>
+<%
+            }	      
+	} else {
+%>	
+Event Tabs.DolphinItemClicked 
+<%= Indentation.Indent(Heurys.Patterns.HPattern.Helpers.Template.HMaskEventSave(wobj,tab,""),1)%>	
+
+<%
+if (wwInstance.HasTabs)
+{
+%>
+	
+	do case			
+<%	
+	int conta = 0;
+
+		foreach (TabFormElement tabit in wobj.Form.Tabs)
+		{
+			conta++;
+			if (tabit.Name != tab)
+			{
+			
+%>			
+		case &MenuDataItem.MenuId = <%= conta.ToString() %>		
+			
+			// teste
+<%			
+			}		
+		}	
+			
+%>	
+	endcase			
+<%
+}
+%>
+EndEvent   
+<%	}
+%>
+  
+<%@ CallSubTemplate EventIsValid rows='rows'%>
+<%= Heurys.Patterns.HPattern.Helpers.Template.TransactionActions(wobj) %>
+
+<%
+if (hascond) {
+%>
+<%@ CallSubTemplate SecurityTabs wwInstance='wwInstance' trn='wobj' temview='temview' aba='idAba' %>
+<%
+}
+
+	string codes = Heurys.Patterns.HPattern.Helpers.TemplateInternal.EventCodes(Heurys.Patterns.HPattern.Helpers.TemplateInternal.CodeType.WebPanel, settings);
+	if (!String.IsNullOrEmpty(codes))
+	{
+%>
+<%= codes%>
+<%    
+	}
+
+%>
+]]>
+	</Source>
+</Part>	
+

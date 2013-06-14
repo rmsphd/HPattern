@@ -1,0 +1,93 @@
+<%@ Template Language="C#" TargetLanguage="GX" Description="Tabular Tab WebForm" %>
+<%@ Include Name="Constants.cs" %>
+<%@ Include Name="WebFormScript.cs" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Property Name="Object" Type="Artech.Architecture.Common.Objects.KBObject" %>
+<%@ Property Name="Part" Type="Artech.Architecture.Common.Objects.KBObjectPart" %>
+<%@ Property Name="Instance" Type="Artech.Packages.Patterns.Objects.PatternInstance" %>
+<%@ Property Name="Element" Type="Artech.Packages.Patterns.Objects.PatternInstanceElement" %>
+
+<Part type="<%= PartType.WebForm %>">
+	<Source><![CDATA[<%
+
+	HPatternInstance wwInstance = HPatternInstance.Load(Instance);
+	HPatternSettings settings = wwInstance.Settings;
+
+	TabElement tab = wwInstance.GetElement<TabElement>(Element);
+	//if (tab.Attributes == null)
+		//throw new PatternApplicationException("Tabular Tab must have attributes");
+	
+%>
+<BODY>
+	<TABLE>
+		<TBODY>
+<%
+	int itemIndex = 0;
+	if (tab.Attributes != null) 
+	{
+		foreach (IAttributesItem item in tab.Attributes)
+		{
+			if (item.Visible)
+			{
+				itemIndex++;
+%>
+			<TR>
+				<TD>
+					<gxTextBlock id="TextBlock<%= item.Id %>" Caption="<%= item.Description %>" />
+				</TD>
+				<TD>
+					<%= WebFormScript.Item(item) %>
+				</TD>
+			</TR>
+<%
+			}
+		}
+	}
+%>
+		</TBODY>
+	</TABLE>
+	
+	<TABLE >
+		<TBODY>
+			<TR>
+	<%-- Action buttons --%>
+<%
+	// Add buttons for actions.
+	Transaction trn = (Transaction)Instance.KBObject;
+	foreach (ActionElement action in tab.Actions)
+	{
+		if (!action.InGrid)
+		{
+%>
+				<TD nowrap="true">
+	<%= action.ToHtml() %>
+				</TD>
+<%
+		}
+	}
+%>
+				<TD nowrap="true">
+				</TD>
+			</TR>
+		</TBODY>
+	</TABLE>
+
+	<%-- Invisible attributes (needed for navigation) --%>
+<%
+	if (tab.Attributes != null) 
+	{
+		foreach (AttributeElement attribute in tab.Attributes.Attributes)
+		{
+			if (!attribute.Visible)
+			{
+%>
+	<gxAttribute AttID="<%= attribute.Attribute.Name %>" ControlType="Edit" InputType="Values" />
+<%
+			}
+		}
+	}
+%>
+</BODY>]]>
+	</Source>
+</Part>

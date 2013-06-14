@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
+- baseline 1.0 versão 1.3.0.0
+
+- 11/01/2011, SM 387, versão 1.3.0.1
+
+-->
+<Pattern Publisher="Heurys" Id="2A9DC385-5031-45EF-9294-37893450522C" Name="HPattern" Description="HPattern" Version="2.0.0.21" Icon="icons\WWHeurys.ico">
+	<Definition>
+		<InstanceName>HPattern{0}</InstanceName>
+		<InstanceSpecification>HPatternInstance.xml</InstanceSpecification>
+		<SettingsSpecification>HPatternSettings.xml</SettingsSpecification>
+    <CustomTypeDefinitions>HPatternCustomTypes.xml</CustomTypeDefinitions>
+		<Implementation>Heurys.Patterns.HPattern.dll</Implementation>
+		<AutoUpdate>true</AutoUpdate>
+
+		<DefaultSettings>Resources\HPatternDefaultSettings.xml</DefaultSettings>
+
+		<ParentObjects>
+			<ParentObject Type="Transaction" />
+      <ParentObject Type="WebPanel" />
+		</ParentObjects>
+	</Definition>
+
+	<Resources>
+		<Resource Id="Resources" Version="0.4" Import="Apply" File="Resources\WorkWithResources.xml"/>
+	</Resources> 
+
+  <Objects>
+
+    <Object Type="SDT" Id="SDTBC" Name="SDT{Parent.Name}BC" Count="*" Element="instance/transaction">
+      <!--Part Type="SDTStructure" Template="Templates\BCSdtStructure.dll" /-->
+    </Object>
+
+    <Object Type="DataProvider" Id="DataProviderBC" Name="DP{Parent.Name}BC" Count="*" Element="instance/transaction">
+    </Object>
+
+    <Object Type="DataProvider" Id="DataProviderDSM" Name="DPDSM{Parent.Name}" Count="*" Element="instance/transaction">
+    </Object>
+
+    <Object Type="DataProvider" Id="DataProviderDSM2" Name="DPDSM{Parent.Name}" Count="*" Element="instance/webPanelRoot">
+    </Object>
+
+    <Object Type="Procedure" Id="ProcedureSaveBC" Name="Save{Parent.Name}" Element="instance/transaction">
+    </Object>    
+    
+    <Object Type="Procedure" Id="ProcedureBC" Name="Load{Parent.Name}" Element="instance/transaction">
+    </Object>
+   
+    <Object Type="WebPanel" Id="TransactionBC" Name="{Parent.Name}BC" Description="{Parent.Description}" Element="instance/transaction">
+    </Object>
+
+    <Object Type="WebPanel" Id="TransactionBCTab" Name="{Parent.Name}{Element.name}BC" Count="*" Description="{Parent.Description}" Element="instance/transaction/form/tab">
+    </Object>
+
+    <!-- Descontinuado -->
+    <Object Type="DataProvider" Id="DataProviderGridModel" Name="DPGridModel{Parent.Name}" Element="instance/level/selection">
+      <Part Type="DataProviderSource" Template="Templates\DPGridModelSource.dll" />
+      <Part Type="Variables" Template="Templates\DPDSMVariables.dll" />
+      <Part Type="Rules" Template="Templates\DPDSMRules.dll" />
+    </Object>
+
+    <!-- Descontinuado -->
+    <Object Type="SDT" Id="SDTGrid" Name="SDT{Parent.Name}Grid" Count="*" Element="instance/level/selection">
+      <Part Type="SDTStructure" Template="Templates\GridGxuiSdtStructure.dll" />
+    </Object>
+
+    <!-- Descontinuado -->
+    <Object Type="DataProvider" Id="DataProviderGrid" Name="DPGrid{Parent.Name}" Element="instance/level/selection">
+      <Part Type="DataProviderSource" Template="Templates\DPGridSource.dll" />
+      <Part Type="Variables" Template="Templates\DPGridVariables.dll" />
+      <Part Type="Rules" Template="Templates\DPGridRules.dll" />
+    </Object>
+
+    <!-- Descontinuado -->
+    <Object Type="Procedure" Id="ProcedureGrid" Name="ProcGrid{Parent.Name}" Element="instance/level/selection">
+      <Part Type="Procedure" Template="Templates\ProcGridProcedure.dll" />
+      <Part Type="Variables" Template="Templates\ProcGridVariables.dll" />
+      <Part Type="Rules" Template="Templates\ProcGridRules.dll" />
+    </Object>
+
+    <Object Type="WebPanel" Id="Selection" Name="WW" Description="Work With {Parent.Description}" Element="instance/level/selection">
+		</Object>
+
+    <Object Type="WebPanel" Id="Prompt" Name="Prompt{Parent.Name}" Description="Prompt {Parent.Description}" Count="*" Element="instance/level/prompt">
+    </Object>
+
+    <Object Type="WebPanel" Id="View" Name="View{Parent.Name}" Element="instance/level/view">
+		</Object>
+
+		<Object Type="WebComponent" Id="TabTabular" Name="{Element.wcname}" Count="*" Element="instance/level/view/tabs/tab[@type=&quot;Tabular&quot;]">
+		</Object>
+
+    <Object Type="WebComponent" Id="TabGrid" Name="{Element.wcname}" Count="*" Element="instance/level/view/tabs/tab[@type=&quot;Grid&quot;]">
+		</Object>
+
+    <Object Type="WebComponent" Id="TabGridTrn" Name="{Element.wcname}Trn" Count="*" Element="instance/level/view/tabs/tab[@type=&quot;Grid&quot;]">
+    </Object>
+
+    <Object Type="Procedure" Id="ExportSelection" Name="ExportWW{Parent.Name}" Element="instance/level/selection">
+		</Object>    
+
+		<Object Type="Procedure" Id="ExportTabGrid" Name="Export{Element.wcname}" Count="*" Element="instance/level/view/tabs/tab[@type=&quot;Grid&quot;]">
+		</Object>
+
+    <Object Type="SDT" Id="GridSDT" Name="WW{Parent.Name}Rows" Count="*" Element="instance/level/selection[actions/action[@multiRowSelection=&quot;True&quot;]]">
+      <!--Part Type="SDTStructure" Template="Templates\GridSdtStructure.dll" /-->
+    </Object>
+
+    <Object Type="SDT" Id="TabGridSDT" Name="{Element.wcname}Rows" Count="*" Element="instance/level/view/tabs/tab[actions/action[@multiRowSelection=&quot;True&quot;]]">
+      <!--Part Type="SDTStructure" Template="Templates\GridSdtStructure.dll" /-->
+    </Object>
+
+		<Object Type="Procedure" Id="ListPrograms" Name="ListPrograms" Global="True" />
+	</Objects>
+
+	<References>
+		<SameInstance>Hard</SameInstance>
+		<DifferentInstance>Weak</DifferentInstance>
+		<External>Hard</External>
+	</References>
+</Pattern>

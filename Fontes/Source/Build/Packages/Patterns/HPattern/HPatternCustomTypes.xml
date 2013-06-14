@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CustomTypes>
+	<CustomType>
+		<Id>GridCustomRender</Id>
+		<DataType>System.String</DataType>
+	</CustomType>
+  <CustomType>
+    <Id>GridCustomRenderProperty</Id>
+    <DataType>System.String</DataType>
+  </CustomType>
+  <CustomType>
+    <Id>GridCustomRenderColProperty</Id>
+    <DataType>System.String</DataType>
+  </CustomType>
+  <CustomType>
+    <Id>ThemeClass</Id>
+    <DataType>System.String</DataType>
+  </CustomType>
+  <CustomType>
+    <Id>CustomCaption</Id>
+    <DataType>System.String</DataType>
+  </CustomType>
+  <CustomType>
+    <Id>Group</Id>
+    <DataType>System.String</DataType>
+  </CustomType>
+  <CustomType>
+    <Id>TabProperty</Id>
+    <DataType>System.String</DataType>
+  </CustomType>  
+</CustomTypes>

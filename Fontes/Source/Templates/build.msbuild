@@ -1,0 +1,100 @@
+<Project DefaultTargets="testDk" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<Import Project="Gx.Tasks.targets" />
+
+  <Target	Name="BuildGx">
+
+    <GenexusCompileTemplate TemplatePath="BCSdtStructure.dkt"  OutputAssemblyPath="Build\BCSdtStructure.dll" />
+    <GenexusCompileTemplate TemplatePath="DPSource.dkt"  OutputAssemblyPath="Build\DPSource.dll" />
+    <GenexusCompileTemplate TemplatePath="DPVariables.dkt"  OutputAssemblyPath="Build\DPVariables.dll" />
+    <GenexusCompileTemplate TemplatePath="DPRules.dkt"  OutputAssemblyPath="Build\DPRules.dll" />
+    <GenexusCompileTemplate TemplatePath="DPDSMSource.dkt"  OutputAssemblyPath="Build\DPDSMSource.dll" />
+    <GenexusCompileTemplate TemplatePath="DPDSMVariables.dkt"  OutputAssemblyPath="Build\DPDSMVariables.dll" />
+    <GenexusCompileTemplate TemplatePath="DPDSMRules.dkt"  OutputAssemblyPath="Build\DPDSMRules.dll" />
+    <GenexusCompileTemplate TemplatePath="ProcSaveBCProcedure.dkt"  OutputAssemblyPath="Build\ProcSaveBCProcedure.dll" />
+    <GenexusCompileTemplate TemplatePath="ProcSaveBCVariables.dkt"  OutputAssemblyPath="Build\ProcSaveBCVariables.dll" />
+    <GenexusCompileTemplate TemplatePath="ProcSaveBCRules.dkt"  OutputAssemblyPath="Build\ProcSaveBCRules.dll" />
+    <GenexusCompileTemplate TemplatePath="ProcBCProcedure.dkt"  OutputAssemblyPath="Build\ProcBCProcedure.dll" />
+    <GenexusCompileTemplate TemplatePath="ProcBCVariables.dkt"  OutputAssemblyPath="Build\ProcBCVariables.dll" />
+    <GenexusCompileTemplate TemplatePath="ProcBCRules.dkt"  OutputAssemblyPath="Build\ProcBCRules.dll" />
+    <GenexusCompileTemplate TemplatePath="BCWebForm.dkt"  OutputAssemblyPath="Build\BCWebForm.dll" />
+    <GenexusCompileTemplate TemplatePath="BCVariables.dkt"  OutputAssemblyPath="Build\BCVariables.dll" />
+    <GenexusCompileTemplate TemplatePath="BCConditions.dkt"  OutputAssemblyPath="Build\BCConditions.dll" />
+    <GenexusCompileTemplate TemplatePath="BCEvents.dkt"  OutputAssemblyPath="Build\BCEvents.dll" />
+    <GenexusCompileTemplate TemplatePath="BCRules.dkt"  OutputAssemblyPath="Build\BCRules.dll" />
+    <GenexusCompileTemplate TemplatePath="BCWebForm.dkt"  OutputAssemblyPath="Build\BCWebForm.dll" />
+    <GenexusCompileTemplate TemplatePath="BCVariables.dkt"  OutputAssemblyPath="Build\BCVariables.dll" />
+    <GenexusCompileTemplate TemplatePath="BCConditions.dkt"  OutputAssemblyPath="Build\BCConditions.dll" />
+    <GenexusCompileTemplate TemplatePath="BCEvents.dkt"  OutputAssemblyPath="Build\BCEvents.dll" />
+    <GenexusCompileTemplate TemplatePath="BCRules.dkt"  OutputAssemblyPath="Build\BCRules.dll" />
+    <GenexusCompileTemplate TemplatePath="DPGridModelSource.dkt"  OutputAssemblyPath="Build\DPGridModelSource.dll" />
+    <GenexusCompileTemplate TemplatePath="DPDSMVariables.dkt"  OutputAssemblyPath="Build\DPDSMVariables.dll" />
+    <GenexusCompileTemplate TemplatePath="DPDSMRules.dkt"  OutputAssemblyPath="Build\DPDSMRules.dll" />
+    <GenexusCompileTemplate TemplatePath="DPGridSource.dkt"  OutputAssemblyPath="Build\DPGridSource.dll" />
+    <GenexusCompileTemplate TemplatePath="DPGridVariables.dkt"  OutputAssemblyPath="Build\DPGridVariables.dll" />
+    <GenexusCompileTemplate TemplatePath="DPGridRules.dkt"  OutputAssemblyPath="Build\DPGridRules.dll" />
+    <GenexusCompileTemplate TemplatePath="SelectionWebForm.dkt"  OutputAssemblyPath="Build\SelectionWebForm.dll" />
+    <GenexusCompileTemplate TemplatePath="SelectionVariables.dkt"  OutputAssemblyPath="Build\SelectionVariables.dll" />
+    <GenexusCompileTemplate TemplatePath="SelectionConditions.dkt"  OutputAssemblyPath="Build\SelectionConditions.dll" />
+    <GenexusCompileTemplate TemplatePath="SelectionEvents.dkt"  OutputAssemblyPath="Build\SelectionEvents.dll" />
+    <GenexusCompileTemplate TemplatePath="SelectionRules.dkt"  OutputAssemblyPath="Build\SelectionRules.dll" />
+    <GenexusCompileTemplate TemplatePath="PromptWebForm.dkt"  OutputAssemblyPath="Build\PromptWebForm.dll" />
+    <GenexusCompileTemplate TemplatePath="PromptVariables.dkt"  OutputAssemblyPath="Build\PromptVariables.dll" />
+    <GenexusCompileTemplate TemplatePath="PromptConditions.dkt"  OutputAssemblyPath="Build\PromptConditions.dll" />
+    <GenexusCompileTemplate TemplatePath="PromptEvents.dkt"  OutputAssemblyPath="Build\PromptEvents.dll" />
+    <GenexusCompileTemplate TemplatePath="PromptRules.dkt"  OutputAssemblyPath="Build\PromptRules.dll" />
+    <GenexusCompileTemplate TemplatePath="ViewWebForm.dkt"  OutputAssemblyPath="Build\ViewWebForm.dll" />
+    <GenexusCompileTemplate TemplatePath="ViewVariables.dkt"  OutputAssemblyPath="Build\ViewVariables.dll" />
+    <GenexusCompileTemplate TemplatePath="ViewConditions.dkt"  OutputAssemblyPath="Build\ViewConditions.dll" />
+    <GenexusCompileTemplate TemplatePath="ViewEvents.dkt"  OutputAssemblyPath="Build\ViewEvents.dll" />
+    <GenexusCompileTemplate TemplatePath="ViewRules.dkt"  OutputAssemblyPath="Build\ViewRules.dll" />
+    <GenexusCompileTemplate TemplatePath="TabTabularWebForm.dkt"  OutputAssemblyPath="Build\TabTabularWebForm.dll" />
+    <GenexusCompileTemplate TemplatePath="TabTabularVariables.dkt"  OutputAssemblyPath="Build\TabTabularVariables.dll" />
+    <GenexusCompileTemplate TemplatePath="TabTabularEvents.dkt"  OutputAssemblyPath="Build\TabTabularEvents.dll" />
+    <GenexusCompileTemplate TemplatePath="TabTabularRules.dkt"  OutputAssemblyPath="Build\TabTabularRules.dll" />
+    <GenexusCompileTemplate TemplatePath="TabGridWebForm.dkt"  OutputAssemblyPath="Build\TabGridWebForm.dll" />
+    <GenexusCompileTemplate TemplatePath="TabGridVariables.dkt"  OutputAssemblyPath="Build\TabGridVariables.dll" />
+    <GenexusCompileTemplate TemplatePath="TabGridConditions.dkt"  OutputAssemblyPath="Build\TabGridConditions.dll" />
+    <GenexusCompileTemplate TemplatePath="TabGridEvents.dkt"  OutputAssemblyPath="Build\TabGridEvents.dll" />
+    <GenexusCompileTemplate TemplatePath="TabGridRules.dkt"  OutputAssemblyPath="Build\TabGridRules.dll" />
+    <GenexusCompileTemplate TemplatePath="TabGridTrnWebForm.dkt"  OutputAssemblyPath="Build\TabGridTrnWebForm.dll" />
+    <GenexusCompileTemplate TemplatePath="TabGridTrnVariables.dkt"  OutputAssemblyPath="Build\TabGridTrnVariables.dll" />
+    <GenexusCompileTemplate TemplatePath="TabGridTrnConditions.dkt"  OutputAssemblyPath="Build\TabGridTrnConditions.dll" />
+    <GenexusCompileTemplate TemplatePath="TabGridTrnEvents.dkt"  OutputAssemblyPath="Build\TabGridTrnEvents.dll" />
+    <GenexusCompileTemplate TemplatePath="TabGridTrnRules.dkt"  OutputAssemblyPath="Build\TabGridTrnRules.dll" />
+    <GenexusCompileTemplate TemplatePath="ExportProcedure.dkt"  OutputAssemblyPath="Build\ExportProcedure.dll" />
+    <GenexusCompileTemplate TemplatePath="ExportVariables.dkt"  OutputAssemblyPath="Build\ExportVariables.dll" />
+    <GenexusCompileTemplate TemplatePath="ExportRules.dkt"  OutputAssemblyPath="Build\ExportRules.dll" />
+    <GenexusCompileTemplate TemplatePath="ExportProcedure.dkt"  OutputAssemblyPath="Build\ExportProcedure.dll" />
+    <GenexusCompileTemplate TemplatePath="ExportVariables.dkt"  OutputAssemblyPath="Build\ExportVariables.dll" />
+    <GenexusCompileTemplate TemplatePath="ExportRules.dkt"  OutputAssemblyPath="Build\ExportRules.dll" />
+    <GenexusCompileTemplate TemplatePath="GridSdtStructure.dkt"  OutputAssemblyPath="Build\GridSdtStructure.dll" />
+    <GenexusCompileTemplate TemplatePath="GridSdtStructure.dkt"  OutputAssemblyPath="Build\GridSdtStructure.dll" />
+    <GenexusCompileTemplate TemplatePath="GridGxuiSdtStructure.dkt" OutputAssemblyPath="Build\GridGxuiSdtStructure.dll" />
+    <GenexusCompileTemplate TemplatePath="ProcGridProcedure.dkt"  OutputAssemblyPath="Build\ProcGridProcedure.dll" />
+    <GenexusCompileTemplate TemplatePath="ProcGridVariables.dkt"  OutputAssemblyPath="Build\ProcGridVariables.dll" />
+    <GenexusCompileTemplate TemplatePath="ProcGridRules.dkt"  OutputAssemblyPath="Build\ProcGridRules.dll" />
+    <GenexusCompileTemplate TemplatePath="WPWebForm.dkt"  OutputAssemblyPath="Build\WPWebForm.dll" />
+    <GenexusCompileTemplate TemplatePath="WPConditions.dkt"  OutputAssemblyPath="Build\WPConditions.dll" />
+    <GenexusCompileTemplate TemplatePath="WPEvents.dkt"  OutputAssemblyPath="Build\WPEvents.dll" />
+    <GenexusCompileTemplate TemplatePath="WPRules.dkt"  OutputAssemblyPath="Build\WPRules.dll" />
+    <GenexusCompileTemplate TemplatePath="WPVariables.dkt"  OutputAssemblyPath="Build\WPVariables.dll" />
+                            
+                            
+    <!-- indiretos -->      
+
+    <!--
+    GridWebForm
+    <GenexusCompileTemplate TemplatePath="TrnDefaultWebForm.dkt" OutputAssemblyPath="Build\TrnDefaultWebForm.dll" />    
+    <GenexusCompileTemplate TemplatePath="TrnWebFormLayout_InnerLevel.dkt"  OutputAssemblyPath="Build\TrnWebFormLayout_InnerLevel.dll" />
+    <GenexusCompileTemplate TemplatePath="TrnWebFormLayout_LeafLevel.dkt"  OutputAssemblyPath="Build\TrnWebFormLayout_LeafLevel.dll" />
+    <GenexusCompileTemplate TemplatePath="TrnWebFormLayout_Toolbar.dkt"  OutputAssemblyPath="Build\TrnWebFormLayout_Toolbar.dll" />
+    <GenexusCompileTemplate TemplatePath="TrnWebFormLayout_Button.dkt"  OutputAssemblyPath="Build\TrnWebFormLayout_Button.dll" />
+    -->
+    
+    <GenexusCompileTemplate TemplatePath="SubLoadContext.dkt" OutputAssemblyPath="Build\SubLoadContext.dll" />
+    <GenexusCompileTemplate TemplatePath="SubCheckSecurity.dkt"  OutputAssemblyPath="Build\SubCheckSecurity.dll" />
+
+  </Target>
+    
+  </Project>

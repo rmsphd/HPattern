@@ -1,0 +1,48 @@
+<%@ Template Language="C#" TargetLanguage="GX" Description="View Variables" %>
+<%@ Include Name="Constants.cs" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Property Name="Object" Type="Artech.Architecture.Common.Objects.KBObject" %>
+<%@ Property Name="Part" Type="Artech.Architecture.Common.Objects.KBObjectPart" %>
+<%@ Property Name="Instance" Type="Artech.Packages.Patterns.Objects.PatternInstance" %>
+<%@ Property Name="Element" Type="Artech.Packages.Patterns.Objects.PatternInstanceElement" %>
+<%@ SubTemplate Name="SubStandardVariables" File="SubStandardVariables.dkt" MergeProperties="True"%>
+
+<Part type="<%= PartType.Variables %>">
+<%
+	HPatternInstance wwInstance = HPatternInstance.Load(Instance);
+	ViewElement view = wwInstance.GetElement<ViewElement>(Element);
+%>
+
+<%@ CallSubTemplate SubStandardVariables Settings='wwInstance.Settings' %>
+
+	<%= Variables.BasedOnDomain("TabCode", "TabCode") %>
+	<%= Heurys.Patterns.HPattern.Helpers.Tab.getTab(view,Object).Variables() %>
+	<%= Variables.Basic("Exists", "Exists", eDBType.Boolean) %>
+
+<%
+	// Variables for parameters.
+	foreach (ParameterElement parameter in view.Parameters)
+	{
+%>
+	<%= Variables.BasedOnAttribute("p"+parameter.Name, parameter.Name) %>
+<%
+	}
+
+	if (view.HasConditionalTabs())
+	{
+%>
+	<%= Variables.Basic("Index", "Index", eDBType.NUMERIC, 4) %>
+	<%= Variables.Basic("Increment", "Increment", eDBType.NUMERIC, 4) %>
+<%
+	}
+	if (wwInstance.Settings.Template.GenerateCallBackLink ) 
+	{
+%>
+	<%= Variables.BasedOnDomain(HPatternInstance.PARMCALLBACK, HPatternInstance.PARMCALLBACK) %>
+<%
+	}
+
+
+%>
+</Part>

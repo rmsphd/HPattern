@@ -1,0 +1,418 @@
+<%@ Template Language="C#" TargetLanguage="GX" Description="Selection and Grid Tab Variables" %>
+<%@ Include Name="Constants.cs" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern.Helpers" %>
+<%@ Property Name="Object" Type="Artech.Architecture.Common.Objects.KBObject" %>
+<%@ Property Name="Part" Type="Artech.Architecture.Common.Objects.KBObjectPart" %>
+<%@ Property Name="Instance" Type="Heurys.Patterns.HPattern.HPatternInstance" %>
+<%@ Property Name="GridObject" Type="Heurys.Patterns.HPattern.IGridObject" %>
+<%@ SubTemplate Name="SubStandardVariables" File="SubStandardVariables.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="FilterVariables" File="FilterVariables.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="TrnParmVariables" File="TrnParmVariables.dkt" MergeProperties="True"%>
+
+<Part type="<%= PartType.Variables %>">
+<%
+	HPatternSettings settings = Instance.Settings;
+	List<string> lista = new List<string>();
+	
+	Heurys.Patterns.HPattern.Helpers.Template.AddStandardVariables(lista,settings);	
+	LevelElement level = Instance.Levels[0];
+	
+	Transaction trn = Instance.Transaction.Transaction;
+	bool actionsModes = true;
+	//if (!(GridObject is PromptElement)) {
+	//	actionsModes = true;
+	//}
+	
+	bool geraBC = false;
+	string codeTab = "";
+	if (GridObject is TabElement) {
+	
+		TabElement tabe = (TabElement)GridObject;
+		codeTab = tabe.Code;	
+	
+		geraBC = Instance.Transaction.WebBC;
+		/*
+		geraBC = settings.Template.DataEntryWebPanelBC;
+		if (Instance.Transaction.DataEntryWebPanelBC.ToLower() == "true")
+			geraBC = true;
+		if (Instance.Transaction.DataEntryWebPanelBC.ToLower() == "false")
+			geraBC = false;
+		*/
+	}	
+	
+	bool collapse = GridObject.GetFilterCollapse; // false;		
+	bool loadOnStart = GridObject.GetLoadOnStart; // true;
+	bool requiredFilter = GridObject.GetRequiredFilter; // false;	
+	string requiredFilterMessage = settings.Grid.RequiredFilterMessage;
+	
+	if (GridObject is PromptElement)
+	{
+		PromptElement pe = (PromptElement)GridObject;
+	
+		try {
+			if (pe.RequiredFilterMessage.ToLower() != "<default>")
+				requiredFilterMessage = pe.RequiredFilterMessage;			
+			
+		} catch(System.Exception e) {}
+		
+	}		
+	if (GridObject is SelectionElement)
+	{
+		SelectionElement pe = (SelectionElement)GridObject;
+	
+		try {
+			if (pe.RequiredFilterMessage.ToLower() != "<default>")
+				requiredFilterMessage = pe.RequiredFilterMessage;			
+			
+		} catch(System.Exception e) {}
+		
+	}		
+	
+	bool geraDF = false;
+	int ch = settings.DynamicFilters.MaxChoices;
+	int tot = 0;
+	
+	try {
+		if (GridObject.Filter != null) {
+			if (GridObject.Filter.Dynamicfilters != null) {
+				tot = GridObject.Filter.Dynamicfilters.Count;
+				if (tot > ch) {
+					tot = ch;
+				}		
+				geraDF = (GridObject.Filter.Dynamicfilters.Count > 0 && ch > 0) ? true : false;
+			}
+		}
+	} catch (System.Exception e) { }	
+	
+	if (collapse && !((GridObject.Filter != null && (GridObject.Filter.FilterAttributes.Count > 0 || geraDF)) || GridObject.Orders.NeedsChoice)) {
+		collapse = false;
+	}	
+	
+	//foreach (SettingsContextVariableElement contextVar in settings.Context)
+	//	lista.Add(contextVar.Name);		
+	
+	
+	
+%>
+
+<%@ CallSubTemplate SubStandardVariables Settings='settings' lista='lista' %>
+
+<%= Variables.Basic("editando","editando",eDBType.Boolean) %>
+<%
+	lista.Add("editando");
+	if (Instance.HasConditionalTabs()) {
+		lista.Add("cok");		
+		lista.Add("podeAbrir");
+%>	
+	<%= Variables.Basic("cok","cok",eDBType.NUMERIC,4) %>	
+	<%= Variables.Basic("podeAbrir","podeAbrir",eDBType.Boolean) %>
+<%
+	}
+	
+	if(geraBC)
+	{
+		lista.Add("ModeI");
+%>
+	<%= Variables.BasedOnDomain("ModeI","TrnMode") %>	
+<%		
+	}
+	
+	bool needGridState = (settings.Grid.SaveGridState && (GridObject is SelectionElement));
+	bool needTrnContext = (settings.Template.UseTransactionContext);
+	
+	if (settings.Grid.GetEnableDisablePaging(GridObject)) {
+		lista.Add("PageCount");	
+%>	
+	<%= Variables.Basic("PageCount","Page Count",eDBType.NUMERIC,4,0,true)%>
+<%	
+	}
+	
+	if (collapse) {
+		lista.Add("collapse");	
+%>	
+	<%= Variables.Basic("collapse", "collapse", eDBType.NUMERIC, 1,0,false) %>	
+<%	}
+	
+	if (!loadOnStart) {
+		lista.Add("loadStart");
+%>
+	<%= Variables.Basic("loadStart", "loadStart", eDBType.NUMERIC, 1,0,false) %>
+<%	}
+
+	// Variables for parameters.
+	foreach (ParameterElement parameter in GridObject.Parameters)
+	{
+		ParameterElement pare = parameter;		
+		if (GridObject is SelectionElement)
+		{
+			lista.Add(parameter.Name.Replace("&",""));
+			if (!String.IsNullOrEmpty(parameter.DomainName)) {
+%>
+	<%= Variables.BasedOnDomain(parameter.Name,parameter.DomainName) %>
+<%			
+			} else {				
+%>
+	<%= Variables.BasedOnAttribute(parameter.Name, parameter.Name) %>
+<%			
+			}
+		}
+		else 
+		{
+		
+			lista.Add(((GridObject is TabElement) ? "" : "p" )+parameter.Name.Replace("&",""));
+
+			if (!String.IsNullOrEmpty(parameter.DomainName)) {
+%>
+	<%= Variables.BasedOnDomain(((GridObject is TabElement) ? "" : "p" )+parameter.Name,parameter.DomainName) %>
+<%			
+			} else {
+%>
+	<%= Variables.BasedOnAttribute(((GridObject is TabElement) ? "" : "p" )+parameter.Name, parameter.Name) %>
+<%		
+			}
+		}		
+	}
+
+	// Grid state and transaction context variables.
+	if (needGridState || needTrnContext || geraBC || GridObject is PromptElement)
+	{
+		lista.Add("Session");
+		lista.Add("HTTPRequest");
+%>
+	<%= Variables.Extended("Session", null, "WebSession") %>
+	<%= Variables.Extended("HTTPRequest", null, "HttpRequest") %>
+<%
+		if (needGridState)
+		{
+			lista.Add("GridState");
+			lista.Add("GridStateFilterValue");
+%>
+	<%= Variables.Sdt("GridState", "GridState") %>
+	<%= Variables.Sdt("GridStateFilterValue", "GridState.FilterValue") %>
+<%		
+		}
+		
+		if (needTrnContext)
+		{
+			lista.Add("TrnContext");
+			lista.Add("TrnContextAtt");		
+%>
+	<%= Variables.Sdt("TrnContext", "TransactionContext") %>
+	<%= Variables.Sdt("TrnContextAtt", "TransactionContext.Attribute") %>
+<%
+		}
+	}
+
+	// Variables included in the grid.
+	foreach (VariableElement var in GridObject.Attributes.Variables)
+	{
+		lista.Add(var.Name.Replace("&",""));
+		if (var.Domain == null)
+		{
+%>
+	<%= Variables.BasedOnAttribute(var.Name, var.AttributeName) %>
+<%
+		}
+		else
+		{
+%>
+	<%= Variables.BasedOnDomain(var.Name, var.DomainName) %>
+<%
+		}
+	}
+	
+	if (geraBC)
+	{
+	
+			lista.Add(trn.Name+"SDT");
+			lista.Add(codeTab+"SDT");	
+			lista.Add(codeTab+"BC");
+			lista.Add(codeTab+"Item");
+			lista.Add("referencia");
+			lista.Add("MenuData");
+			lista.Add("MenuDataItem");
+			lista.Add("n");
+			lista.Add("Mode");
+			lista.Add("load");
+			lista.Add("mensagens");
+			lista.Add("mensagem");
+			lista.Add("linkretorno");
+			lista.Add("window");
+%>
+
+<%
+			if (level != null)
+			{
+				if (level.View != null) {
+					foreach (TabElement tabe in level.View.Tabs)
+					{
+						if (tabe.Type == TabElement.TypeValue.Grid && tabe.Transaction.Transaction != null)
+						{
+							lista.Add(tabe.Code+"SDT");
+%>	
+	<%= Variables.Sdt(tabe.Code+"SDT","SDT"+trn.Name+"BC."+tabe.Code) %>
+<%
+						}
+					}
+				}
+			}
+
+%>
+	<%= Variables.Sdt(trn.Name+"SDT","SDT"+trn.Name+"BC") %>
+	<%= Variables.Sdt(codeTab+"BC","SDT"+trn.Name+"BC."+codeTab) %>	
+	
+	<%= Variables.Sdt(codeTab+"Item","SDT"+trn.Name+"BC."+codeTab) %>
+	<%= Variables.Basic("referencia","referencia",eDBType.CHARACTER,200) %>	
+	<%= Variables.Sdt("MenuData","MenuData") %>
+	<%= Variables.Sdt("MenuDataItem","MenuData.MenuDataItem") %>	
+	<%= Variables.Basic("n","n",eDBType.NUMERIC,1) %>	
+	<%= Variables.BasedOnDomain("Mode","TrnMode") %>	
+	<%= Variables.Basic("load","load",eDBType.Boolean)%>
+	
+	<%= Variables.Sdt("mensagens","Messages") %>
+	<%= Variables.Sdt("mensagem","Messages.Message") %>
+	<%= Variables.Basic("linkretorno","linkretorno",eDBType.CHARACTER,200) %>
+	<%= Variables.Extended("window", null, "Window") %>	
+	
+<%	
+		// Variables included in the grid.
+		foreach (AttributeElement var in GridObject.Attributes.Attributes)
+		{
+			lista.Add(var.AttributeName.Replace("&",""));
+%>
+	<%= Variables.BasedOnAttribute(var.AttributeName, var.AttributeName) %>
+<%
+		}	
+	}
+
+	// Variable for order choice.
+	if (GridObject.Orders.NeedsChoice)
+	{
+		Dictionary<string, object> controlProperties = new Dictionary<string, object>();
+		controlProperties["ControlType"] = "Combo Box";
+		controlProperties["ControlValues"] = GridObject.Orders.ComboValues;
+		
+		lista.Add(OrdersElement.OrderVariable.Replace("&",""));
+%>
+	<%= Variables.Basic(OrdersElement.OrderVariable, null, eDBType.NUMERIC, 4, 0, false, controlProperties) %>
+<%	
+	}
+
+
+if (actionsModes) {
+	// Variables for multi-row actions.
+	if (GridObject.Actions.MultiRowActions.Count > 0)
+	{
+		lista.Add("Selected");
+		lista.Add("SelectedRows");
+		lista.Add("SelectedRow");
+%>
+	<%= Variables.Basic("Selected", null, eDBType.Boolean) %>
+	<%= Variables.Sdt("SelectedRows", settings.Objects.GridSdtName(GridObject)) %>
+	<%= Variables.Sdt("SelectedRow", settings.Objects.GridSdtItemName(GridObject)) %>
+<%
+	}
+	
+	// Variables for exporting to Excel.
+	if (GridObject.Actions != null)
+	{
+		foreach (ActionElement action in GridObject.Actions)
+		{
+%>
+	<%= action.DefineVariable() %>
+<%		
+		}
+
+		if (GridObject.Actions.Export != null)
+		{
+			lista.Add("ExcelFilename");
+			lista.Add("ErrorMessage");
+%>
+	<%= Variables.BasedOnDomain("ExcelFilename", "URLString") %>
+	<%= Variables.Basic("ErrorMessage", null, eDBType.VARCHAR, 512) %>
+<%
+		}
+	}
+}	
+%>
+<%
+	if (GridObject.GridType == SettingsGridElement.GridTypeValue.Gxui) {
+		lista.Add("gxuiGridColumnModel");	
+		lista.Add("gxuiCol");	
+		lista.Add("gxuiToolbar");
+		lista.Add("SelectedRow");
+		lista.Add("SDT"+trn.Name+"Grid");
+%>	
+	<%= Variables.Sdt("gxuiGridColumnModel","gxuiGridColumnModel") %>
+	<%= Variables.Sdt("gxuiCol","gxuiGridColumn") %>
+	<%= Variables.Sdt("gxuiToolbar","gxuiToolbar") %>
+	<%= WebFormHelper.VariableSDTCollection("SelectedRow","SDT"+trn.Name+"Grid") %>
+	<%= Variables.Sdt("SDT"+trn.Name+"Grid","SDT"+trn.Name+"Grid") %>
+<%
+		if (!lista.Contains("GridState"))
+		{
+			lista.Add("GridState");
+			lista.Add("GridStateFilterValue");
+%>
+	<%= Variables.Sdt("GridState", "GridState") %>
+	<%= Variables.Sdt("GridStateFilterValue", "GridState.FilterValue") %>
+<%		
+		}
+	}
+
+ActionElement LegendAct = null;
+if (GridObject.Actions != null && GridObject.Actions.Legend != null)
+{
+	LegendAct = GridObject.Actions.Legend;
+}	
+if (LegendAct != null) 
+{
+%>
+<%= WebFormHelper.VariableSDTCollection("HPatternLegendCollection","HPatternLegend") %>
+<%= Variables.Sdt("HPatternLegend","HPatternLegend") %>
+<%
+lista.Add("HPatternLegendCollection");
+lista.Add("HPatternLegend");
+}
+
+if (GridObject.Actions.isMultiRowActions)
+{
+	if (settings.Grid.CheckAll)
+	{
+		lista.Add("CheckAll");
+%>
+	<%= Variables.Basic("CheckAll", null, eDBType.Boolean) %>
+<%
+	}
+
+	if (settings.Grid.SelectedRecords)
+	{
+		lista.Add("SelectedRecords");
+%>
+	<%= Variables.Basic("SelectedRecords","Selected Records",eDBType.NUMERIC,8,0,true)%>		
+<%
+	}
+}
+
+if (settings.Template.GenerateCallBackLink ) 
+{
+	lista.Add(HPatternInstance.PARMCALLBACK);
+%>
+	<%= Variables.BasedOnDomain(HPatternInstance.PARMCALLBACK, HPatternInstance.PARMCALLBACK) %>
+<%
+}
+
+if ((geraBC && GridObject is TabElement) || GridObject is SelectionElement) {
+%>
+<%@ CallSubTemplate TrnParmVariables wwInstance='Instance' lista='lista' %>
+<%
+}	
+%>
+
+<%@ CallSubTemplate FilterVariables Object='Object' Part='Part' Instance='Instance' GridObject='GridObject' Selection='true' lista='lista' %>
+
+<%=MenuContext.get(GridObject.Actions).Variables()%>
+
+</Part>

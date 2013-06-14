@@ -1,0 +1,70 @@
+<%@ Template Language="C#" TargetLanguage="GX" Description="Selection Web Form" %>
+<%@ Assembly Name="Artech.Common" %>
+<%@ Assembly Name="Artech.Architecture.Common" %>
+<%@ Assembly Name="Artech.Common.Helpers" %>
+<%@ Assembly Name="Artech.Common.Properties" %>
+<%@ Assembly Name="Artech.Genexus.Common" %>
+<%@ Assembly Name="Artech.Udm.Framework" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Assembly Name="Artech.Packages.Patterns" %>
+<%@ Assembly Name="Artech.Template.Base" %>
+<%@ Assembly Name="System.Xml" %>
+<%@ Assembly Name="StringTemplate" %>
+<%@ Assembly Name="Artech.Architecture.UI.Framework" %>
+<%@ Import Namespace="Artech.Common.Helpers.Templates" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="System.Collections.Generic" %>
+<%@ Import Namespace="Artech.Common.Helpers.Structure" %>
+<%@ Import Namespace="Artech.Genexus.Common.Helpers" %>
+<%@ Import Namespace="Artech.Common.Helpers.Strings" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern.Resources" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="Artech.Common.Properties" %>
+<%@ Import Namespace="Artech.Architecture.Common.Collections" %>
+<%@ Import Namespace="Artech.Architecture.Common.Objects" %>
+<%@ Import Namespace="Artech.Udm.Framework" %>
+<%@ Import Namespace="Artech.Genexus.Common" %>
+<%@ Import Namespace="Artech.Genexus.Common.Objects" %>
+<%@ Import Namespace="Artech.Genexus.Common.Parts" %>
+<%@ Import Namespace="Artech.Packages.Patterns" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Objects" %>
+<%@ Import Namespace="System" %>
+<%@ Import Namespace="System.Collections.Generic" %>
+<%@ Import Namespace="System.Text" %>
+<%@ Import Namespace="System.Xml" %>
+<%@ Import Namespace="Antlr.StringTemplate" %>
+<%@ Import Namespace="Artech.Genexus.Common.Wiki" %>
+<%@ Import Namespace="Artech.Architecture.Common.Services" %>
+<%@ Property Name="Object" Type="Artech.Architecture.Common.Objects.KBObject" %>
+<%@ Property Name="Part" Type="Artech.Architecture.Common.Objects.KBObjectPart" %>
+<%@ Property Name="Instance" Type="Artech.Packages.Patterns.Objects.PatternInstance" %>
+<%@ Property Name="Element" Type="Artech.Packages.Patterns.Objects.PatternInstanceElement" %>
+
+<%
+	if (Messages.Debug())
+	{
+		CommonServices.Output.AddLine(String.Format(">>> WPWebForm Begin {0}",DateTime.Now.ToString()));
+	}
+
+	HPatternInstance wwInstance = HPatternInstance.Load(Instance);	
+	HPatternSettings settings = wwInstance.Settings;
+	string tab = "";
+	
+	if (Messages.Debug())
+	{
+		CommonServices.Output.AddLine(String.Format(">>> Object.Name = {0}",Object.Name));
+	}	
+%>
+
+<Part type="<%= PartType.WebForm %>">
+	<Source><![CDATA[
+	<%= Heurys.Patterns.HPattern.Helpers.Template.TrnWebForm(Object,settings,wwInstance,false,tab,false,wwInstance.WebPanelRoot)%>
+	]]>
+	</Source>
+</Part>
+<%
+	if (Messages.Debug())
+	{
+		CommonServices.Output.AddLine(String.Format(">>> WPWebForm End {0}",DateTime.Now.ToString()));
+	}
+%>

@@ -1,0 +1,68 @@
+<%@ Template Language="C#" TargetLanguage="GX" Description="Prepare Transaction event code" %>
+<%@ Include Name="Constants.cs" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern.Resources" %>
+<%@ Property Name="Instance" Type="Heurys.Patterns.HPattern.HPatternInstance" %>
+<%@ Property Name="Settings" Type="HPatternSettings" %>
+<%@ Property Name="ProgramNameVariable" Type="System.String" %>
+<%@ Property Name="DoNotRedirect" Type="System.Boolean" %>
+<%@ Property Name="IsTransaction" Type="System.Boolean" %>
+<%@ Property Name="TransactionName" Type="System.String" %>
+<%
+	SettingsSecurityElement security = Settings.Security;
+	
+	bool ShowSecurityCode = true;
+	if (IsTransaction)	
+		ShowSecurityCode = security.ApplySecurityCodeInTransaction;
+	
+	string pgmname = "";
+	if (Instance.SecurityId != String.Empty && Instance.SecurityId.ToLower() != "default") {
+		pgmname = "'"+Instance.SecurityId+"'";
+	}
+	else
+	{
+		if (security.SecurityIdTransaction) {
+			pgmname = "'"+(TransactionName != null && TransactionName != String.Empty ? TransactionName : Instance.WebObject.ObjectName)+"'";
+		} else {
+			pgmname = "&Pgmname";
+		}
+	}	
+	
+	string SecurityCode = String.Format(security.SecurityCode,pgmname);
+	if (ShowSecurityCode) {
+%>
+<%= SecurityCode %>		
+<%
+	}
+	
+	if (security.Enabled)
+	{
+		if (String.IsNullOrEmpty(ProgramNameVariable))
+			ProgramNameVariable = "PgmName";
+	
+		if (security.Check != null && security.NotAuthorized != null)
+		{
+			string securityCustomParams = security.CustomParameters();
+			if (securityCustomParams != String.Empty)
+				securityCustomParams += ", ";
+%>
+<%= security.CheckName %>.Call(&<%= ProgramNameVariable %>, <%= securityCustomParams %>&IsAuthorized)
+<%
+			if (!DoNotRedirect)
+			{
+%>
+If (not &IsAuthorized)
+	<%= security.NotAuthorizedName %>.Call(&<%= ProgramNameVariable %>)
+Endif
+<%
+			}
+		}
+		else
+		{
+%>
+// ERROR: Security check is set to true in Work With Settings, but either the 'Check' procedure or the 'Not Authorized' webpanel has not been set.
+<%
+		}
+	}
+%>

@@ -1,0 +1,20 @@
+<%@ Template Language="C#" TargetLanguage="GX" Description="Load Context Subtemplate" %>
+<%@ Include Name="Constants.cs" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Property Name="Settings" Type="HPatternSettings" %>
+<%@ Property Name="tipo" Type="int" %>
+<%
+	foreach (SettingsContextVariableElement contextVar in Settings.Context)
+	{
+		if (contextVar.LoadProcedure != null)
+		{
+			if (tipo == 0 || (tipo == 1 && contextVar.ApplyInPrompt) || (tipo == 2 && contextVar.ApplyInGXUI)) 
+			{
+%>
+<%= contextVar.LoadProcedure.Name %>.Call(<%= contextVar.VariableName %>)
+<%
+			}
+		}
+	}
+%>

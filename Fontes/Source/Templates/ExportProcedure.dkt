@@ -1,0 +1,156 @@
+<%@ Template Language="C#" TargetLanguage="GX" Description="Export Procedure" %>
+<%@ Include Name="Constants.cs" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Artech.Common.Helpers.Strings" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern.Resources" %>
+<%@ Property Name="Object" Type="Artech.Architecture.Common.Objects.KBObject" %>
+<%@ Property Name="Part" Type="Artech.Architecture.Common.Objects.KBObjectPart" %>
+<%@ Property Name="Instance" Type="Artech.Packages.Patterns.Objects.PatternInstance" %>
+<%@ Property Name="Element" Type="Artech.Packages.Patterns.Objects.PatternInstanceElement" %>
+<%@ SubTemplate Name="SubLoadContext" File="SubLoadContext.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="FilterCondition" File="FilterCondition.dkt" MergeProperties="True"%>
+
+<Part type="<%= PartType.Procedure %>">
+	<Source><![CDATA[<%= Messages.VersionHPattern() %>
+	
+// Exports the contents of a grid (using the selected order and filters) to an Excel file.
+<%
+	HPatternInstance wwInstance = HPatternInstance.Load(Instance);
+	IGridObject gridObject = wwInstance.GetElement<IGridObject>(Element);
+	IGridObject GridObject = gridObject;
+
+	HPatternSettings settings = wwInstance.Settings;
+	SettingsExportActionElement exportSettings = settings.StandardActions.Export;
+	
+	string pathRoot = String.Empty;
+	if (!String.IsNullOrEmpty(exportSettings.BaseLocation))
+		pathRoot = String.Format("!\"{0}\" + ", exportSettings.BaseLocation);
+	
+%>
+<%@ CallSubTemplate SubLoadContext Settings='settings' tipo='0' %>
+
+&Random = Random() * 10000
+&Filename = <%= pathRoot %>!"<%= Object.Name %>-" + &Random.ToString().Trim() + !".xls"
+
+<%
+// &ExcelDocument.UseAutomation = 0	// False
+
+	if (exportSettings.Template != String.Empty)
+	{
+%>
+&ExcelDocument.Template = '<%= exportSettings.Template %>'
+<%
+	}
+%>
+&ExcelDocument.Open(&Filename)
+Do 'CheckStatus'
+<%
+	if (exportSettings.Template == String.Empty)
+	{
+%>
+&ExcelDocument.Clear()
+<%
+	}
+	
+	string startRow = (exportSettings.StartRow != String.Empty ? exportSettings.StartRow : "1");
+	string startColumn = (exportSettings.StartColumn != String.Empty ? exportSettings.StartColumn : "1");
+	
+%>
+
+&CellRow = <%= startRow %>
+&FirstColumn = <%= startColumn %>
+
+// Write titles
+<%
+	int column = 0;
+	foreach (IAttributesItem item in gridObject.Attributes)
+	{
+%>
+&ExcelDocument.Cells(&CellRow, &FirstColumn + <%= column %>).Bold = True
+&ExcelDocument.Cells(&CellRow, &FirstColumn + <%= column %>).Text = <%= item.DescriptionAspa %>
+<%
+		column++;
+	}
+%>
+
+For each
+<%
+	if (gridObject.Parameters.Count > 0 || gridObject.Filter != null || gridObject.Orders.Count > 0)
+	{
+		if (gridObject.Orders.Count > 0)
+		{
+%>
+<%= Indentation.Indent(gridObject.Orders.ForEachOrder, 1) %>
+<%
+		}
+	}
+%>
+<%@ CallSubTemplate FilterCondition Object='Object' Part='Part' Instance='wwInstance' GridObject='GridObject' WhereForEach='true'%>
+<%			
+	foreach (VariableElement variable in gridObject.Attributes.Variables)
+	{
+		if (variable.LoadCode != String.Empty)
+		{
+%>
+	// Load variable '<%= variable.VariableName %>'
+<%= Indentation.Indent(variable.LoadCodeAll, 1) %>
+
+<%
+		}
+	}
+%>
+	// Write cell values
+	&CellRow += 1
+<%
+	column = 0;
+	foreach (IAttributesItem item in gridObject.Attributes)
+	{
+		string itemValueExpression = item.Name;
+		string cellType = "Text";
+
+		if (item.TypeInfo.Type == eDBType.CHARACTER || item.TypeInfo.Type == eDBType.VARCHAR || item.TypeInfo.Type == eDBType.LONGVARCHAR)
+		{
+			cellType = "Text";
+			if (item.TypeInfo.Type == eDBType.LONGVARCHAR)
+				itemValueExpression = String.Format("Substr({0}, 1, 1000)", itemValueExpression);
+		}
+		else if (item.TypeInfo.Type == eDBType.NUMERIC)
+			cellType = "Number";
+		else if (item.TypeInfo.Type == eDBType.DATE || item.TypeInfo.Type == eDBType.DATETIME)
+			cellType = "Date";
+		else
+			itemValueExpression += ".ToString()";
+%>
+	&ExcelDocument.Cells(&CellRow, &FirstColumn + <%= column %>).<%= cellType %> = <%= itemValueExpression %>
+<%
+		column++;
+	}
+%>
+Endfor
+
+&ExcelDocument.Save()
+Do 'CheckStatus'
+&ExcelDocument.Close()
+
+
+Sub 'CheckStatus'
+	If (&ExcelDocument.ErrCode <> 0)
+		&Filename = ""
+		&ErrorMessage = &ExcelDocument.ErrDescription
+		&ExcelDocument.Close()
+		Return
+	Endif
+Endsub
+<%
+	string codes = Heurys.Patterns.HPattern.Helpers.TemplateInternal.EventCodes(Heurys.Patterns.HPattern.Helpers.TemplateInternal.CodeType.Procedure, settings);
+	if (!String.IsNullOrEmpty(codes))
+	{
+%>
+<%= codes%>
+<%    
+	}
+%>
+]]>
+	</Source>
+</Part>

@@ -1,0 +1,203 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema
+	elementFormDefault="qualified"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://schemas.genexus.com/Patterns/Definition/v1.0"
+	xmlns:pd="http://schemas.genexus.com/Patterns/Definition/v1.0"
+	>
+	<xs:annotation>
+		<xs:documentation xml:lang="en">Schema for Pattern Definition files.</xs:documentation>
+	</xs:annotation>
+
+	<xs:element name="Pattern">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Definition" minOccurs="1" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="InstanceName" type="xs:string" minOccurs="1" maxOccurs="1" />
+							<xs:element name="InstanceSpecification" type="xs:string" minOccurs="1" maxOccurs="1" />
+							<xs:element name="SettingsSpecification" type="xs:string" minOccurs="0" maxOccurs="1" />
+							<xs:element name="CustomTypeDefinitions" type="xs:string" minOccurs="0" maxOccurs="1" />
+							<xs:element name="Implementation" type="xs:string" minOccurs="0" maxOccurs="1" />
+							<xs:element name="DefaultSettings" type="xs:string" minOccurs="0" maxOccurs="1" />
+							<xs:element name="ParentObjects" minOccurs="0" maxOccurs="1">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="ParentObject" minOccurs="0" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:attribute name="Type" type="xs:string" />
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="AdditionalParts" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Part" type="pd:GUID" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Resources" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Resource" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="ImportTime" minOccurs="0" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:attribute name="When" type="pd:ImportTime" use="required" />
+												<xs:attribute name="OnCreateObjectOfType" type="xs:string" />
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="Id" type="xs:string" use="required" />
+									<xs:attribute name="Version" type="pd:Version" use="required" />
+									<xs:attribute name="File" type="xs:string" use="required" />
+									<xs:attribute name="ImportTime" type="pd:ImportTime" />
+									<xs:attribute name="OnCreateObjectOfType" type="xs:string" />
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+					<xs:key name="ResourceId">
+						<xs:selector xpath="pd:Resource" />
+						<xs:field xpath="@Id" />
+					</xs:key>
+				</xs:element>
+				<xs:element name="Objects" minOccurs="1" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Object" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="ObjectComponent" minOccurs="0" maxOccurs="1">
+											<xs:complexType>
+												<!-- TODO: Other component properties here. -->
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="Part" minOccurs="0" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:attribute name="Type" type="xs:string" use="required" />
+												<xs:attribute name="Template" type="xs:string" use="required" />
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="Type" type="xs:string" use="required" />
+									<xs:attribute name="Id" type="xs:string" use="required" />
+									<xs:attribute name="Name" type="xs:string" use="required" />
+									<xs:attribute name="Description" type="xs:string" />
+									<xs:attribute name="Element" type="xs:string" />
+									<xs:attribute name="Count" type="pd:ElementCount" />
+									<xs:attribute name="Global" type="xs:boolean" />
+									<xs:attribute name="Template" type="xs:string" />
+								</xs:complexType>
+								<xs:key name="ObjectPartType">
+									<xs:selector xpath="pd:Part" />
+									<xs:field xpath="@Type" />
+								</xs:key>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+					<xs:key name="ObjectId">
+						<xs:selector xpath="pd:Object" />
+						<xs:field xpath="@Id" />
+					</xs:key>
+				</xs:element>
+
+				<xs:element name="Files" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="File" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:attribute name="Name" type="xs:string" use="required" />
+									<xs:attribute name="Template" type="xs:string" use="required" />
+									<xs:attribute name="Output" type="xs:string" use="required"  />
+									<xs:attribute name="Element" type="xs:string" />
+									<xs:attribute name="Description" type="xs:string" />
+									<xs:attribute name="Count" type="pd:ElementCount" />
+									<xs:attribute name="Global" type="xs:boolean" />
+									<xs:attribute name="Encoding" type="xs:string" />
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+					<xs:key name="FileName">
+						<xs:selector xpath="pd:File" />
+						<xs:field xpath="@Name" />
+					</xs:key>
+				</xs:element>
+
+				<xs:element name="References" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="SameInstance" type="pd:ReferenceType" minOccurs="1" maxOccurs="1" />
+							<xs:element name="DifferentInstance" type="pd:ReferenceType" minOccurs="1" maxOccurs="1" />
+							<xs:element name="External" type="pd:ReferenceType" minOccurs="1" maxOccurs="1" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="PropertyDefinitions" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="PropertyDefinition" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:attribute name="ObjectClass" type="xs:string" use="required" />
+									<xs:attribute name="DefinitionFile" type="xs:string" use="required" />
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="Publisher" type="xs:string" use="required" />
+			<xs:attribute name="Id" type="pd:GUID" use="required" />
+			<xs:attribute name="Category" type="pd:GUID" />
+			<xs:attribute name="Name" type="xs:string" use="required" />
+			<xs:attribute name="Description" type="xs:string" use="required" />
+			<xs:attribute name="Version" type="pd:Version" use="required" />
+			<xs:attribute name="Apply" type="xs:boolean" />
+			<xs:attribute name="Icon" type="xs:string" />
+			<xs:attribute name="Callable" type="xs:boolean" />
+			<xs:attribute name="HasTranslatableProperties" type="xs:boolean" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:simpleType name="GUID">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="ElementCount">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0-9]+|\*" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="Version">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0-9]+(\.[0-9]+){0,3}" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="ReferenceType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Hard" />
+			<xs:enumeration value="Weak" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="ImportTime">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="OpenKB" />
+			<xs:enumeration value="CreateObject" />
+			<xs:enumeration value="ApplyPattern" />
+		</xs:restriction>
+	</xs:simpleType>
+
+</xs:schema>

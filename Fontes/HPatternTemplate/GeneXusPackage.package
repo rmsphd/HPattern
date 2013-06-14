@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Package xmlns='http://schemas.genexus.com/addin/v1.0'
+  id='3cfbab1c-b5be-4415-ae0e-6ccd2ead676'
+  name='HPatternTemplate'>
+
+  <Resources>
+    <Resource type="strings" name="Heurys.Patterns.HPatternTemplate.Resources"/>
+    <Resource type="images" name="Heurys.Patterns.HPatternTemplate.Resources"/>
+    
+  </Resources>
+
+</Package>

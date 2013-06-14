@@ -1,0 +1,50 @@
+<%@ Template Language="C#" TargetLanguage="GX" Description="Selection Web Form" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Assembly Name="Artech.Architecture.Common" %>
+<%@ Assembly Name="Artech.Common" %>
+<%@ Assembly Name="Artech.Common.Helpers" %>
+<%@ Assembly Name="Artech.Common.Properties" %>
+<%@ Assembly Name="Artech.Genexus.Common" %>
+<%@ Assembly Name="Artech.Packages.Patterns" %>
+<%@ Assembly Name="Artech.Udm.Framework" %>
+<%@ Assembly Name="Artech.Template.Base" %>
+<%@ Assembly Name="System.Xml" %>
+<%@ Assembly Name="StringTemplate" %>
+<%@ Assembly Name="Artech.Architecture.UI.Framework" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Artech.Common.Properties" %>
+<%@ Import Namespace="Artech.Architecture.Common.Collections" %>
+<%@ Import Namespace="Artech.Architecture.Common.Objects" %>
+<%@ Import Namespace="Artech.Udm.Framework" %>
+<%@ Import Namespace="Artech.Genexus.Common" %>
+<%@ Import Namespace="Artech.Genexus.Common.Helpers" %>
+<%@ Import Namespace="Artech.Genexus.Common.Objects" %>
+<%@ Import Namespace="Artech.Genexus.Common.Parts" %>
+<%@ Import Namespace="Artech.Packages.Patterns" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Objects" %>
+<%@ Import Namespace="System" %>
+<%@ Import Namespace="System.Collections.Generic" %>
+<%@ Import Namespace="System.Text" %>
+<%@ Import Namespace="System.Xml" %>
+<%@ Import Namespace="Antlr.StringTemplate" %>
+<%@ Import Namespace="Artech.Genexus.Common.Wiki" %>
+<%@ SubTemplate Name="GridWebForm" File="GridWebForm.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="TabTabularEvents" File="TabTabularEvents.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="SelectionEvents" File="SelectionEvents.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="GridVariables" File="GridVariables.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="GridRules" File="GridRules.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="GridEvents" File="GridEvents.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="GridConditions" File="GridConditions.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="SubPrepareTransaction" File="SubPrepareTransaction.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="ExportProcedure" File="ExportProcedure.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="ExportVariables" File="ExportVariables.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="ExportRules" File="ExportRules.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="TabTabularRules" File="TabTabularRules.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="BCWebForm" File="BCWebForm.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="BCVariables" File="BCWebForm.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="BCRules" File="BCRules.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="BCEvents" File="BCEvents.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="BCConditions" File="BCConditions.dkt" MergeProperties="True"%>
+<%@ SubTemplate Name="SubCheckSecurity" File="SubCheckSecurity.dkt" MergeProperties="True"%>
+

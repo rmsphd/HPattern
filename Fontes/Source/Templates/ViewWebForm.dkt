@@ -1,0 +1,21 @@
+<%@ Template Language="C#" TargetLanguage="GX" Description="View Web Form" %>
+<%@ Include Name="Constants.cs" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Property Name="Object" Type="Artech.Architecture.Common.Objects.KBObject" %>
+<%@ Property Name="Part" Type="Artech.Architecture.Common.Objects.KBObjectPart" %>
+<%@ Property Name="Instance" Type="Artech.Packages.Patterns.Objects.PatternInstance" %>
+<%@ Property Name="Element" Type="Artech.Packages.Patterns.Objects.PatternInstanceElement" %>
+
+<Part type="<%= PartType.WebForm %>">
+	<Source><![CDATA[<%
+
+	HPatternInstance wwInstance = HPatternInstance.Load(Instance);
+	HPatternSettings settings = wwInstance.Settings;
+
+	ViewElement view = wwInstance.GetElement<ViewElement>(Element);	
+%>
+<%= Heurys.Patterns.HPattern.Helpers.TemplateInternal.ViewWebForm(Object,Part,wwInstance,view) %>
+]]>
+	</Source>
+</Part>

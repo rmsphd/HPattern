@@ -1,0 +1,280 @@
+<%@ Template Language="C#" TargetLanguage="GX" Description="Export Procedure" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Assembly Name="Artech.Architecture.Common" %>
+<%@ Assembly Name="Artech.Common" %>
+<%@ Assembly Name="Artech.Common.Helpers" %>
+<%@ Assembly Name="Artech.Common.Properties" %>
+<%@ Assembly Name="Artech.Genexus.Common" %>
+<%@ Assembly Name="Artech.Packages.Patterns" %>
+<%@ Assembly Name="Artech.Udm.Framework" %>
+<%@ Assembly Name="Artech.Template.Base" %>
+<%@ Assembly Name="System.Xml" %>
+<%@ Assembly Name="StringTemplate" %>
+<%@ Assembly Name="Artech.Architecture.UI.Framework" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Artech.Common.Properties" %>
+<%@ Import Namespace="Artech.Architecture.Common.Collections" %>
+<%@ Import Namespace="Artech.Architecture.Common.Objects" %>
+<%@ Import Namespace="Artech.Udm.Framework" %>
+<%@ Import Namespace="Artech.Genexus.Common" %>
+<%@ Import Namespace="Artech.Genexus.Common.Helpers" %>
+<%@ Import Namespace="Artech.Genexus.Common.Objects" %>
+<%@ Import Namespace="Artech.Genexus.Common.Parts" %>
+<%@ Import Namespace="Artech.Packages.Patterns" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Objects" %>
+<%@ Import Namespace="System" %>
+<%@ Import Namespace="System.Collections.Generic" %>
+<%@ Import Namespace="System.Text" %>
+<%@ Import Namespace="System.Xml" %>
+<%@ Import Namespace="Antlr.StringTemplate" %>
+<%@ Import Namespace="Artech.Genexus.Common.Wiki" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern.Resources" %>
+<%@ Property Name="Object" Type="Artech.Architecture.Common.Objects.KBObject" %>
+<%@ Property Name="Part" Type="Artech.Architecture.Common.Objects.KBObjectPart" %>
+<%@ Property Name="Instance" Type="Artech.Packages.Patterns.Objects.PatternInstance" %>
+<%@ Property Name="Element" Type="Artech.Packages.Patterns.Objects.PatternInstanceElement" %>
+<%@ SubTemplate Name="SubLoadContext" File="SubLoadContext.dkt" MergeProperties="True"%>
+<%
+	HPatternInstance wwInstance = HPatternInstance.Load(Instance);
+	HPatternSettings settings = wwInstance.Settings;
+	Transaction trn = wwInstance.Transaction.Transaction;
+	
+	string varpks = Heurys.Patterns.HPattern.Helpers.Template.GetPKLink(trn.Structure.Root.PrimaryKey,false);	
+	string varpksT = Heurys.Patterns.HPattern.Helpers.Template.GetPKVar(trn.Structure.Root.PrimaryKey);
+	StringBuilder varpks2 = new StringBuilder();
+	StringBuilder varpksT2 = new StringBuilder();
+	
+	int contai = 0;
+	ArrayList lista = new ArrayList();
+	foreach (TransactionAttribute trnAtt in trn.Structure.Root.PrimaryKey) {
+
+		lista.Add(trnAtt.Attribute);
+		
+		
+	}
+	
+
+%>
+<Part type="<%= PartType.Procedure %>">
+	<Source><![CDATA[<%= Messages.VersionHPattern() %>
+
+<%@ CallSubTemplate SubLoadContext Settings='settings' tipo='0' %>
+
+if &Mode = TrnMode.Insert
+	
+	// Vamos carregar os valores default
+<%
+
+string ruledate = settings.Template.RuleDate.ToLower();
+string valueruledate = settings.Template.ValueRuleDate;
+string ruledatetime = settings.Template.RuleDateTime.ToLower();
+string valueruledatetime = settings.Template.ValueRuleDateTime;
+string defaultvalue = "";
+string defaultrule = "";
+
+foreach (RowElement row in wwInstance.Transaction.GetRows(""))
+{
+
+    foreach (ColumnElement col in row.Columns)
+    {
+        foreach (AttributeElement att in col.Attributes) 
+        {
+            if (att.Attribute != null)
+            {
+            
+				// Regra para o atributo
+				defaultvalue = att.ValueRule;
+				if (defaultvalue == "<default>" || defaultvalue == String.Empty)
+				{
+					defaultvalue = "";
+					switch (att.Attribute.Type)
+					{
+						case eDBType.DATE:
+							defaultvalue = valueruledate;
+							break;
+
+						case eDBType.DATETIME:
+							defaultvalue = valueruledatetime;
+							break;
+
+					}
+				}
+
+				defaultrule = att.Rule.ToLower();
+				if (defaultrule == "<default>") {
+					defaultrule = "";
+					switch (att.Attribute.Type)
+					{
+						case eDBType.DATE:
+							defaultrule = ruledate;
+							break;
+
+						case eDBType.DATETIME:
+							defaultrule = ruledatetime;
+							break;
+
+					}
+				}
+
+				if (defaultvalue != String.Empty && defaultrule != String.Empty)
+				{
+
+					if (defaultrule == "defaultrule")
+					{
+%>					
+	&<%= trn.Name %>SDT.<%= att.AttributeName %> = <%= defaultvalue %>	
+<%
+
+					}
+				}
+            
+            
+            }
+        }
+    }
+}
+
+%>	
+
+else
+
+<%
+	if (settings.Template.LoadSDTWithDataProvider) {
+%>
+	// Carrega a SDT
+	&<%= trn.Name %>SDT = DP<%= trn.Name %>BC(<%= varpks %>)	
+<%  }
+
+%>
+	// Load do BC
+	&<%= trn.Name %>BC.Load(<%= varpks %>)
+	&referencia = "<%= trn.Name %>BC"<%= varpksT %>
+	&Session.Set(&referencia,&<%= trn.Name %>BC.ToXml())
+	&<%= trn.Name %>SDT.ReferenciaBC = &referencia
+
+<%
+	List<Artech.Genexus.Common.Objects.Attribute> listaR = new List<Artech.Genexus.Common.Objects.Attribute>();
+	if (!settings.Template.LoadSDTWithDataProvider) {		
+		foreach (TransactionAttribute gridItem in trn.Structure.Root.Attributes)
+		{	
+			listaR.Add(gridItem.Attribute);
+%>
+	&<%= trn.Name %>SDT.<%=gridItem.Name%> = &<%= trn.Name %>BC.<%=gridItem.Name%>
+<%		
+		}
+	}
+
+%>
+	
+<%
+string fParm = ",&{0}SDT.{1}";
+string fString = "+&{0}SDT.{1}";
+if (!settings.Template.LoadSDTWithDataProvider) {
+	fParm = ",{1}";
+	fString = "+{1}";
+}
+
+LevelElement level = wwInstance.Levels[0];
+if (level != null)
+{
+	if (level.View != null)
+	{
+		foreach (TabElement tabe in level.View.Tabs)
+		{
+			if (tabe.Type == TabElement.TypeValue.Grid && tabe.Transaction.Transaction != null)
+			{
+			
+				varpks2 = new StringBuilder();
+				varpksT2 = new StringBuilder();
+				varpks2.Append(varpks);
+				varpksT2.Append(varpksT);
+				Transaction trn2 = tabe.Transaction.Transaction;
+				foreach (TransactionAttribute trnAtt in tabe.Transaction.Transaction.Structure.Root.PrimaryKey) {
+				
+					if (!lista.Contains(trnAtt.Attribute))
+					{
+						varpks2.AppendFormat(fParm,tabe.Code, trnAtt.Name);
+						varpksT2.AppendFormat(fString,tabe.Code, trnAtt.Name);
+						
+						if (!(trnAtt.Attribute.Type == eDBType.CHARACTER || trnAtt.Attribute.Type == eDBType.VARCHAR)) 
+						{		
+							varpksT2.Append(".ToString()");
+						}
+					}
+					
+				}	
+				
+				if (settings.Template.LoadSDTWithDataProvider) {					
+%>
+	for &<%= tabe.Code %>SDT in &<%= trn.Name %>SDT.<%= tabe.Code %>
+		
+		// Load do BC
+		&<%= tabe.Code %>BC.Load(<%= varpks2.ToString() %>)
+		&referencia = "<%= tabe.Code %>BC"<%= varpksT2.ToString() %>
+		&Session.Set(&referencia,&<%= tabe.Code %>BC.ToXml())
+		&<%= tabe.Code %>SDT.ReferenciaBC = &referencia		
+		
+	endfor
+<%				}
+				else 
+				{
+%>
+	for each
+<%
+		ArrayList listapk = new ArrayList();
+		foreach (TransactionAttribute gridItem in trn.Structure.Root.PrimaryKey)
+		{	
+			listapk.Add(gridItem.Attribute);
+%>
+		where <%=gridItem.Name%> = &<%=gridItem.Name%>
+<%		
+		}
+%>	
+		<%= Heurys.Patterns.HPattern.Helpers.Template.GetDefinedBy(trn2.Structure.Root) %>	
+	
+		// Load do BC
+		&<%= tabe.Code %>BC.Load(<%= varpks2.ToString() %>)
+		&referencia = "<%= tabe.Code %>BC"<%= varpksT2.ToString() %>
+		&Session.Set(&referencia,&<%= tabe.Code %>BC.ToXml())
+		&<%= tabe.Code %>SDT = new()
+		&<%= tabe.Code %>SDT.ReferenciaBC = &referencia
+<%
+					foreach (TransactionAttribute gridItem in trn2.Structure.Root.Attributes)
+					{
+						if (!listapk.Contains(gridItem.Attribute) && !listaR.Contains(gridItem.Attribute)) {
+%>
+		&<%= tabe.Code %>SDT.<%=gridItem.Name%> = &<%= tabe.Code %>BC.<%=gridItem.Name%>
+<%		
+						}
+					}
+
+%>		
+		&<%= trn.Name %>SDT.<%= tabe.Code %>.Add(&<%= tabe.Code %>SDT)
+	endfor
+<%			
+				}		
+			}
+		}	
+	}
+}
+%>		
+endif
+
+// Grava a SDT na sessao
+&referencia = "<%= trn.Name %>SDT"<%= varpksT %>
+&Session.Set(&referencia,&<%= trn.Name %>SDT.ToXml())	
+
+<%
+	string codes = Heurys.Patterns.HPattern.Helpers.TemplateInternal.EventCodes(Heurys.Patterns.HPattern.Helpers.TemplateInternal.CodeType.Procedure, settings);
+	if (!String.IsNullOrEmpty(codes))
+	{
+%>
+<%= codes%>
+<%    
+	}
+%>
+
+]]>
+	</Source>
+</Part>

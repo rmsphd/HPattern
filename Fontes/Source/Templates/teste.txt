@@ -1,0 +1,24 @@
+ O volume na unidade C ‚ SW_Preload
+ O N£mero de S‚rie do Volume ‚ 7E8C-368F
+
+ Pasta de C:\heurys\heurys\PatternX\WWHeurys\WWHeurys\Source\Templates
+
+2007/09/28  04:42           114.688 antlr.runtime.dll
+2008/12/02  11:58           405.504 Artech.Architecture.Common.dll
+2008/12/02  11:59           204.800 Artech.Architecture.UI.Framework.dll
+2008/12/02  11:56            73.728 Artech.Common.dll
+2008/12/02  11:58            32.768 Artech.Common.Framework.dll
+2008/12/02  11:57           192.512 Artech.Common.Helpers.dll
+2008/12/03  01:05           303.104 Artech.Common.Language.dll
+2008/12/02  11:58           114.688 Artech.Common.Properties.dll
+2008/12/03  01:04         2.105.344 Artech.Genexus.Common.dll
+2008/12/03  01:12           212.992 Artech.Packages.Patterns.dll
+2008/11/19  16:59            28.672 Artech.Template.Base.dll
+2008/11/19  16:59            16.384 Artech.Template.Helper.dll
+2008/07/17  14:37            20.480 Artech.Template.MsBuildTasks.dll
+2008/11/19  16:59            94.208 Artech.Template.Parser.dll
+2008/12/02  11:58           143.360 Artech.Udm.Framework.dll
+2009/09/21  14:59           497.152 Heurys.Patterns.WWHeurys.dll
+2007/09/28  04:48           155.648 StringTemplate.dll
+              17 arquivo(s)      4.716.032 bytes
+               0 pasta(s)    6.364.721.152 bytes dispon¡veis

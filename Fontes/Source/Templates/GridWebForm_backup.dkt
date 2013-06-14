@@ -1,0 +1,434 @@
+<%@ Template Language="C#" TargetLanguage="GX" Description="Selection and Grid Tab Web Form" %>
+<%@ Include Name="Constants.cs" %>
+<%@ Include Name="WebFormScript.cs" %>
+<%@ Assembly Name="Heurys.Patterns.WWHeurys" %>
+<%@ Assembly Name="StringTemplate" %>
+<%@ Import Namespace="Antlr.StringTemplate" %>
+<%@ Import Namespace="Heurys.Patterns.WWHeurys" %>
+<%@ Property Name="Object" Type="Artech.Architecture.Common.Objects.KBObject" %>
+<%@ Property Name="Part" Type="Artech.Architecture.Common.Objects.KBObjectPart" %>
+<%@ Property Name="Instance" Type="Heurys.Patterns.WWHeurys.WWHeurysInstance" %>
+<%@ Property Name="GridObject" Type="Heurys.Patterns.WWHeurys.IGridObject" %>
+
+<Part type="<%= PartType.WebForm %>">
+	<Source><![CDATA[<%
+
+	StringTemplate hello = new StringTemplate("Hello, $name$");
+	hello.SetAttribute("name", "World");
+	Console.Out.WriteLine(hello.ToString());
+
+	WWHeurysSettings settings = Instance.Settings;
+	
+	bool geraDF = false;
+	
+	bool loadOnStart = true;
+	bool requiredFilter = false;	
+	string requiredFilterMessage = settings.Grid.RequiredFilterMessage;
+	
+	if ((GridObject is PromptElement) || (GridObject is SelectionElement)) {
+		loadOnStart = settings.Grid.LoadOnStart;
+		requiredFilter = settings.Grid.RequiredFilter;	
+	}
+	
+	if (GridObject is PromptElement)
+	{
+		PromptElement pe = (PromptElement)GridObject;
+	
+		try {
+			if (pe.LoadOnStart.ToLower() == "true")
+				loadOnStart = true;
+			if (pe.LoadOnStart.ToLower() == "false")
+				loadOnStart = false;
+		} catch(System.Exception e) {}
+		
+
+		try {
+			if (pe.RequiredFilter.ToLower() == "true")
+				requiredFilter = true;			
+			if (pe.RequiredFilter.ToLower() == "false")
+				requiredFilter = false;			
+		} catch(System.Exception e) {}
+		
+
+		try {
+			if (pe.RequiredFilterMessage.ToLower() != "<default>")
+				requiredFilterMessage = pe.RequiredFilterMessage;			
+			
+		} catch(System.Exception e) {}
+		
+	}		
+	if (GridObject is SelectionElement)
+	{
+		SelectionElement pe = (SelectionElement)GridObject;
+	
+		try {
+			if (pe.LoadOnStart.ToLower() == "true")
+				loadOnStart = true;
+			if (pe.LoadOnStart.ToLower() == "false")
+				loadOnStart = false;
+		} catch(System.Exception e) {}
+		
+
+		try {
+			if (pe.RequiredFilter.ToLower() == "true")
+				requiredFilter = true;			
+			if (pe.RequiredFilter.ToLower() == "false")
+				requiredFilter = false;			
+		} catch(System.Exception e) {}
+		
+
+		try {
+			if (pe.RequiredFilterMessage.ToLower() != "<default>")
+				requiredFilterMessage = pe.RequiredFilterMessage;			
+			
+		} catch(System.Exception e) {}
+		
+	}		
+	
+	if (requiredFilter)
+		loadOnStart = false;		
+	
+	bool actionsModes = false;
+	if (!(GridObject is PromptElement)) {
+		actionsModes = true;
+	}
+				
+	// Dummy vars
+	bool needCurrentPage = false;
+	
+	if (!settings.Grid.PagingButtons(GridObject)) {
+		needCurrentPage = true;
+	}
+	
+%>
+<BODY>
+	<%= WebForm.BeginTable("Table", settings.Theme.ViewTable, 0, 0) %>
+<%
+	if (GridObject.Description != String.Empty)
+	{
+%>
+		<TR>
+			<TD>
+				<% if (settings.Template.TitleImage != null) {%>
+					<%= WebForm.BeginTable("TableTitle",settings.Template.TitleTableClass,0,0) %>
+						<tr>
+							<td width="60px">
+								<%= WebForm.Image("ImgTitle",settings.Theme.Image,settings.Template.TitleImage.Name)%>
+							</td>
+							<td>
+								<%= WebForm.TextBlock("TitleText", settings.Template.TitleTextClass, GridObject.Description) %> 
+							</td>
+						</tr>
+					<%= WebForm.EndTable() %>		
+				<% } else {%>
+					<%= WebForm.TextBlock("TitleText", settings.Template.TitleTextClass, GridObject.Description) %> 
+				<% }%>		
+			</TD>
+		</TR>
+<%
+	}
+
+	if ((GridObject.Filter != null && GridObject.Filter.Attributes.Count > 0) || GridObject.Orders.NeedsChoice)
+	{
+%>
+		<TR>
+			<TD>
+				<%= WebForm.BeginTable(Constants.SearchTableName, String.Empty) %>
+<%
+		if (GridObject.Orders.Count > 1)
+		{
+%>
+					<TR>
+						<TD>
+							<%= WebForm.TextBlock("OrderedText", settings.Theme.PlainText, settings.Labels.OrderedBy) %>
+						</TD>
+						<TD>
+							<%= WebForm.Variable(OrdersElement.OrderVariable) %>
+						</TD>
+					</TR>
+<%
+		}
+		
+	try {		
+		int ch = settings.DynamicFilters.MaxChoices;
+		geraDF = false;
+		if (GridObject.Filter != null) {
+			if (GridObject.Filter.Dynamicfilters != null) {
+				geraDF = (GridObject.Filter.Dynamicfilters.Count > 0 && ch > 0) ? true : false;
+			}
+		}
+		if (geraDF) {
+			Dictionary<string, object> properties = new Dictionary<string, object>();
+			properties[Properties.ATT.ControlType] = Properties.ATT.ControlType_Values.ComboBox;
+			string valores = "GX_EmptyItemText:";
+			foreach (AttributeElement ta in GridObject.Filter.Dynamicfilters) {
+				if (ta.Attribute.Type == eDBType.CHARACTER || ta.Attribute.Type == eDBType.VARCHAR || ta.Attribute.Type == eDBType.NUMERIC || ta.Attribute.Type == eDBType.DATE) {
+					valores += ","+ta.Description+":"+ta.AttributeName;
+				}
+			}
+			properties[Properties.ATT.Values] = valores; 	
+			
+			Dictionary<string, object> properties2 = new Dictionary<string, object>();
+			properties2[Properties.ATT.ControlType] = Properties.ATT.ControlType_Values.ComboBox;
+			string valores2 = "GX_EmptyItemText:";
+			foreach (SettingsFilterElement sfe in settings.DynamicFilters.Filters) {
+				valores2 += ","+sfe.Description+":"+sfe.Name;
+			}		
+	
+			properties2[Properties.ATT.Values] = valores2; 			
+				
+			string imagem = "";
+			if (settings.DynamicFilters.RemoveFilterImage != null) {
+				imagem = settings.DynamicFilters.RemoveFilterImage.Name;
+			}			
+					
+			for (int i = 1;i<=ch;i++) {		
+%>				
+					<TR>
+						<TD>
+							<%= WebForm.Variable("Campo"+i.ToString().Trim(),"Attribute",null,properties)%>
+						</TD>
+						<TD>
+							<%= WebForm.Variable("CondD"+i.ToString().Trim(),"Attribute",null,properties2)%>
+						</TD>	
+						<TD>
+							<%= WebForm.Variable("Carac"+i.ToString().Trim())%>
+							<%= WebForm.Variable("Numer"+i.ToString().Trim())%>
+							<%= WebForm.Variable("DataD"+i.ToString().Trim())%>
+						</TD>	
+						<TD>
+							<%= WebForm.Image("excluiD"+i.ToString().Trim(),settings.Theme.Image,imagem)%>
+						</TD>											
+					</TR>
+<%
+			}
+		}
+		
+	} catch(System.Exception e) {		
+		System.Windows.Forms.MessageBox.Show("Erro web: " + e.Message + Environment.NewLine + e.StackTrace);                   
+	}
+
+		if (GridObject.Filter != null)
+		{
+			foreach (FilterAttributeElement filterVar in GridObject.Filter.Attributes)
+			{
+				// ControlInfo fvControlInfo = new ControlInfo(filterVar);
+%>
+					<TR>
+						<TD>
+							<%= WebForm.TextBlock("FilterText" + filterVar.Name, settings.Theme.PlainText, filterVar.Description) %>
+						</TD>
+						<TD colspan="3">
+							<%= WebForm.Variable(filterVar.Name) %>
+						</TD>
+					</TR>
+<%
+			}
+		}
+%>
+					<% if (settings.Grid.SearchButton || settings.Grid.ClearButton) {%>
+					<tr>
+						<td colspan="4" align="<%=settings.Grid.ButtonsAlign%>">
+							<% if (settings.Grid.SearchButton) {%>
+								<%= WebForm.Button("SearchButton",settings.Theme.Button,settings.Grid.SearchCaption,"'Search'") %>
+							<% }%>
+							<% if (settings.Grid.ClearButton) {%>							
+								<%= WebForm.Button("ClearButton",settings.Theme.Button,settings.Grid.ClearCaption,"'ClearButton'") %>
+							<% }%>
+						</td>
+					</tr>
+					<% }%>
+					<TR>
+						<TD>
+							<%= WebForm.TextBlock("TableSeparator", settings.Theme.Separator, " ") %>
+						</TD>
+					</TR>
+				<%= WebForm.EndTable() %>
+				
+				<%= WebForm.ErrorViewer("ErrorV1","ErrorViewer") %>
+		
+			</TD>
+		</TR>
+<%		
+	}
+%>
+		<TR>
+			<TD>
+<%
+bool insexp = true;
+if (actionsModes) {
+	insexp = GridObject.Actions.Insert != null || GridObject.Actions.Export != null;
+}
+	
+	if (needCurrentPage || insexp)
+	{
+%>			
+				<%= WebForm.BeginTable("TableGridHeader", "Table", 0, 0) %>
+					<TR>
+						<TD>
+<% if (!settings.Grid.PagingButtons(GridObject)) {%>
+							<%= settings.Grid.ImageFirst == null ? "" : WebForm.Image("bFirst",settings.Theme.Image,settings.Grid.ImageFirst.Name,"",settings.Grid.TooltipFirst)%>					
+							<%= settings.Grid.ImagePrevious == null ? "" : WebForm.Image("bPrevious",settings.Theme.Image,settings.Grid.ImagePrevious.Name,"",settings.Grid.TooltipPrevious)%>
+							<%= settings.Grid.ImageNext == null ? "" : WebForm.Image("bNext",settings.Theme.Image,settings.Grid.ImageNext.Name,"",settings.Grid.TooltipNext)%>
+							<%= settings.Grid.ImageLast == null ? "" : WebForm.Image("bLast",settings.Theme.Image,settings.Grid.ImageLast.Name,"",settings.Grid.TooltipLast)%>
+<% }%>						
+<%
+		if (needCurrentPage)
+		{
+%>
+							<%= WebForm.Variable("CurrentPage") %>
+<%
+
+		}
+
+	if (actionsModes) {
+		if (GridObject.Actions.Export != null)
+		{
+%>
+							<%= GridObject.Actions.Export.ToHtml() %> 
+							<%-- ImageAction.Export(node, "CtrlExport", Constants.EventExport).ToHtml() --%>
+<%
+		}
+		   		
+		if (GridObject.Actions.Insert != null)
+		{
+			if (settings.Grid.InsertAlign.ToLower() == "right") {
+%>
+						</TD>
+						<TD align="right" colSpan="1">
+<%			}
+%>							<%= GridObject.Actions.Insert.ToHtml() %>
+<%
+		}
+	}
+%>		
+						</TD>
+					</TR>
+					<TR>
+						<TD colSpan="2" vAlign="top">
+<%
+	}
+ string condls = null;
+ if (!loadOnStart) {
+	condls = "&loadStart = 2;";
+ }
+ Properties.HTMLSFL.BackColorStyle_Enum bcs = Properties.HTMLSFL.BackColorStyle_Enum.Report;
+ if (settings.Grid.BackColorStyle == "None")
+	bcs = Properties.HTMLSFL.BackColorStyle_Enum.None;
+ if (settings.Grid.BackColorStyle == "Uniform")
+	bcs = Properties.HTMLSFL.BackColorStyle_Enum.Uniform;
+ if (settings.Grid.BackColorStyle == "Header")
+	bcs = Properties.HTMLSFL.BackColorStyle_Enum.Header;		
+ 
+%>			
+							<%= WebForm.BeginGrid(Constants.GridName, settings.Theme.Grid, condls, GridObject.Orders.Condition, null, bcs, settings.Grid.CellSpacing, settings.Grid.CellPadding) %>
+					
+<%
+if (actionsModes) {
+	if (GridObject.Actions.MultiRowActions.Count > 0)
+	{
+		// Checkbox is first column.
+%>
+								<%= WebForm.GridVariable("Selected", null, "") %>
+<%
+	}
+
+	foreach (ActionElement inGridAction in GridObject.Actions.GridActions)
+	{
+		// InGrid actions go next.
+%>
+								<%= inGridAction.ToHtml() %>
+<%
+	}
+}
+
+	// Then, grid attributes and variables.
+	foreach (IAttributesItem gridItem in GridObject.Attributes)
+	{
+		if (GridObject is PromptElement) { 
+%>
+								<%= WebFormScript.GridColumnPrompt(gridItem) %>
+<%		} else {
+%>
+								<%= WebFormScript.GridColumn(gridItem) %>
+<%		}	
+	}
+%>	
+							<%= WebForm.EndGrid() %>
+<%
+bool insexp2 = true;
+if (actionsModes) {
+	insexp2 = GridObject.Actions.Insert != null || GridObject.Actions.Export != null;
+}
+
+	if (needCurrentPage || insexp2)
+	{
+%>
+						</TD>
+					</TR>
+				<%= WebForm.EndTable() %>
+<%
+	}
+%> 
+			</TD>
+		</TR>
+<%
+if (actionsModes) {
+	if (GridObject.Actions.Count > 0)
+	{
+%>
+		<%-- Action Buttons --%>
+		<TR>
+			<TD>
+<%
+		foreach (ActionElement action in GridObject.Actions.StandaloneCustomActions)
+		{
+%>
+				<%= action.ToHtml() %>
+<%
+		}
+%>
+		
+			</TD>
+		</TR>
+<%
+	}
+}	
+
+%>
+	<%= WebForm.EndTable() %>
+	
+<%-- "Hidden" attributes - sometimes necessary for GX to infer the correct navigation scheme. --%>
+<%
+	foreach (ParameterElement parameter in GridObject.Parameters)
+	{
+		if (!Variables.IsVariableName(parameter.Name) && GridObject.Attributes.FindAttribute(parameter.Name) == null)
+		{
+			// Always use edits (they are hidden).
+%>
+	<%= WebFormScript.HiddenAttribute(parameter.Name) %>
+<%
+		}
+	}
+%>
+<%
+try {
+	if (geraDF) {
+		Dictionary<string, object> prop = new Dictionary<string, object>();
+		prop[Properties.HTMLATT.Format] = Properties.HTMLATT.Format_Values.RawHtml;
+		// Properties.HTMLSPAN.Format
+		// Properties.HTMLSPAN.Format_Values.RawHtml
+		// Properties.HTMLATT.Format
+		// Properties.HTMLATT.Format_Values.RawHtml
+%>
+<%= WebForm.TextBlock("js","","js",prop)%>
+<%= WebFormHelper.BeginControl("JSHandler","JSHandler1",null)+WebFormHelper.EndControl("JSHandler") %>
+<%	}
+} catch(System.Exception e) {		
+	System.Windows.Forms.MessageBox.Show("Erro web2: " + e.Message + Environment.NewLine + e.StackTrace);                   
+}
+
+%>
+</BODY>]]>
+	</Source>
+</Part>

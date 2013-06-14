@@ -1,0 +1,99 @@
+﻿<%@ Template Language="C#" TargetLanguage="C#" Description="Property Constants" %>
+<%@ Assembly Name="Artech.Common.Helpers" %>
+<%@ Assembly Name="Artech.Common.Properties" %>
+<%@ Assembly Name="Artech.Packages.Patterns" %>
+<%@ Import Namespace="System.Collections.Generic" %>
+<%@ Import Namespace="Artech.Common.Properties" %>
+<%@ Import Namespace="Artech.Common.Helpers.Language" %>
+<%@ Import Namespace="Artech.Packages.Patterns" %>
+<%@ Import Namespace="Artech.Packages.Patterns.CodeGen" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Definition" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Specification" %>
+<%@ Property Name="Definition" Type="Artech.Packages.Patterns.Definition.PatternDefinition" %>
+<%@ Property Name="Specification" Type="Artech.Packages.Patterns.Specification.SpecificationRoot" %>
+<%@ Property Name="GenerationType" Type="System.String" %>
+<%
+	// Put the root type in the first position (just for tidyness).
+	List<SpecificationType> allTypes = new List<SpecificationType>(Specification.Types);
+	SpecificationType rootType = Specification.GetRootType();
+	allTypes.Remove(rootType);
+	allTypes.Insert(0, rootType);
+
+%>
+	public static class <%= GenerationType %>Elements
+	{
+<%
+	foreach (SpecificationType specType in Specification.Types)
+	{
+%>
+		public const string <%= CodeGeneratorHelper.Capitalize(specType.Name) %> = "<%= specType.Name %>";
+<%
+	}
+%>
+	}
+
+	public static class <%= GenerationType %>Children
+	{
+<%
+	foreach (SpecificationType specType in Specification.Types)
+	{
+		if (specType.ChildrenElements.Length > 0)
+		{
+%>
+		public static class <%= CodeGeneratorHelper.Capitalize(specType.Name) %>
+		{
+<%
+			foreach (SpecificationChildElement specChild in specType.ChildrenElements)
+			{
+				string specIdentifier = CodeGeneratorHelper.Capitalize(specChild.Name);
+				if (specIdentifier == CodeGeneratorHelper.Capitalize(specType.Name))
+					specIdentifier = "_" + specIdentifier;
+%>
+			public const string <%= specIdentifier %> = "<%= specChild.Name %>";
+<%
+			}
+%>
+		}
+
+<%
+		}
+	}
+%>
+	}
+
+	public static class <%= GenerationType %>Attributes
+	{
+<%
+	foreach (SpecificationType specType in Specification.Types)
+	{
+		if (specType.Attributes.Length > 0)
+		{
+%>
+		public static class <%= CodeGeneratorHelper.Capitalize(specType.Name) %>
+		{
+<%
+			foreach (SpecificationAttribute specAtt in specType.Attributes)
+			{
+				string specIdentifier = CodeGeneratorHelper.Capitalize(specAtt.Name);
+				if (specIdentifier == CodeGeneratorHelper.Capitalize(specType.Name))
+					specIdentifier = "_" + specIdentifier;
+%>
+			public const string <%= specIdentifier %> = "<%= specAtt.Name %>";
+<%
+				if (specAtt.IsReferenceType())
+				{
+%>
+			public const string <%= specIdentifier %>Reference = "<%= specAtt.Name %>Reference";
+<%
+				}
+%>
+<%
+			}
+%>
+		}
+
+<%
+		}
+	}
+%>
+	}

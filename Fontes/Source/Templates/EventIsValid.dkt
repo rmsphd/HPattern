@@ -1,0 +1,74 @@
+﻿<%@ Template Language="C#" TargetLanguage="GX" Description="Selection Events" %>
+<%@ Assembly Name="Heurys.Patterns.HPattern" %>
+<%@ Assembly Name="Artech.Architecture.Common" %>
+<%@ Assembly Name="Artech.Common" %>
+<%@ Assembly Name="Artech.Common.Helpers" %>
+<%@ Assembly Name="Artech.Common.Properties" %>
+<%@ Assembly Name="Artech.Genexus.Common" %>
+<%@ Assembly Name="Artech.Packages.Patterns" %>
+<%@ Assembly Name="Artech.Udm.Framework" %>
+<%@ Assembly Name="Artech.Template.Base" %>
+<%@ Assembly Name="System.Xml" %>
+<%@ Assembly Name="StringTemplate" %>
+<%@ Assembly Name="Artech.Architecture.UI.Framework" %>
+<%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="Heurys.Patterns.HPattern" %>
+<%@ Import Namespace="Artech.Common.Properties" %>
+<%@ Import Namespace="Artech.Architecture.Common.Collections" %>
+<%@ Import Namespace="Artech.Architecture.Common.Objects" %>
+<%@ Import Namespace="Artech.Common.Helpers.Strings" %>
+<%@ Import Namespace="Artech.Udm.Framework" %>
+<%@ Import Namespace="Artech.Genexus.Common" %>
+<%@ Import Namespace="Artech.Genexus.Common.Helpers" %>
+<%@ Import Namespace="Artech.Genexus.Common.Objects" %>
+<%@ Import Namespace="Artech.Genexus.Common.Parts" %>
+<%@ Import Namespace="Artech.Packages.Patterns" %>
+<%@ Import Namespace="Artech.Packages.Patterns.Objects" %>
+<%@ Import Namespace="System" %>
+<%@ Import Namespace="System.Collections.Generic" %>
+<%@ Import Namespace="System.Text" %>
+<%@ Import Namespace="System.Xml" %>
+<%@ Import Namespace="Antlr.StringTemplate" %>
+<%@ Import Namespace="Artech.Genexus.Common.Wiki" %>
+<%@ Property Name="rows" Type="Artech.Common.Collections.IBaseCollection<RowElement>" %>
+<%
+if (rows != null)
+{
+	foreach (RowElement row in rows)		
+	{		
+		foreach (ColumnElement col in row.Columns) 
+		{
+			foreach (VariableElement var in col.Variables)
+			{
+				if (var.Domain != null) 
+				{
+					if (var.IsValid != String.Empty) 
+					{
+%>
+
+Event &<%= var.Name %>.IsValid
+<%= var.IsValid %>	
+EndEvent
+<%					
+					}
+				}
+			}
+			
+			foreach (AttributeElement att in col.Attributes)
+			{
+				if (att.Attribute != null) 
+				{				
+					if (att.IsValid != String.Empty)
+					{
+%>			
+
+Event ctl<%= att.AttributeName %>.IsValid
+<%= att.IsValid %>	
+EndEvent
+<%					}
+				}
+			}
+		}
+	}
+}
+%>

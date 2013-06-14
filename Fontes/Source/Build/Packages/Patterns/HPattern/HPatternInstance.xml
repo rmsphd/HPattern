@@ -1,0 +1,672 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Pattern xmlns="http://schemas.genexus.com/Patterns/InstanceSpecification/v1.0" Name="HPattern" Version="1.0" RootElement="instance" RootType="Instance">
+  <ElementTypes>
+    <ElementType Name="Instance" Caption="HPattern Pattern Instance" Icon="" ChildrenOrdered="Default">
+      <Attributes>
+        <Attribute Name="updateTransaction" Type="enum{Do not update;Only rules and events;Apply WW Style;Create default}" Category="General" Description="Generate a default web form for all transactions used in this instance (to customize the generation, edit the corresponding template)." DefaultValue="Only rules and events" />
+        <Attribute Name="updateWebPanelBC" Type="enum{Default;False}" Category="General" Description="Atualiza WebPanel BC ao aplicar o pattern, somente funciona quando a opção da Configuração Geral WebPanelBCDefault é False" DefaultValue="Default" />
+        <Attribute Name="afterInsert" Type="enum{&lt;default&gt;;Return to Caller;Go to View;Go to Selection;EnterInUpdate}" Category="Navigation" Description="Action performed after inserting a record.&#xD;&#xA;&lt;default&gt; uses configuration file value." DefaultValue="&lt;default&gt;" />
+        <Attribute Name="afterUpdate" Type="enum{&lt;default&gt;;Return to Caller;Go to View;Go to Selection}" Category="Navigation" Description="Action performed after updating a record.&#xD;&#xA;&lt;default&gt; uses configuration file value." DefaultValue="&lt;default&gt;" />
+        <Attribute Name="afterDelete" Type="enum{&lt;default&gt;;Return to Caller;Go to Selection}" Category="Navigation" Description="Action performed after deleting a record.&#xD;&#xA;&lt;default&gt; uses configuration file value." DefaultValue="&lt;default&gt;" />
+        <Attribute Name="securityId" Type="enum{default;*}" Category="Security" DefaultValue="default" Description="Código de segurança a ser utilizado"/>
+      </Attributes>
+      <ChildrenElements>
+        <ChildElement Name="Documentation" ElementType="Documentation" Multiple="false" Optional="false"/>
+        <ChildElement Name="transaction" ElementType="Transaction" Multiple="false" Optional="true" />
+        <ChildElement Name="level" ElementType="Level" Multiple="true" CanModifyCollection="false" />
+        <ChildElement Name="webPanelRoot" ElementType="WebPanelRoot" Multiple="false" Optional="true" />
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="Documentation" Caption="Documentation" Icon="icons\doc.ico" ChildrenOrdered="Default">
+      <Attributes>
+        <Attribute Name="Enabled" Type="enum{true;false;default}" DefaultValue="default" NotNull="true" Description="Define se gera Documentação ou não" />
+        <Attribute Name="ObjectName" Type="enum{Pgmname;*}" DefaultValue="Pgmname" NotNull="false" Description="Define o nome do Objeto"/>
+        <Attribute Name="ObjectDescription" Type="enum{Pgmdesc;*}" DefaultValue="Pgmdesc" NotNull="false" Description="Define a descrição do Objeto"/>
+        <Attribute Name="SystemDescription" Type="string" Description="Define a descrição do sistema para a Documentação" />
+        <Attribute Name="Author" Type="string" NotNull="false" Description="Define o autor padrão para a Documentação" />
+        <Attribute Name="Date" Type="enum{default;Today;*}" DefaultValue="default" NotNull="false" Description="Define a data padrão autor para a Documentação" />
+        <Attribute Name="Requirement" Type="string" NotNull="false" Description="Define a identificação do Requesito" />
+        <Attribute Name="Observation" Type="string" NotNull="false" Description="Define a observação para a Documentação" />
+      </Attributes>
+      <ChildrenElements />
+    </ElementType>
+    <ElementType Name="GridProperties" Caption="Grid Custom Render Properties" ChildrenOrdered="Default">
+      <Attributes/>
+      <ChildrenElements>
+        <ChildElement Name="GridPropertie" Description="Grid Property" Multiple="true" Optional="true" ElementType="GridPropertie"/>
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="GridColumnProperties" Caption="Grid Custom Render Properties" ChildrenOrdered="Default">
+      <Attributes/>
+      <ChildrenElements>
+        <ChildElement Name="GridColumnPropertie" Description="Grid Column Property" Multiple="true" Optional="true" ElementType="GridColumnPropertie"/>
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="GridPropertie" Caption="Grid {0}" KeyAttribute="name" CaptionParameters="name" ChildrenOrdered="Default">
+      <Attributes>
+        <Attribute Name="name" Type="custom(GridCustomRenderProperty)" Description="Nome" NotNull="true"/>
+        <Attribute Name="valor" Type="string" Description="Valor" NotNull="true"/>
+      </Attributes>
+      <ChildrenElements/>
+    </ElementType>
+    <ElementType Name="GridColumnPropertie" Caption="Column {0}" KeyAttribute="name" CaptionParameters="name" ChildrenOrdered="Default">
+      <Attributes>
+        <Attribute Name="name" Type="custom(GridCustomRenderColProperty)" Description="Nome" NotNull="true"/>
+        <Attribute Name="valor" Type="string" Description="Valor" NotNull="true"/>
+      </Attributes>
+      <ChildrenElements/>
+    </ElementType>
+    <ElementType Name="Action" Caption="Action ({0})" CaptionParameters="name" KeyAttribute="name" Icon="icons\action.ico" ChildrenOrdered="Default">
+      <Attributes>
+        <Attribute Name="name" Type="string" Description="Action Name" NotNull="true" />
+        <Attribute Name="caption" Type="string" Description="Caption (for the button, or for &quot;in grid&quot; actions that do not have an associated image )." />
+        <Attribute Name="gxobject" Type="reference(Program?)" Description="GeneXus object invoked for performing the Action." PrettyName="GXObject" />
+        <Attribute Name="inGrid" Type="bool" Category="Grid" Description="True = Action in the grid. False = Action outside the grid. Always false if &quot;MultiRowSelection&quot; is set." DefaultValue="false" />
+        <Attribute Name="multiRowSelection" Type="bool" Category="Grid"  Description="The action applies to multiple rows (a checkbox column will be added to grids)." DefaultValue="false" />
+        <Attribute Name="image" Type="reference(Image)" Category="Grid" Description="Image to appear in the grid." />
+        <Attribute Name="disabledImage" Type="reference(Image)" Category="Grid" Description="Image to appear in the grid when the action is not enabled (to make the button invisible, use a transparent image)." />
+        <Attribute Name="tooltip" Type="string" Category="Grid" Description="Tooltip to appear in the grid." />
+        <Attribute Name="condition" Type="code(Expressions)" Description="Condition to determine whether the action will be enabled. If the action is defined as &quot;InGrid&quot;, the check will be performed for each record. If empty, the action will be available." />
+        <Attribute Name="buttonClass" Type="custom(ThemeClass)" Description="Theme class for the button (if no class is specified, the one set in the configuration file will be used)." />
+        <Attribute Name="EventCode" Type="code(Events)" Description="Código para o Evento da Action, somente para Action não Standard" Category="Customized"/>
+        <Attribute Name="CodeEnable" Type="code(Events)" Description="Evento adicionado a ação de habilitar a Action, Coringda {0} define o nome do controle"/>
+        <Attribute Name="Position" Type="enum{Footer;Grid}" Description="Define a posição da action fora do Grid" DefaultValue="Footer" NotNull="true"/>
+        <Attribute Name="Legend" Type="string" Description="Legend" />
+        <Attribute Name="Width" Type="int" Description="Define o Width da Coluna no Grid" Category="gxui.Grid" />
+        <Attribute Name="GridWidth" Type="string" PrettyName="Width" Description="Define o Width(tamanho horizontal)" Category="Grid" />
+        <Attribute Name="GridHeight" Type="string" PrettyName="Height" Description="Define o Height(tamanho vertical)" Category="Grid" />
+      </Attributes>
+      <ChildrenElements>
+        <ChildElement Name="parameters" ElementType="Parameters" Multiple="false" Optional="true" />
+        <ChildElement Name="subActions" ElementType="SubActions" Multiple="false" Optional="true" />
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="SubAction" Caption="Action ({0})" CaptionParameters="name" KeyAttribute="name" Icon="icons\action.ico" ChildrenOrdered="Default">
+      <Attributes>
+        <Attribute Name="name" Type="string" Description="Action Name" NotNull="true" />
+        <Attribute Name="caption" Type="string" Description="Caption (for the button, or for &quot;in grid&quot; actions that do not have an associated image )." />
+        <Attribute Name="gxobject" Type="reference(Program?)" Description="GeneXus object invoked for performing the Action." PrettyName="GXObject" />
+        <Attribute Name="inGrid" Type="bool" Category="Grid" Description="True = Action in the grid. False = Action outside the grid. Always false if &quot;MultiRowSelection&quot; is set." DefaultValue="false" />
+        <Attribute Name="multiRowSelection" Type="bool" Category="Grid"  Description="The action applies to multiple rows (a checkbox column will be added to grids)." DefaultValue="false" />
+        <Attribute Name="image" Type="reference(Image)" Category="Grid" Description="Image to appear in the grid." />
+        <Attribute Name="disabledImage" Type="reference(Image)" Category="Grid" Description="Image to appear in the grid when the action is not enabled (to make the button invisible, use a transparent image)." />
+        <Attribute Name="tooltip" Type="string" Category="Grid" Description="Tooltip to appear in the grid." />
+        <Attribute Name="condition" Type="code(Expressions)" Description="Condition to determine whether the action will be enabled. If the action is defined as &quot;InGrid&quot;, the check will be performed for each record. If empty, the action will be available." />
+        <Attribute Name="buttonClass" Type="custom(ThemeClass)" Description="Theme class for the button (if no class is specified, the one set in the configuration file will be used)." />
+        <Attribute Name="EventCode" Type="code(Events)" Description="Código para o Evento da Action, somente para Action não Standard" Category="Customized"/>
+        <Attribute Name="CodeEnable" Type="code(Events)" Description="Evento adicionado a ação de habilitar a Action, Coringda {0} define o nome do controle"/>
+        <Attribute Name="Position" Type="enum{Footer;Grid}" Description="Define a posição da action fora do Grid" DefaultValue="Footer" NotNull="true"/>
+        <Attribute Name="Legend" Type="string" Description="Legend" />
+        <Attribute Name="Width" Type="int" Description="Define o Width da Coluna no Grid" Category="gxui.Grid" />
+        <Attribute Name="GridWidth" Type="string" PrettyName="Width" Description="Define o Width(tamanho horizontal)" Category="Grid" />
+        <Attribute Name="GridHeight" Type="string" PrettyName="Height" Description="Define o Height(tamanho vertical)" Category="Grid" />
+      </Attributes>
+      <ChildrenElements>
+        <ChildElement Name="parameters" ElementType="Parameters" Multiple="false" Optional="true" />
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="SubActions" Caption="Actions" Icon="icons\actions.ico" ChildrenOrdered="Default">
+      <Attributes />
+      <ChildrenElements>
+        <ChildElement Name="subAction" ElementType="SubAction" Multiple="true" />
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="Actions" Caption="Actions" Icon="icons\actions.ico" ChildrenOrdered="Default">
+      <Attributes />
+      <ChildrenElements>
+        <ChildElement Name="action" ElementType="Action" Multiple="true" />
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="TransactionAttribute" BaseType="Attribute" Icon="icons\tattribute.ico" ChildrenOrdered="Default" >
+      <Attributes>
+        <Attribute Name="caption" Type="string" Description="Caption Text." NotNull="true" Category="Text" />
+        <Attribute Name="Class" Type="custom(ThemeClass)" Description="Class" NotNull="false" Category="Text" />
+        <Attribute Name="HTMLFormat" Type="enum{true;false;default}" Description="HTML Format" NotNull="true" DefaultValue="default" Category="Text" />
+        <Attribute Name="TextRule" Type="custom(CustomCaption)" Description="Rule" NotNull="false" DefaultValue="Runtime" Category="Text" />
+        <Attribute Name="attributeDescription" Type="reference(Attribute)" Description="Description Attribute." NotNull="false" Category="Description Attribute" />
+      </Attributes>      
+    </ElementType>
+    <ElementType Name="Attribute" Caption="{0}" CaptionParameters="attribute" KeyAttribute="attribute" Icon="icons\attribute.ico" ChildrenOrdered="Default">
+      <Attributes>
+        <Attribute Name="attribute" Type="reference(Attribute)" Description="Attribute." NotNull="true" />
+        <Attribute Name="description" Type="string" Description="Attribute description." />
+        <Attribute Name="autolink" Type="bool" Category="Link" Description="Automatically generate links to other pattern instances for description attributes and supertypes." DefaultValue="false" />
+        <Attribute Name="visible" Type="bool" Category="Form" Description="Attribute is visible (if false, in grids the column will be hidden, and in tabular tabs the attribute will be invisible)." DefaultValue="true" />
+        <Attribute Name="themeClass" Type="custom(ThemeClass)" Category="Form" Description="Theme class for the attribute." />
+        <Attribute Name="format" Type="enum{&lt;default&gt;;Text;HTML;Raw HTML;Text with meaningful spaces}" Category="Form" Description="HTML format for the attribute." DefaultValue="&lt;default&gt;" />
+        <Attribute Name="isValid" Type="code(Expressions)" Category="Transaction" Description="Evento IsValid para Atributo ou variável"/>
+        <Attribute Name="required" Type="enum{true;false;default}" DefaultValue="default" Category="Transaction" Description="Define como obrigatório atributo"/>
+        <Attribute Name="requiredMessage" Type="enum{default;*}" DefaultValue="default" Category="Transaction" Description="Define mensagem padrão para atributo obrigatório, Coringda {0} é a descrição do atributo"/>
+        <Attribute Name="requiredAfterValidate" Type="enum{true;false;default}" DefaultValue="default" Category="Transaction" Description="Define se aplica a regra error no AfterValidate ou não"/>
+        <Attribute Name="rule" Type="enum{DefaultRule;AfterValidate;AfterInsert;AfterUpdate;AfterDelete;BeforeValidate;BeforeInsert;BeforeUpdate;BeforeDelete;None;&lt;default&gt;}" Description="Define regra para atributo" DefaultValue="&lt;default&gt;" Category="Transaction"/>
+        <Attribute Name="valueRule" Type="enum{&lt;default&gt;;*}" Description="Define valor da regra para atributo" DefaultValue="&lt;default&gt;" Category="Transaction"/>
+        <Attribute Name="picture" Type="enum{default;*}" Description="Define a picture para o atributo" DefaultValue="default" Category="Transaction"/>
+        <Attribute Name="readonly" Type="bool" Category="Transaction" Description="Define se é ReadOnly" DefaultValue="false"/>
+        <Attribute Name="eventValidation" Type="code(Events)" Category="Transaction" Description="Define código de Evento que será utilizado para validação do Atributo, Coringa {0} define o nome do atributo com SDT, {1} define o nome do atributo, {2} define a variavel Mode, {3} define a lista SDT do segundo nivel"/>
+        <Attribute Name="EventStart" Type="code(Events)" Description="Define código para o Evento Start, coringa {0} define o valor e {1} define o controle em tela" Category="Transaction"/>
+        <Attribute Name="MaskPicture" Type="string" Description="Define a Picture" NotNull="false" Category="HMask" PrettyName="Picture"/>
+        <Attribute Name="Reverse" Type="bool" Description="Define se a digitação será invertida" NotNull="true" Category="HMask" DefaultValue="false"/>
+        <Attribute Name="Signed" Type="bool" Description="Define se permite valor negativo" NotNull="true" Category="HMask" DefaultValue="false"/>
+        <Attribute Name="UnmaskedChars" Type="string" Description="Define os caracteres que serão retirados quando retorna valor sem a mascara" NotNull="true" Category="HMask" DefaultValue="[().:/ -]"/>
+        <Attribute Name="UnmaskedValue" Type="bool" Description="Define se retorna o valor sem a mascara ou não" NotNull="true" Category="HMask" DefaultValue="false"/>
+        <Attribute Name="Width" Type="string" Description="Define o Width(tamanho horizontal) para o Atributo" />
+        <Attribute Name="Height" Type="string" Description="Define o Height(tamanho vertical) para o Atributo" />
+      </Attributes>
+      <ChildrenElements>
+        <ChildElement Name="link" ElementType="Link" Multiple="true" Optional="true" />
+        <ChildElement Name="GridColumnProperties" Description="Grid Property" Multiple="false" Optional="true" ElementType="GridColumnProperties"/>
+      </ChildrenElements>
+      <Initialization>
+        <InitializationFrom Type="Attribute" ReferenceProperty="attribute" PropertyValues="description=Description" />
+      </Initialization>
+    </ElementType>
+    <ElementType Name="Attributes" Caption="Attributes" Icon="icons\attributes.ico" ChildrenOrdered="True">
+      <Attributes />
+      <ChildrenElements>
+        <ChildElement Name="attribute" ElementType="Attribute" Multiple="true" />
+        <ChildElement Name="variable" ElementType="Variable" Multiple="true" />
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="Condition" Caption="{0}" CaptionParameters="value" KeyAttribute="value" Icon="icons\condition.ico" ChildrenOrdered="Default">
+      <Attributes>
+        <Attribute Name="value" Type="code(Conditions)" Description="Filter Condition. Pode utilizar o coringa {0} que define o nome da variavel SDT com ponto" NotNull="true" />
+      </Attributes>
+      <ChildrenElements />
+    </ElementType>
+    <ElementType Name="Conditions" Caption="Conditions" Icon="icons\conditions.ico" ChildrenOrdered="Default">
+      <Attributes />
+      <ChildrenElements>
+        <ChildElement Name="condition" ElementType="Condition" Multiple="true" />
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="DescriptionAttribute" Caption="DescriptionAttribute ({0})" CaptionParameters="attribute" Icon="icons\desc_att.ico" ChildrenOrdered="Default">
+      <Attributes>
+        <Attribute Name="attribute" Type="reference(Attribute)" Description="Attribute that represents the transaction. (For example: CustomerName for Customer)." />
+        <Attribute Name="description" Type="string" Description="Attribute Description." />
+      </Attributes>
+      <ChildrenElements/>
+      <Initialization>
+        <InitializationFrom Type="Attribute" ReferenceProperty="attribute" PropertyValues="description=Description" />
+      </Initialization>
+    </ElementType>
+    <ElementType Name="Filter" Caption="Filter" Icon="icons\filter.ico" ChildrenOrdered="Default">
+      <Attributes />
+      <ChildrenElements>
+        <ChildElement Name="attributes" ElementType="FilterAttributes" Multiple="false" Optional="false" />
+        <ChildElement Name="conditions" ElementType="Conditions" Multiple="false" Optional="false" />
+        <ChildElement Name="dynamicfilters" ElementType="DynamicFilters" Multiple="false" Optional="false"/>
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="FilterAttribute" Caption="{0}" CaptionParameters="name" KeyAttribute="name" Icon="icons\attribute.ico" ChildrenOrdered="Default">
+      <Attributes>
+        <Attribute Name="name" Type="code(Expressions)" Description="Attribute or variable to be entered by the user and used in the conditions." NotNull="true" />
+        <Attribute Name="description" Type="string" Description="Description." />
+        <Attribute Name="domain" Type="reference(Domain)" Description="Domain of the variable. Use only with variables, not necessary with attributes." />
+        <Attribute Name="attribute" Type="reference(Attribute)" Description="Attribute of the variable" />
+        <Attribute Name="default" Type="string" Category="Values" Description="Default value. Must be an expression of the same type of the attribute/variable." />
+        <Attribute Name="allValue" Type="bool" Category="Values" Description="Add an 'all' option in ComboBox. (Use only when the attribute is a ComboBox)." DefaultValue="false" PrettyName="All" />
+        <Attribute Name="prompt" Type="reference(WebPanel)" Category="Values" Description="Prompt object used to get the possible values for this filter attribute." />
+        <Attribute Name="isValid" Type="code(Events)" Description="Define o Evento isValid para a Variável de Filtro"/>
+        <Attribute Name="filterType" Type="enum{Default;Interval}" Description="Define se o filtro será Normal ou Intervalo(Valor Inicial e Final)" DefaultValue="Default" PrettyName="Type"/>
+        <Attribute Name="Width" Type="string" Description="Define o Width(tamanho horizontal) para o Atributo" />
+        <Attribute Name="Height" Type="string" Description="Define o Height(tamanho vertical) para o Atributo" />
+      </Attributes>
+      <ChildrenElements>
+        <ChildElement Name="link" ElementType="Link" Multiple="true" Optional="true" />
+      </ChildrenElements>
+      <Initialization>
+        <InitializationFrom Type="Attribute" ReferenceProperty="attribute" PropertyValues="description=Description;name=Name"/>
+        <InitializationFrom Type="Domain" ReferenceProperty="domain" PropertyValues="description=Description;name=Name" />
+      </Initialization>
+    </ElementType>
+    <ElementType Name="FilterAttributes" Caption="Attributes" Icon="icons\attributes.ico" ChildrenOrdered="Default">
+      <Attributes />
+      <ChildrenElements>
+        <ChildElement Name="filterAttribute" ElementType="FilterAttribute" Multiple="true" />
+        <ChildElement Name="row" ElementType="FRow" Multiple="true"/>
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="FixedData" Caption="Fixed Data" Icon="icons\fixedData.ico" ChildrenOrdered="Default">
+      <Attributes />
+      <ChildrenElements>
+        <ChildElement Name="attributes" ElementType="Attributes" Multiple="false" Optional="false" />
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="Level" Caption="Level ({0})" CaptionParameters="name" KeyAttribute="id" Icon="icons\level.ico" ChildrenOrdered="False">
+      <Attributes>
+				<Attribute Name="id" Type="string" NotNull="true" Visible="false" />
+        <Attribute Name="name" Type="string" Description="Level Name." NotNull="true" />
+        <Attribute Name="description" Type="string" Description="Level Description." />
+      </Attributes>
+      <ChildrenElements>
+        <ChildElement Name="descriptionAttribute" ElementType="DescriptionAttribute" Multiple="false" Optional="true" />
+        <ChildElement Name="selection" ElementType="Selection" Multiple="false" Optional="true" />
+        <ChildElement Name="prompt" ElementType="Prompt" Multiple="true" Optional="true" />
+        <ChildElement Name="view" ElementType="View" Multiple="false" Optional="true" />
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="Link" Caption="Link ({0})" CaptionParameters="webpanelObject" Icon="icons\link.ico" ChildrenOrdered="Default">
+      <Attributes>
+        <Attribute Name="webpanelObject" Type="reference(Program?)" Category="Link" Description="Web Panel to link." PrettyName="WebPanel" />
+        <Attribute Name="tooltip" Type="string" Category="Link" Description="Define o tooltip para a imagem de prompt" DefaultValue="Consulta"/>
+        <Attribute Name="condition" Type="code(Expressions)" Category="Link" Description="Condition evaluated to determine whether the user can Open Prompt." />
+        <Attribute Name="image" Type="reference(Image)" Category="Link" Description="Define a imagem a ser utilizada no prompt"/>
+        <Attribute Name="type" Type="enum{Prompt;Event}" Category="Link" Description="Define o tipo do Link, Regra Prompt ou chamada com popup a partir de evento" DefaultValue="Prompt" NotNull="true"/>
+      </Attributes>
+      <ChildrenElements>
+        <ChildElement Name="parameters" ElementType="Parameters" Multiple="false" Optional="false" />
+      </ChildrenElements>
+      <Initialization>
+        <InitializationFrom Type="WebPanel" ReferenceProperty="webpanelObject" PropertyValues="tooltip=Description" />
+      </Initialization>
+    </ElementType>
+    <ElementType Name="Modes" Caption="Ins: {0}, Upd: {1}, Del: {2}, Dis: {3}" CaptionParameters="Insert;Update;Delete;Display" Icon="icons\modes.ico" ChildrenOrdered="Default">
+      <Attributes>
+        <Attribute Name="Insert" Type="enum{true;false;default}" Description="Insert Mode." DefaultValue="default" />
+        <Attribute Name="Update" Type="enum{true;false;default}" Description="Update Mode." DefaultValue="default" />
+        <Attribute Name="Delete" Type="enum{true;false;default}" Description="Delete Mode." DefaultValue="default" />
+        <Attribute Name="Display" Type="enum{true;false;default}" Description="Display Mode." DefaultValue="default" />
+        <Attribute Name="Export" Type="enum{true;false;default}" Description="Export mode." DefaultValue="default" />
+        <Attribute Name="Legend" Type="enum{true;false;default}" Description="Legend mode." DefaultValue="default" />
+        <Attribute Name="InsertCondition" Type="code(Expressions)" Category="Security" Description="Condition evaluated to determine whether the user can insert records in the grid. If empty, the action will be available." />
+        <Attribute Name="UpdateCondition" Type="code(Expressions)" Category="Security" Description="Condition evaluated to determine whether the user can update a record of the grid (the check will be performed for each record). If empty, the action will be available." />
+        <Attribute Name="DeleteCondition" Type="code(Expressions)" Category="Security" Description="Condition evaluated to determine whether the user can delete a record of the grid (the check will be performed for each record). If empty, the action will be available." />
+        <Attribute Name="DisplayCondition" Type="code(Expressions)" Category="Security" Description="Condition evaluated to determine whether the user can display (invoke the View for) a record of the grid (the check will be performed for each record). If empty, the action will be available." />
+        <Attribute Name="ExportCondition" Type="code(Expressions)" Category="Security" Description="Condition evaluated to determine whether the user can export records in the grid and download them as an Excel spreadsheet. If empty, the action will be available." />
+      </Attributes>
+      <ChildrenElements />
+    </ElementType>
+    <ElementType Name="Order" Caption="Order ({0})" CaptionParameters="name" KeyAttribute="name" Icon="icons\order.ico" ChildrenOrdered="Default">
+      <Attributes>
+        <Attribute Name="name" Type="string" Description="Name of the Order, for user selection." NotNull="true" />
+      </Attributes>
+      <ChildrenElements>
+        <ChildElement Name="attribute" ElementType="OrderAttribute" Multiple="true" />
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="Orders" Caption="Orders" Icon="icons\orders.ico" ChildrenOrdered="Default">
+      <Attributes />
+      <ChildrenElements>
+        <ChildElement Name="order" ElementType="Order" Multiple="true" />
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="OrderAttribute" Caption="{0}" CaptionParameters="attribute" KeyAttribute="attribute" Icon="icons\attribute.ico" ChildrenOrdered="Default">
+      <Attributes>
+        <Attribute Name="attribute" Type="reference(Attribute)" Category="Order Attribute" Description="Attribute." NotNull="true" />
+        <Attribute Name="description" Type="string" Category="Order Attribute" Description="Description." />
+        <Attribute Name="ascending" Type="bool" Category="Order Attribute" Description="Ascending Order." DefaultValue="true" />
+      </Attributes>
+      <ChildrenElements />
+      <Initialization>
+        <InitializationFrom Type="Attribute" ReferenceProperty="attribute" PropertyValues="description=Description" />
+      </Initialization>
+    </ElementType>
+    <ElementType Name="Parameter" Caption="{0}" CaptionParameters="name" KeyAttribute="name" Icon="icons\parameter.ico" ChildrenOrdered="Default">
+      <Attributes>
+        <Attribute Name="name" Type="code(Expressions)" Description="Parameter Name." NotNull="true" />
+        <Attribute Name="domain" Type="reference(Domain)" Description="Only needed for variables (defines their domain)." />
+        <Attribute Name="null" Type="bool" Description="If set to false, the parameter value cannot change in Insert. (For example, if inserting a City in a given Country, CountryId doesn't change when calling City transaction)." DefaultValue="true" PrettyName="NullValue" />
+      </Attributes>
+      <ChildrenElements />
+      <Initialization>
+        <InitializationFrom Type="Attribute" ReferenceProperty="" PropertyValues="name=Name" />
+        <InitializationFrom Type="Domain" ReferenceProperty="domain" PropertyValues="name=Name" />
+      </Initialization>
+    </ElementType>
+    <ElementType Name="Parameters" Caption="Parameters" Icon="icons\parameters.ico" ChildrenOrdered="Default">
+      <Attributes />
+      <ChildrenElements>
+        <ChildElement Name="parameter" ElementType="Parameter" Multiple="true" />
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="Selection" Caption="Selection ({0})" CaptionParameters="description" Icon="icons\webpanel.ico" ChildrenOrdered="Default">
+      <Attributes>
+        <Attribute Name="caption" Type="string" Description="Literal to appear in the Form's caption (description is the default). If a literal, use quotes." />
+        <Attribute Name="description" Type="string" Description="Description." />
+        <Attribute Name="page" Type="enum{&lt;default&gt;;&lt;unlimited&gt;;*}" Description="Number of rows in the grid per page (only for Grid type)." DefaultValue="&lt;default&gt;" />
+        <Attribute Name="isMain" Type="bool" Description="Set &quot;Main Program&quot; flag in selection webpanel." DefaultValue="false" />
+        <Attribute Name="masterPage" Type="enum{&lt;default&gt;;&lt;none&gt;;*}" Description="Object name of the master page to be used in this selection webpanel. &#xD;&#xA;To use the one defined in the configuration file, set value to &quot;&lt;default&gt;&quot;. &#xD;&#xA;To disable the master page, use &quot;&lt;none&gt;&quot;." DefaultValue="&lt;default&gt;" />
+        <Attribute Name="loadOnStart" Type="enum{&lt;default&gt;;true;false}" Description="Carrega Grid no Start, ou não somente quando clicar em procurar" DefaultValue="&lt;default&gt;"/>
+        <Attribute Name="requiredFilter" Type="enum{&lt;default&gt;;true;false}" Description="Define se será obrigatório informar pelo menos um filtro para pesquisa" DefaultValue="&lt;default&gt;" Category="Filter"/>
+        <Attribute Name="requiredFilterMessage" Type="enum{&lt;default&gt;;*}" Description="Define a mensagem padrão para o filtro requerido" DefaultValue="&lt;default&gt;" Category="Filter"/>
+        <Attribute Name="automaticRefresh" Type="enum{&lt;default&gt;;true;false}" Description="Automatic Refresh no Grid, pesquisa sem clicar no botão Pesquisar" DefaultValue="&lt;default&gt;"/>
+        <Attribute Name="filterCollapse" Type="enum{&lt;default&gt;;true;false}" Category="Filter" DefaultValue="&lt;default&gt;" Description="Utiliza Collapse/Expand para os Filtros da Selection"/>
+        <Attribute Name="filterCollapseDefault" Type="enum{&lt;default&gt;;true;false}" Category="Filter" DefaultValue="&lt;default&gt;" Description="Carrega os Filtros por padrão Collapse"/>
+        <Attribute Name="setFocus" Type="enum{&lt;default&gt;;true;false}" Description="Define Foco no primeiro atributo de filtro" DefaultValue="&lt;default&gt;"/>
+        <Attribute Name="setFocusAttribute" Type="string" Description="Define Foco no primeiro atributo de filtro"/>
+        <Attribute Name="objName" Type="string" Description="Object Name" PrettyName="Object Name"/>
+        <Attribute Name="SearchEventCode" Type="code(Events)" Description="Define Código para o Evento Search" Category="Events"/>
+        <Attribute Name="CurrentPageCombo" Type="enum{default;true;false}" Description="CurrentPage ComboBox para seleção do número da pagina" DefaultValue="default"/>
+        <Attribute Name="SubCode" Type="code(Events)" Description="Define Sub para utilização neste objeto" Category="Events"/>
+        <Attribute Name="CallMethod" Type="enum{default;Link;Popup}" DefaultValue="default" Description="Define o metodo de chamada ao cadastro, Link ou Popup Modal" NotNull="true"/>
+        <Attribute Name="EventStart" Type="code(Events)" Description="Define código para o Evento Start" Category="Events"/>
+        <Attribute Name="Identifier" Type="string" Description="Define o identificador de registro no grid" Category="gxui.Grid"/>
+        <Attribute Name="updateObject" Type="enum{Do not update;Create default;Only Rules, Events and Conditions;Overwrite}" Category="Generate" Description="Do not update - Não atualiza o Objecto&#xD;&#xA;Create default - Atualiza o Objeto e mantem o código atual&#xD;&#xA;Only Rules, Events and Conditions - Atualiza somente as regras, eventos e condições e mantem o código atual&#xD;&#xA;Overwrite - Atualiza o objeto sobrescrevendo o código atual" DefaultValue="Create default" />
+        <Attribute Name="updateExport" Type="enum{Do not update;Create default;Overwrite}" Category="Generate" Description="Do not update - Não atualiza o Objecto&#xD;&#xA;Create default - Atualiza o Objeto e mantem o código atual&#xD;&#xA;Overwrite - Atualiza o objeto sobrescrevendo o código atual" DefaultValue="Create default" />
+        <Attribute Name="updateSDT" Type="enum{Do not update;Create default;Overwrite}" Category="Generate" Description="Do not update - Não atualiza o Objecto&#xD;&#xA;Create default - Atualiza o Objeto e mantem o código atual&#xD;&#xA;Overwrite - Atualiza o objeto sobrescrevendo o código atual" DefaultValue="Create default" />
+        <Attribute Name="CustomRender" Type="custom(GridCustomRender)" Description="Use a custom user control for rendering grids. Applies to all selection and grid tab objects."  DefaultValue="&lt;default&gt;"/>
+        <Attribute Name="AutoResize" Type="enum{default;true;false}" Description="Define o AutoResize para o Grid" Category="Grid" DefaultValue="default" />
+        <Attribute Name="Width" Type="string" Description="Define o Width(tamanho horizontal) para o Grid" Category="Grid"/>
+        <Attribute Name="Height" Type="string" Description="Define o Height(tamanho vertical) para o Grid" Category="Grid" />
+        <Attribute Name="AllowSelection" Type="enum{default;true;false}" Description="Define o AllowSelection para o Grid" Category="Grid" DefaultValue="default" />
+      </Attributes>
+
+      <ChildrenElements>
+        <ChildElement Name="modes" ElementType="Modes" Multiple="false" Optional="false" />
+        <ChildElement Name="attributes" ElementType="Attributes" Multiple="false" Optional="false" />
+        <ChildElement Name="parameters" ElementType="Parameters" Multiple="false" Optional="true" />
+        <ChildElement Name="orders" ElementType="Orders" Multiple="false" Optional="true" />
+        <ChildElement Name="filter" ElementType="Filter" Multiple="false" Optional="true" />
+        <ChildElement Name="actions" ElementType="Actions" Multiple="false" Optional="true" />
+        <ChildElement Name="GridProperties" Description="Grid Property" Multiple="false" Optional="true" ElementType="GridProperties"/>
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="Prompt" Caption="Prompt ({0})" CaptionParameters="description" Icon="icons\webpanel.ico" ChildrenOrdered="Default">
+      <Attributes>
+        <Attribute Name="name" Type="string" Description="Name" PrettyName="Name" NotNull="true" />
+        <Attribute Name="caption" Type="string" Description="Literal to appear in the Form's caption (description is the default). If a literal, use quotes." />
+        <Attribute Name="description" Type="string" Description="Description." />
+        <Attribute Name="page" Type="enum{&lt;default&gt;;&lt;unlimited&gt;;*}" Description="Number of rows in the grid per page (only for Grid type)." DefaultValue="&lt;default&gt;" />
+        <Attribute Name="isMain" Type="bool" Description="Set &quot;Main Program&quot; flag in selection webpanel." DefaultValue="false" />
+        <Attribute Name="masterPage" Type="enum{&lt;default&gt;;&lt;none&gt;;*}" Description="Object name of the master page to be used in this selection webpanel. &#xD;&#xA;To use the one defined in the configuration file, set value to &quot;&lt;default&gt;&quot;. &#xD;&#xA;To disable the master page, use &quot;&lt;none&gt;&quot;." DefaultValue="&lt;default&gt;" />
+        <Attribute Name="loadOnStart" Type="enum{&lt;default&gt;;true;false}" Description="Carrega Grid no Start, ou não somente quando clicar em procurar" DefaultValue="&lt;default&gt;"/>
+        <Attribute Name="requiredFilter" Type="enum{&lt;default&gt;;true;false}" Description="Define se será obrigatório informar pelo menos um filtro para pesquisa" DefaultValue="&lt;default&gt;" Category="Filter"/>
+        <Attribute Name="requiredFilterMessage" Type="enum{&lt;default&gt;;*}" Description="Define a mensagem padrão para o filtro requerido" DefaultValue="&lt;default&gt;" Category="Filter"/>        <Attribute Name="automaticRefresh" Type="enum{&lt;default&gt;;true;false}" Description="Automatic Refresh no Grid, pesquisa sem clicar no botão Pesquisar" DefaultValue="&lt;default&gt;"/>
+        <Attribute Name="filterCollapse" Type="enum{&lt;default&gt;;true;false}" Category="Filter" DefaultValue="&lt;default&gt;" Description="Utiliza Collapse/Expand para os Filtros da Selection"/>
+        <Attribute Name="filterCollapseDefault" Type="enum{&lt;default&gt;;true;false}" Category="Filter" DefaultValue="&lt;default&gt;" Description="Carrega os Filtros por padrão Collapse"/>
+        <Attribute Name="setFocus" Type="enum{&lt;default&gt;;true;false}" Description="Define Foco no primeiro atributo de filtro" DefaultValue="&lt;default&gt;"/>
+        <Attribute Name="setFocusAttribute" Type="string" Description="Define Foco no primeiro atributo de filtro"/>
+        <Attribute Name="objName" Type="string" Description="Object Name" PrettyName="Object Name"/>
+        <Attribute Name="SearchEventCode" Type="code(Events)" Description="Define Código para o Evento Search" Category="Events"/>
+        <Attribute Name="CurrentPageCombo" Type="enum{default;true;false}" Description="CurrentPage ComboBox para seleção do número da pagina" DefaultValue="default"/>
+        <Attribute Name="SubCode" Type="code(Events)" Description="Define Sub para utilização neste objeto" Category="Events"/>
+        <Attribute Name="EventStart" Type="code(Events)" Description="Define código para o Evento Start" Category="Events"/>
+        <Attribute Name="updateObject" Type="enum{Do not update;Create default;Only Rules, Events and Conditions;Overwrite}" Category="Generate" Description="Do not update - Não atualiza o Objecto&#xD;&#xA;Create default - Atualiza o Objeto e mantem o código atual&#xD;&#xA;Only Rules, Events and Conditions - Atualiza somente as regras, eventos e condições e mantem o código atual&#xD;&#xA;Overwrite - Atualiza o objeto sobrescrevendo o código atual" DefaultValue="Create default" />
+        <Attribute Name="CustomRender" Type="custom(GridCustomRender)" Description="Use a custom user control for rendering grids. Applies to all selection and grid tab objects."  DefaultValue="&lt;default&gt;"/>
+        <Attribute Name="CallMethod" Type="enum{default;Link;Popup}" DefaultValue="default" Description="Define o metodo de chamada ao cadastro, Link ou Popup Modal" NotNull="true"/>
+        <Attribute Name="AutoResize" Type="enum{default;true;false}" Description="Define o AutoResize para o Grid" Category="Grid" DefaultValue="default" />
+        <Attribute Name="Width" Type="string" Description="Define o Width(tamanho horizontal) para o Grid" Category="Grid"/>
+        <Attribute Name="Height" Type="string" Description="Define o Height(tamanho vertical) para o Grid" Category="Grid" />
+        <Attribute Name="AllowSelection" Type="enum{default;true;false}" Description="Define o AllowSelection para o Grid" Category="Grid" DefaultValue="default" />
+      </Attributes>
+      <ChildrenElements>
+        <ChildElement Name="modes" ElementType="Modes" Multiple="false" Optional="false" />
+        <ChildElement Name="attributes" ElementType="Attributes" Multiple="false" Optional="false" />
+        <ChildElement Name="parameters" ElementType="Parameters" Multiple="false" Optional="true" />
+        <ChildElement Name="orders" ElementType="Orders" Multiple="false" Optional="true" />
+        <ChildElement Name="filter" ElementType="Filter" Multiple="false" Optional="true" />
+        <ChildElement Name="actions" ElementType="Actions" Multiple="false" Optional="true" />
+        <ChildElement Name="GridProperties" Description="Grid Property" Multiple="false" Optional="true" ElementType="GridProperties"/>
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="Tab" Caption="Tab ({0})" CaptionParameters="name" KeyAttribute="code" Icon="icons\webpanel.ico" ChildrenOrdered="Default">
+      <Attributes>
+        <Attribute Name="name" Type="string" Description="Literal to appear inside the Tab." PrettyName="Caption" />
+        <Attribute Name="code" Type="string" Description="Internal name. Must be unique." NotNull="true" />
+        <Attribute Name="description" Type="string" Description="Tab description." />
+        <Attribute Name="wcname" Type="string" Category="Component" Description="Component Name." PrettyName="ComponentName" NotNull="true" />
+        <Attribute Name="page" Type="enum{&lt;default&gt;;&lt;unlimited&gt;;*}" Category="Component" Description="Number of rows in the grid per page (only for Grid type)." DefaultValue="&lt;default&gt;" />
+        <Attribute Name="type" Type="enum{Grid;Tabular;UserDefined}" Category="Component" Description="Type of component" DefaultValue="Grid" />
+        <Attribute Name="condition" Type="string" Description="Condition to determine whether the Tab will be shown." />
+        <Attribute Name="objName" Type="string" Description="Object Name" PrettyName="Object Name"/>
+        <Attribute Name="listNotNullTabGrid" Type="enum{default;true;false}" Description="Não permite quantidade de itens em branco na Aba com Grid do WebPanel com BC" DefaultValue="default" NotNull="true"/>
+        <Attribute Name="listNotNullMessage" Type="enum{default;*}" Description="ListNotNullTabGrid Mensagem, coringa {0} define a descrição da aba" Category="Transaction" DefaultValue="default" NotNull="true"/>
+        <Attribute Name="listNotNullCondition" Type="code(Events)" Description="Define Condição para verificar a quantidade de itens no item, se não informado o padrão é 'not temItens', coringa {0} é a variavel SDT do primeiro nivel" Category="Transaction"/>
+        <Attribute Name="CurrentPageCombo" Type="enum{default;true;false}" Description="CurrentPage ComboBox para seleção do número da pagina" DefaultValue="default"/>
+        <Attribute Name="SubCode" Type="code(Events)" Description="Define Sub para utilização neste objeto" Category="Events"/>
+        <Attribute Name="CallMethod" Type="enum{default;Link;Popup}" DefaultValue="default" Description="Define o metodo de chamada ao cadastro, Link ou Popup Modal" NotNull="true"/>
+        <Attribute Name="afterInsert" Type="enum{&lt;default&gt;;EnterInInsert}" Category="Navigation" Description="Action performed after inserting a record.&#xD;&#xA;&lt;default&gt; uses configuration file value." DefaultValue="&lt;default&gt;" />
+        <Attribute Name="EventStart" Type="code(Events)" Description="Define código para o Evento Start" Category="Events"/>
+        <Attribute Name="updateObject" Type="enum{Do not update;Create default;Only Rules, Events and Conditions;Overwrite}" Category="Generate" Description="Do not update - Não atualiza o Objecto&#xD;&#xA;Create default - Atualiza o Objeto e mantem o código atual&#xD;&#xA;Only Rules, Events and Conditions - Atualiza somente as regras, eventos e condições e mantem o código atual&#xD;&#xA;Overwrite - Atualiza o objeto sobrescrevendo o código atual" DefaultValue="Create default" />
+        <Attribute Name="updateExport" Type="enum{Do not update;Create default;Overwrite}" Category="Generate" Description="Do not update - Não atualiza o Objecto&#xD;&#xA;Create default - Atualiza o Objeto e mantem o código atual&#xD;&#xA;Overwrite - Atualiza o objeto sobrescrevendo o código atual" DefaultValue="Create default" />
+        <Attribute Name="updateSDT" Type="enum{Do not update;Create default;Overwrite}" Category="Generate" Description="Do not update - Não atualiza o Objecto&#xD;&#xA;Create default - Atualiza o Objeto e mantem o código atual&#xD;&#xA;Overwrite - Atualiza o objeto sobrescrevendo o código atual" DefaultValue="Create default" />
+        <Attribute Name="CustomRender" Type="custom(GridCustomRender)" Description="Use a custom user control for rendering grids. Applies to all selection and grid tab objects."  DefaultValue="&lt;default&gt;"/>
+        <Attribute Name="group" Type="custom(Group)" Description="Define o Grupo da Aba" />
+        <Attribute Name="image" Type="reference(Image)" Description="Define o icone" />
+        <Attribute Name="AutoResize" Type="enum{default;true;false}" Description="Define o AutoResize para o Grid" Category="Grid" DefaultValue="default" />
+        <Attribute Name="Width" Type="string" Description="Define o Width(tamanho horizontal) para o Grid" Category="Grid"/>
+        <Attribute Name="Height" Type="string" Description="Define o Height(tamanho vertical) para o Grid" Category="Grid" />
+        <Attribute Name="AllowSelection" Type="enum{default;true;false}" Description="Define o AllowSelection para o Grid" Category="Grid" DefaultValue="default" />
+      </Attributes>
+      <ChildrenElements>
+        <ChildElement Name="parameters" ElementType="Parameters" Multiple="false" Optional="true" />
+        <ChildElement Name="transaction" ElementType="Transaction" Multiple="false" Optional="true" />
+        <ChildElement Name="modes" ElementType="Modes" Multiple="false" Optional="true" />
+        <ChildElement Name="attributes" ElementType="Attributes" Multiple="false" Optional="true" />
+        <ChildElement Name="orders" ElementType="Orders" Multiple="false" Optional="true" />
+        <ChildElement Name="filter" ElementType="Filter" Multiple="false" Optional="true" />
+        <ChildElement Name="actions" ElementType="Actions" Multiple="false" Optional="true" />
+        <ChildElement Name="GridProperties" Description="Grid Property" Multiple="false" Optional="true" ElementType="GridProperties"/>
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="Tabs" Caption="Tabs" Icon="icons\tabs.ico" ChildrenOrdered="Default">
+      <Attributes />
+      <ChildrenElements>
+        <ChildElement Name="tab" ElementType="Tab" Multiple="true" />
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="GroupTab" Caption="Group ({0})" CaptionParameters="name" KeyAttribute="name" ChildrenOrdered="Default">
+      <Attributes>
+        <Attribute Name="name" Type="string" Description="Define o nome do Grupo" PrettyName="Caption" />
+        <Attribute Name="image" Type="reference(Image)" Description="Define o icone" />
+      </Attributes>
+      <ChildrenElements />
+    </ElementType>
+    <ElementType Name="Groups" Caption="Groups" ChildrenOrdered="Default">
+      <Attributes />
+      <ChildrenElements>
+        <ChildElement Name="groupTab" ElementType="GroupTab" Multiple="true" />
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="Transaction" Caption="Transaction ({0})" CaptionParameters="transaction" Icon="icons\transaction.ico" ChildrenOrdered="Default">
+      <Attributes>
+        <Attribute Name="transaction" Type="reference(Transaction)" Description="Transaction Name." NotNull="true" />
+        <Attribute Name="masterPage" Type="enum{&lt;default&gt;;&lt;none&gt;;*}" Description="Object name of the master page to be used in this transaction.&#xD;&#xA;To use the one defined in the configuration file, set value to &quot;&lt;default&gt;&quot;.&#xD;&#xA;To disable the master page, use &quot;&lt;none&gt;&quot;." DefaultValue="&lt;default&gt;" />
+        <Attribute Name="dataEntryWebPanelBC" Type="enum{&lt;default&gt;;true;false}" Description="Utiliza WebPanel com BC para cadastro ou a transação" DefaultValue="&lt;default&gt;" NotNull="true"/>
+        <Attribute Name="setFocus" Type="enum{&lt;default&gt;;true;false}" Description="Define Foco no primeiro atributo" DefaultValue="&lt;default&gt;"/>
+        <Attribute Name="setFocusAttribute" Type="reference(Attribute)" Description="Define Foco no primeiro atributo de filtro"/>
+        <Attribute Name="objName" Type="string" Description="Object Name" PrettyName="Object Name"/>
+        <Attribute Name="EventStart" Type="code(Events)" Description="Define código para o Evento Start" Category="Events"/>
+        <Attribute Name="BCSucessCode" Type="code(Events)" Description="Define Código para Evento quando o BC Salvar com sucesso" Category="Transaction"/>
+        <Attribute Name="BCErrorCode" Type="code(Events)" Description="Define Código para Evento quando o BC não Salvar e retornar erro" Category="Transaction"/>
+        <Attribute Name="updateObject" Type="enum{Do not update;Create default;Only Rules, Events and Conditions;Overwrite}" Category="Generate" Description="Do not update - Não atualiza o Objecto&#xD;&#xA;Create default - Atualiza o Objeto e mantem o código atual&#xD;&#xA;Only Rules, Events and Conditions - Atualiza somente as regras, eventos e condições e mantem o código atual&#xD;&#xA;Overwrite - Atualiza o objeto sobrescrevendo o código atual" DefaultValue="Create default" />
+        <Attribute Name="updateDataProviderAba" Type="enum{Do not update;Create default;Overwrite}" Category="Generate" Description="Do not update - Não atualiza o Objecto&#xD;&#xA;Create default - Atualiza o Objeto e mantem o código atual&#xD;&#xA;Overwrite - Atualiza o objeto sobrescrevendo o código atual" DefaultValue="Create default" />
+        <Attribute Name="updateSDTBC" Type="enum{Do not update;Create default;Overwrite}" Category="Generate" Description="Do not update - Não atualiza o Objecto&#xD;&#xA;Create default - Atualiza o Objeto e mantem o código atual&#xD;&#xA;Overwrite - Atualiza o objeto sobrescrevendo o código atual" DefaultValue="Create default" />
+      </Attributes>
+      <ChildrenElements>
+        <ChildElement Name="form" ElementType="Form" Description="Web Form" Multiple="false" Optional="false"/>
+        <ChildElement Name="parameters" ElementType="Parameters" Multiple="false" Optional="true" />
+        <ChildElement Name="actions" ElementType="Actions" Multiple="false" Optional="true" />
+      </ChildrenElements>
+    </ElementType>
+      <ElementType Name="WebPanelRoot" Caption="WebPanel" CaptionParameters="" KeyAttribute="" Icon="icons\webpanel.ico" ChildrenOrdered="Default">
+        <Attributes>
+          <Attribute Name="updateObject" Type="enum{Do not update;Create default;Only Rules, Events and Conditions;Overwrite}" Category="Generate" Description="Do not update - Não atualiza o Objecto&#xD;&#xA;Create default - Atualiza o Objeto e mantem o código atual&#xD;&#xA;Only Rules, Events and Conditions - Atualiza somente as regras, eventos e condições e mantem o código atual&#xD;&#xA;Overwrite - Atualiza o objeto sobrescrevendo o código atual" DefaultValue="Create default" />
+          <Attribute Name="updateDataProviderAba" Type="enum{Do not update;Create default;Overwrite}" Category="Generate" Description="Do not update - Não atualiza o Objecto&#xD;&#xA;Create default - Atualiza o Objeto e mantem o código atual&#xD;&#xA;Overwrite - Atualiza o objeto sobrescrevendo o código atual" DefaultValue="Create default" />
+        </Attributes>
+        <ChildrenElements>
+          <ChildElement Name="form" ElementType="Form" Description="Web Form" Multiple="false" Optional="false"/>
+          <ChildElement Name="parameters" ElementType="Parameters" Multiple="false" Optional="true" />
+          <ChildElement Name="actions" ElementType="Actions" Multiple="false" Optional="true" />
+        </ChildrenElements>
+      </ElementType>
+    <ElementType Name="View" Caption="View ({0})" CaptionParameters="description" Icon="icons\webpanel.ico" ChildrenOrdered="Default">
+      <Attributes>
+        <Attribute Name="caption" Type="code(Expressions)" Description="Caption to Appear in the Form. Must be a character expression. Usually it's the description attribute." />
+        <Attribute Name="description" Type="string" Description="Description." />
+        <Attribute Name="backToSelection" Type="bool" Description="Indicates whether the View page has a link back to the Selection page." DefaultValue="true" />
+        <Attribute Name="masterPage" Type="enum{&lt;default&gt;;&lt;none&gt;;*}" Description="Object name of the master page to be used in this view webpanel. &#xD;&#xA;To use the one defined in the configuration file, set value to &quot;&lt;default&gt;&quot;. &#xD;&#xA;To disable the master page, use &quot;&lt;none&gt;&quot;." DefaultValue="&lt;default&gt;" />
+				<Attribute Name="useAsSearchViewer" Type="bool" Description="Set the view object as the Search Viewer for the associated transaction." DefaultValue="true" />
+        <Attribute Name="objName" Type="string" Description="Object Name" PrettyName="Object Name"/>
+        <Attribute Name="disabledTabsIfEditing" Type="enum{default;true;false}" Description="Desabilita outras abas quando esta editando registro de outro nivel" Category="Transaction" DefaultValue="default" NotNull="true"/>
+        <Attribute Name="updateObject" Type="enum{Do not update;Create default;Only Rules, Events and Conditions;Overwrite}" Category="Generate" Description="Do not update - Não atualiza o Objecto&#xD;&#xA;Create default - Atualiza o Objeto e mantem o código atual&#xD;&#xA;Only Rules, Events and Conditions - Atualiza somente as regras, eventos e condições e mantem o código atual&#xD;&#xA;Overwrite - Atualiza o objeto sobrescrevendo o código atual" DefaultValue="Create default" />
+      </Attributes>
+      <ChildrenElements>
+        <ChildElement Name="parameters" ElementType="Parameters" Multiple="false" Optional="false" />
+        <ChildElement Name="fixedData" ElementType="FixedData" Multiple="false" Optional="true" />
+        <ChildElement Name="groups" ElementType="Groups" Multiple="false" Optional="false" />
+        <ChildElement Name="tabs" ElementType="Tabs" Multiple="false" Optional="false" />        
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="Variable" Caption="{0}" CaptionParameters="name" KeyAttribute="name" Icon="icons\variable.ico" ChildrenOrdered="Default">
+      <Attributes>
+        <Attribute Name="name" Type="string" Description="Variable name." />
+        <Attribute Name="description" Type="string" Description="Variable description." />
+        <Attribute Name="domain" Type="reference(Domain)" Description="Domain on which the variable is based." NotNull="false" />
+        <Attribute Name="attribute" Type="reference(Attribute)" Description="Attribute on which the variable is based." NotNull="false" />
+        <Attribute Name="loadCode" Type="code(Events)" Description="Code used in the panel or grid Load event to assign the value to be displayed." Serialization="CData" />
+        <Attribute Name="visible" Type="bool" Category="Form" Description="Variable is visible (if false, in grids the column will be hidden, and in tabular tabs the variable will be invisible)." DefaultValue="true" />
+        <Attribute Name="themeClass" Type="custom(ThemeClass)" Category="Form" Description="Theme class for the variable." />
+        <Attribute Name="format" Type="enum{&lt;default&gt;;Text;HTML;Raw HTML;Text with meaningful spaces}" Category="Form" Description="HTML format for the variable." DefaultValue="&lt;default&gt;" />
+        <Attribute Name="isValid" Type="code(Expressions)" Category="Transaction" Description="Evento IsValid para Atributo ou variável"/>
+        <Attribute Name="readonly" Type="bool" Category="Transaction" Description="Define se é ReadOnly" DefaultValue="false"/>
+        <Attribute Name="MaskPicture" Type="string" Description="Define a Picture" NotNull="false" Category="HMask" PrettyName="Picture"/>
+        <Attribute Name="Reverse" Type="bool" Description="Define se a digitação será invertida" NotNull="true" Category="HMask" DefaultValue="false"/>
+        <Attribute Name="Signed" Type="bool" Description="Define se permite valor negativo" NotNull="true" Category="HMask" DefaultValue="false"/>
+        <Attribute Name="UnmaskedChars" Type="string" Description="Define os caracteres que serão retirados quando retorna valor sem a mascara" NotNull="true" Category="HMask" DefaultValue="[().:/ -]"/>
+        <Attribute Name="UnmaskedValue" Type="bool" Description="Define se retorna o valor sem a mascara ou não" NotNull="true" Category="HMask" DefaultValue="false"/>
+        <Attribute Name="Width" Type="string" Description="Define o Width(tamanho horizontal) para o Atributo" />
+        <Attribute Name="Height" Type="string" Description="Define o Height(tamanho vertical) para o Atributo" />
+      </Attributes>
+      <ChildrenElements>
+        <ChildElement Name="link" ElementType="Link" Multiple="true" Optional="true" />
+        <ChildElement Name="GridColumnProperties" Description="Grid Property" Multiple="false" Optional="true" ElementType="GridColumnProperties"/>
+      </ChildrenElements>
+      <Initialization>
+        <InitializationFrom Type="Attribute" ReferenceProperty="attribute" PropertyValues="description=Description;name=Name"/>
+        <InitializationFrom Type="Domain" ReferenceProperty="domain" PropertyValues="description=Description;name=Name" />
+      </Initialization>
+    </ElementType>
+    <ElementType Name="DynamicFilters" Caption="Dynamic Filters" Icon="icons\conditions.ico" ChildrenOrdered="Default">
+      <Attributes />
+      <ChildrenElements>
+        <ChildElement Name="attributes" ElementType="Attribute" Multiple="true" Optional="true"/>
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="GridStandard" Caption="Grid Standard {0}" CaptionParameters="name" KeyAttribute="name" ChildrenOrdered="Default" Icon="icons\grid.ico">
+      <Attributes>
+        <Attribute Name="name" Type="string" Description="Grid name." NotNull="true"/>
+        <Attribute Name="description" Type="string" Description="Grid description." NotNull="false"/>
+        <Attribute Name="CustomRender" Type="custom(GridCustomRender)" Description="Use a custom user control for rendering grids. Applies to all selection and grid tab objects."  DefaultValue="&lt;default&gt;"/>
+      </Attributes>
+      <ChildrenElements>
+        <ChildElement Name="attributes" ElementType="Attributes" Multiple="false" Optional="false" />
+        <ChildElement Name="GridProperties" Description="Grid Property" Multiple="false" Optional="true" ElementType="GridProperties"/>
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="GridFreeStyle" Caption="Grid FreeStyle {0}" CaptionParameters="name" KeyAttribute="name" ChildrenOrdered="Default" Icon="icons\grid.ico">
+      <Attributes>
+        <Attribute Name="name" Type="string" Description="Grid name." NotNull="true"/>
+        <Attribute Name="description" Type="string" Description="Grid description." NotNull="false"/>
+      </Attributes>
+      <ChildrenElements>
+        <ChildElement Name="attribute" ElementType="Attribute" Multiple="true" Optional="false"/>
+        <ChildElement Name="gridFreeStyle" ElementType="GridFreeStyle" Multiple="true" Optional="true"/>
+        <ChildElement Name="gridStandard" ElementType="GridStandard" Multiple="true" Optional="true"/>
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="Form" Caption="Form" Icon="icons\webpanel.ico" ChildrenOrdered="Default">
+      <Attributes>
+        <Attribute Name="externalTab" Type="bool" Description="Define se as abas seram controladas fora deste objeto" DefaultValue="false"/>
+      </Attributes>
+      <ChildrenElements>
+        <ChildElement Name="row" ElementType="Row" Multiple="true"/>
+        <ChildElement Name="tab" ElementType="TabForm" Multiple="true"/>
+        <ChildElement Name="userTable" ElementType="UserTable" Multiple="true"/>
+        <ChildElement Name="TransactionAttribute" ElementType="TransactionAttribute" Multiple="true"/>
+        <ChildElement Name="groups" ElementType="Groups" Multiple="false" Optional="false" />
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="UserTable" Caption="UserTable" CaptionParameters="name" KeyAttribute="name" ChildrenOrdered="Default">
+      <Attributes>
+        <Attribute Name="name" Type="string" NotNull="true"/>
+      </Attributes>
+      <ChildrenElements />
+    </ElementType>
+    <ElementType Name="TabForm" Caption="Tab {0}" CaptionParameters="name" KeyAttribute="name" ChildrenOrdered="Default">
+      <Attributes>
+        <Attribute Name="name" Type="string" NotNull="true" Description="Código único da Aba"/>
+        <Attribute Name="description" Type="string" NotNull="true" Description="Descrição da aba"/>
+        <Attribute Name="objName" Type="string" Description="Object Name" PrettyName="Object Name"/>
+        <Attribute Name="condition" Type="string" Description="Condition to determine whether the Tab will be shown." />
+        <Attribute Name="group" Type="custom(Group)" Description="Define o Grupo da Aba" />
+        <Attribute Name="image" Type="reference(Image)" Description="Define o icone" />
+        <Attribute Name="updateObject" Type="enum{Do not update;Create default;Only Rules, Events and Conditions;Overwrite}" Category="Generate" Description="Do not update - Não atualiza o Objecto&#xD;&#xA;Create default - Atualiza o Objeto e mantem o código atual&#xD;&#xA;Only Rules, Events and Conditions - Atualiza somente as regras, eventos e condições e mantem o código atual&#xD;&#xA;Overwrite - Atualiza o objeto sobrescrevendo o código atual" DefaultValue="Create default" />
+      </Attributes>
+      <ChildrenElements>
+        <ChildElement Name="row" ElementType="Row" Multiple="true"/>
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="FRow" Caption="Row" ChildrenOrdered="Default">
+      <Attributes />
+      <ChildrenElements>
+        <ChildElement Name="column" ElementType="FCol" Multiple="true"/>
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="FCol" Caption="Column" ChildrenOrdered="Default">
+      <Attributes>
+        <Attribute Name="ColSpan" Type="int" DefaultValue="1" Description="ColSpan" NotNull="true"/>
+        <Attribute Name="RowSpan" Type="int" DefaultValue="1" Description="colSpan" NotNull="true"/>
+        <Attribute Name="Align" Type="enum{default;Right;Left;Center}" Description="Define propriedade Align da celula" DefaultValue="default" NotNull="true"/>
+      </Attributes>
+      <ChildrenElements>
+        <ChildElement Name="filterAttribute" ElementType="FilterAttribute" Multiple="true" />
+        <ChildElement Name="text" ElementType="Text" Multiple="true"/>
+        <ChildElement Name="group" ElementType="FGroup" Multiple="true"/>
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="FGroup" Caption="Group {0}" CaptionParameters="Caption" ChildrenOrdered="Default">
+      <Attributes>
+        <Attribute Name="Caption" Type="string" Description="Caption" NotNull="false"/>
+        <Attribute Name="Class" Type="custom(ThemeClass)" Description="Class" NotNull="false"/>
+      </Attributes>
+      <ChildrenElements>
+        <ChildElement Name="row" ElementType="FRow" Multiple="true"/>
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="Row" Caption="Row" ChildrenOrdered="Default">
+      <Attributes>
+        <Attribute Name="visible" Type="bool" Description="Linha inteira é visivel." DefaultValue="true" />
+      </Attributes>
+      <ChildrenElements>
+        <ChildElement Name="column" ElementType="Column" Multiple="true"/>
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="Text" Caption="{0}" CaptionParameters="caption" ChildrenOrdered="Default" KeyAttribute="name">
+      <Attributes>
+        <Attribute Name="name" Type="string" Description="Name" NotNull="true"/>
+        <Attribute Name="caption" Type="string" Description="Caption Text." NotNull="true"/>
+        <Attribute Name="visible" Type="bool" Description="TextBlock is visible." DefaultValue="true" />
+        <Attribute Name="Class" Type="custom(ThemeClass)" Description="Class" NotNull="false"/>
+        <Attribute Name="HTMLFormat" Type="enum{true;false;default}" Description="HTML Format" NotNull="true" DefaultValue="default"/>
+        <Attribute Name="Rule" Type="custom(CustomCaption)" Description="Rule" NotNull="false" DefaultValue="Runtime"/>
+      </Attributes>
+      <ChildrenElements />
+    </ElementType>
+    <ElementType Name="Group" Caption="Group {0}" CaptionParameters="Caption" ChildrenOrdered="Default">
+      <Attributes>
+        <Attribute Name="Caption" Type="string" Description="Caption" NotNull="false"/>
+        <Attribute Name="Class" Type="custom(ThemeClass)" Description="Class" NotNull="false"/>
+      </Attributes>
+      <ChildrenElements>
+        <ChildElement Name="row" ElementType="Row" Multiple="true"/>
+      </ChildrenElements>
+    </ElementType>
+    <ElementType Name="Column" Caption="Column" ChildrenOrdered="Default">
+      <Attributes>
+        <Attribute Name="ColSpan" Type="int" DefaultValue="1" Description="ColSpan" NotNull="true"/>
+        <Attribute Name="RowSpan" Type="int" DefaultValue="1" Description="colSpan" NotNull="true"/>
+        <Attribute Name="Align" Type="enum{default;Right;Left;Center}" Description="Define propriedade Align da celula" DefaultValue="default" NotNull="true"/>
+      </Attributes>
+      <ChildrenElements>
+        <ChildElement Name="attribute" ElementType="Attribute" Multiple="true" />
+        <ChildElement Name="variable" ElementType="Variable" Multiple="true" />
+        <ChildElement Name="text" ElementType="Text" Multiple="true"/>
+        <ChildElement Name="group" ElementType="Group" Multiple="true"/>
+        <ChildElement Name="gridFreeStyle" ElementType="GridFreeStyle" Multiple="true" Optional="true"/>
+        <ChildElement Name="gridStandard" ElementType="GridStandard" Multiple="true" Optional="true"/>
+        <ChildElement Name="userTable" ElementType="UserTable" Multiple="true" Optional="true"/>
+      </ChildrenElements>
+    </ElementType>
+  </ElementTypes>
+</Pattern>
